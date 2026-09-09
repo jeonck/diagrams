@@ -18,6 +18,8 @@ const END = '<!-- diagrams:end -->';
 
 const FORMATS = { html: 'diagram.html', excalidraw: 'diagram.excalidraw' };
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+const ADR = /^(\d{4})-[a-z0-9]+(-[a-z0-9]+)*\.md$/;
+const STATUSES = ['제안됨', '채택됨', '대체됨', '폐기됨'];
 
 const fail = (msg) => {
   console.error('build-index: ' + msg);
@@ -104,6 +106,46 @@ function readDiagram(project, id, categories, phaseIds) {
   };
 }
 
+// ADR 은 파일 맨 앞의 JSON 머리말로 기계가 읽는다.
+// YAML 파서를 들이지 않으려고 JSON 을 쓴다 — node 에 내장 파서가 없다.
+function readDecision(project, file) {
+  const where = `${project}/decisions/${file}`;
+  if (!ADR.test(file)) fail(`${where}: 파일 이름은 0001-소문자-하이픈.md 형식이어야 합니다`);
+
+  const raw = readFileSync(join(PROJECTS, project, 'decisions', file), 'utf8');
+  const m = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/.exec(raw);
+  if (!m) fail(`${where}: 파일 맨 앞에 --- 로 감싼 JSON 머리말이 있어야 합니다`);
+  let head;
+  try {
+    head = JSON.parse(m[1]);
+  } catch (err) {
+    fail(`${where}: 머리말 JSON 을 읽지 못했습니다 — ${err.message}`);
+  }
+  requireStrings(head, ['title', 'status', 'date'], where);
+  if (!STATUSES.includes(head.status)) {
+    fail(`${where} 의 status "${head.status}" 는 쓸 수 없습니다 — ${STATUSES.join(', ')} 중 하나여야 합니다`);
+  }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(head.date)) fail(`${where} 의 date 는 YYYY-MM-DD 형식이어야 합니다`);
+  const diagrams = head.diagrams ?? [];
+  if (!Array.isArray(diagrams) || diagrams.some((d) => typeof d !== 'string')) {
+    fail(`${where} 의 diagrams 는 문자열 배열이어야 합니다`);
+  }
+  if (!m[2].trim()) fail(`${where}: 머리말 뒤에 본문이 없습니다`);
+
+  return {
+    id: file.replace(/\.md$/, ''),
+    number: file.slice(0, 4),
+    project,
+    title: head.title,
+    status: head.status,
+    date: head.date,
+    diagrams,
+    supersedes: head.supersedes ?? null,
+    supersededBy: head.supersededBy ?? null,
+    path: `projects/${project}/decisions/${file}`,
+  };
+}
+
 const dirsIn = (path) => readdirSync(path).filter((n) => statSync(join(path, n)).isDirectory()).sort();
 
 function build() {
@@ -122,6 +164,7 @@ function build() {
   if (projectIds.length === 0) fail('projects/ 아래에 프로젝트가 하나도 없습니다');
 
   const diagrams = [];
+  const decisions = [];
   const projects = [];
   const seenSlugs = new Map();
 
@@ -140,11 +183,32 @@ function build() {
     });
     if (mine.length === 0) fail(`${pid} 에 다이어그램이 하나도 없습니다`);
 
+    // ADR 은 선택 사항이다. 없는 프로젝트도 있을 수 있다.
+    const adrDir = join(PROJECTS, pid, 'decisions');
+    const myAdrs = existsSync(adrDir)
+      ? readdirSync(adrDir).filter((f) => f.endsWith('.md')).sort().map((f) => readDecision(pid, f))
+      : [];
+    const slugs = new Set(mine.map((d) => d.id));
+    const adrIds = new Set(myAdrs.map((a) => a.id));
+    for (const a of myAdrs) {
+      for (const d of a.diagrams) {
+        if (!slugs.has(d)) fail(`${a.path} 가 없는 다이어그램 "${d}" 를 가리킵니다`);
+      }
+      for (const [key, ref] of [['supersedes', a.supersedes], ['supersededBy', a.supersededBy]]) {
+        if (ref && !adrIds.has(ref)) fail(`${a.path} 의 ${key} "${ref}" 에 해당하는 ADR 이 없습니다`);
+      }
+      if (a.status === '대체됨' && !a.supersededBy) {
+        fail(`${a.path}: status 가 대체됨이면 supersededBy 를 적어야 합니다`);
+      }
+    }
+    decisions.push(...myAdrs);
+
     const covered = new Set(mine.map((d) => d.kind));
     projects.push({
       id: pid,
       ...meta,
       count: mine.length,
+      decisions: myAdrs.length,
       // 이 프로젝트에 아직 없는 대표 종류 = 남은 설계 산출물
       missing: catList.flatMap((c) => c.kinds.filter((k) => !covered.has(k)).map((k) => `${c.name}/${k}`)),
     });
@@ -159,6 +223,11 @@ function build() {
       a.title.localeCompare(b.title, 'ko')
   );
 
+  // 다이어그램에서 결정으로 거꾸로 갈 수 있게 한다
+  for (const d of diagrams) {
+    d.decisions = decisions.filter((a) => a.project === d.project && a.diagrams.includes(d.id)).map((a) => a.id);
+  }
+
   const phases = phaseList.map((p) => ({ ...p, count: diagrams.filter((d) => d.phase === p.id).length }));
   const coveredAll = new Set(diagrams.map((d) => d.kind));
   const categories = catList.map((c) => ({
@@ -168,7 +237,7 @@ function build() {
   }));
   const tags = [...new Set(diagrams.flatMap((d) => d.tags))].sort((a, b) => a.localeCompare(b, 'ko'));
 
-  return JSON.stringify({ phases, categories, tags, projects, diagrams }, null, 2) + '\n';
+  return JSON.stringify({ phases, categories, tags, projects, diagrams, decisions }, null, 2) + '\n';
 }
 
 // ── README 표 ───────────────────────────────────────────────
@@ -184,7 +253,7 @@ function renderTable(index) {
     '',
     `**${p.name}** — ${p.summary}`,
     '',
-    `설계 단계순으로 ${index.diagrams.length}개입니다. 파일은 \`projects/<프로젝트>/diagrams/<slug>/\` 에 있고,`,
+    `SDLC 단계순으로 ${index.diagrams.length}개입니다. 파일은 \`projects/<프로젝트>/diagrams/<slug>/\` 에 있고,`,
     '이 표는 `node tools/build-index.mjs` 가 만들므로 직접 고치지 마세요.',
     '',
     '| 단계 | 종류 | 다이어그램 | 요약 |',

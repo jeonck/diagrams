@@ -163,6 +163,7 @@
       "status": "설계",
       "started": "2026-09",
       "count": 15,
+      "decisions": 6,
       "missing": []
     }
   ],
@@ -184,7 +185,8 @@
       "formats": {
         "html": "projects/order-platform/diagrams/shop-usecase/diagram.html",
         "excalidraw": "projects/order-platform/diagrams/shop-usecase/diagram.excalidraw"
-      }
+      },
+      "decisions": []
     },
     {
       "id": "fulfillment-bpmn",
@@ -203,7 +205,8 @@
       "formats": {
         "html": "projects/order-platform/diagrams/fulfillment-bpmn/diagram.html",
         "excalidraw": "projects/order-platform/diagrams/fulfillment-bpmn/diagram.excalidraw"
-      }
+      },
+      "decisions": []
     },
     {
       "id": "order-class",
@@ -222,7 +225,11 @@
       "formats": {
         "html": "projects/order-platform/diagrams/order-class/diagram.html",
         "excalidraw": "projects/order-platform/diagrams/order-class/diagram.excalidraw"
-      }
+      },
+      "decisions": [
+        "0001-order-as-state-machine",
+        "0003-domain-depends-on-nothing"
+      ]
     },
     {
       "id": "order-erd",
@@ -241,7 +248,8 @@
       "formats": {
         "html": "projects/order-platform/diagrams/order-erd/diagram.html",
         "excalidraw": "projects/order-platform/diagrams/order-erd/diagram.excalidraw"
-      }
+      },
+      "decisions": []
     },
     {
       "id": "order-state",
@@ -260,7 +268,10 @@
       "formats": {
         "html": "projects/order-platform/diagrams/order-state/diagram.html",
         "excalidraw": "projects/order-platform/diagrams/order-state/diagram.excalidraw"
-      }
+      },
+      "decisions": [
+        "0001-order-as-state-machine"
+      ]
     },
     {
       "id": "order-dfd",
@@ -279,7 +290,8 @@
       "formats": {
         "html": "projects/order-platform/diagrams/order-dfd/diagram.html",
         "excalidraw": "projects/order-platform/diagrams/order-dfd/diagram.excalidraw"
-      }
+      },
+      "decisions": []
     },
     {
       "id": "c4-container",
@@ -298,7 +310,8 @@
       "formats": {
         "html": "projects/order-platform/diagrams/c4-container/diagram.html",
         "excalidraw": "projects/order-platform/diagrams/c4-container/diagram.excalidraw"
-      }
+      },
+      "decisions": []
     },
     {
       "id": "package-deps",
@@ -317,7 +330,10 @@
       "formats": {
         "html": "projects/order-platform/diagrams/package-deps/diagram.html",
         "excalidraw": "projects/order-platform/diagrams/package-deps/diagram.excalidraw"
-      }
+      },
+      "decisions": [
+        "0003-domain-depends-on-nothing"
+      ]
     },
     {
       "id": "mvc-structure",
@@ -336,7 +352,8 @@
       "formats": {
         "html": "projects/order-platform/diagrams/mvc-structure/diagram.html",
         "excalidraw": "projects/order-platform/diagrams/mvc-structure/diagram.excalidraw"
-      }
+      },
+      "decisions": []
     },
     {
       "id": "mvc-sequence",
@@ -355,7 +372,8 @@
       "formats": {
         "html": "projects/order-platform/diagrams/mvc-sequence/diagram.html",
         "excalidraw": "projects/order-platform/diagrams/mvc-sequence/diagram.excalidraw"
-      }
+      },
+      "decisions": []
     },
     {
       "id": "checkout-activity",
@@ -374,7 +392,8 @@
       "formats": {
         "html": "projects/order-platform/diagrams/checkout-activity/diagram.html",
         "excalidraw": "projects/order-platform/diagrams/checkout-activity/diagram.excalidraw"
-      }
+      },
+      "decisions": []
     },
     {
       "id": "deployment-topology",
@@ -393,7 +412,11 @@
       "formats": {
         "html": "projects/order-platform/diagrams/deployment-topology/diagram.html",
         "excalidraw": "projects/order-platform/diagrams/deployment-topology/diagram.excalidraw"
-      }
+      },
+      "decisions": [
+        "0004-split-read-and-write",
+        "0005-session-in-redis"
+      ]
     },
     {
       "id": "network-topology",
@@ -412,7 +435,10 @@
       "formats": {
         "html": "projects/order-platform/diagrams/network-topology/diagram.html",
         "excalidraw": "projects/order-platform/diagrams/network-topology/diagram.excalidraw"
-      }
+      },
+      "decisions": [
+        "0004-split-read-and-write"
+      ]
     },
     {
       "id": "cicd-pipeline",
@@ -431,7 +457,10 @@
       "formats": {
         "html": "projects/order-platform/diagrams/cicd-pipeline/diagram.html",
         "excalidraw": "projects/order-platform/diagrams/cicd-pipeline/diagram.excalidraw"
-      }
+      },
+      "decisions": [
+        "0006-manual-approval-before-production"
+      ]
     },
     {
       "id": "value-stream",
@@ -450,7 +479,98 @@
       "formats": {
         "html": "projects/order-platform/diagrams/value-stream/diagram.html",
         "excalidraw": "projects/order-platform/diagrams/value-stream/diagram.excalidraw"
-      }
+      },
+      "decisions": [
+        "0006-manual-approval-before-production"
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "0001-order-as-state-machine",
+      "number": "0001",
+      "project": "order-platform",
+      "title": "주문을 상태 기계로 다룬다",
+      "status": "채택됨",
+      "date": "2026-09-02",
+      "diagrams": [
+        "order-state",
+        "order-class"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "path": "projects/order-platform/decisions/0001-order-as-state-machine.md"
+    },
+    {
+      "id": "0002-session-in-app-memory",
+      "number": "0002",
+      "project": "order-platform",
+      "title": "세션을 앱 서버 메모리에 둔다",
+      "status": "대체됨",
+      "date": "2026-09-03",
+      "diagrams": [],
+      "supersedes": null,
+      "supersededBy": "0005-session-in-redis",
+      "path": "projects/order-platform/decisions/0002-session-in-app-memory.md"
+    },
+    {
+      "id": "0003-domain-depends-on-nothing",
+      "number": "0003",
+      "project": "order-platform",
+      "title": "도메인은 아무것도 의존하지 않는다",
+      "status": "채택됨",
+      "date": "2026-09-04",
+      "diagrams": [
+        "package-deps",
+        "order-class"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "path": "projects/order-platform/decisions/0003-domain-depends-on-nothing.md"
+    },
+    {
+      "id": "0004-split-read-and-write",
+      "number": "0004",
+      "project": "order-platform",
+      "title": "읽기와 쓰기를 나눈다",
+      "status": "채택됨",
+      "date": "2026-09-05",
+      "diagrams": [
+        "deployment-topology",
+        "network-topology"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "path": "projects/order-platform/decisions/0004-split-read-and-write.md"
+    },
+    {
+      "id": "0005-session-in-redis",
+      "number": "0005",
+      "project": "order-platform",
+      "title": "세션을 Redis로 옮긴다",
+      "status": "채택됨",
+      "date": "2026-09-06",
+      "diagrams": [
+        "deployment-topology"
+      ],
+      "supersedes": "0002-session-in-app-memory",
+      "supersededBy": null,
+      "path": "projects/order-platform/decisions/0005-session-in-redis.md"
+    },
+    {
+      "id": "0006-manual-approval-before-production",
+      "number": "0006",
+      "project": "order-platform",
+      "title": "프로덕션 배포 직전에만 사람이 승인한다",
+      "status": "채택됨",
+      "date": "2026-09-08",
+      "diagrams": [
+        "cicd-pipeline",
+        "value-stream"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "path": "projects/order-platform/decisions/0006-manual-approval-before-production.md"
     }
   ]
 }

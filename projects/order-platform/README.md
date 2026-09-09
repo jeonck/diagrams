@@ -16,14 +16,16 @@
 
 ## 설계 결정
 
+각 항목은 [`decisions/`](decisions) 에 ADR 로 남겨 두었습니다.
+
 - **주문은 상태 기계로 다룬다.** 상태를 필드로 두고 곳곳에서 분기하는 대신, 전이와 그 전이를
-  일으키는 사건을 명시합니다. [주문 상태 전이](diagrams/order-state/diagram.html)
+  일으키는 사건을 명시합니다. [ADR 0001](decisions/0001-order-as-state-machine.md) · [주문 상태 전이](diagrams/order-state/diagram.html)
 - **도메인은 아무것도 의존하지 않는다.** 영속성과 외부 API는 도메인이 정의한 포트를
-  인프라가 구현합니다. [패키지 의존 구조](diagrams/package-deps/diagram.html)
+  인프라가 구현합니다. [ADR 0003](decisions/0003-domain-depends-on-nothing.md) · [패키지 의존 구조](diagrams/package-deps/diagram.html)
 - **읽기와 쓰기를 나눈다.** 쓰기는 Primary, 조회는 Replica로 보냅니다.
-  [웹 서비스 배포 구성](diagrams/deployment-topology/diagram.html)
+  [ADR 0004](decisions/0004-split-read-and-write.md) · [웹 서비스 배포 구성](diagrams/deployment-topology/diagram.html)
 - **승인만 사람이 누른다.** 프로덕션 배포 직전 한 번을 빼고 파이프라인은 전부 자동입니다.
-  [CI/CD 파이프라인](diagrams/cicd-pipeline/diagram.html)
+  [ADR 0006](decisions/0006-manual-approval-before-production.md) · [CI/CD 파이프라인](diagrams/cicd-pipeline/diagram.html)
 
 ## 같은 주문을 여러 각도에서
 

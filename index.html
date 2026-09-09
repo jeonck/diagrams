@@ -119,6 +119,27 @@
   .rowtitle { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .note { padding: 24px 16px; color: var(--muted); font-size: 13px; }
 
+  .decisions { border-top: 1px solid var(--line); padding: 8px 0 16px; flex-shrink: 0; max-height: 34vh; overflow: auto; }
+  .adrrow {
+    display: flex; align-items: baseline; gap: 8px; width: 100%;
+    padding: 6px 10px; border: 0; border-radius: 8px; background: transparent;
+    text-align: left; font-size: 13px; cursor: pointer;
+  }
+  .adrrow:hover { background: var(--sunk); }
+  .adrrow[aria-current="true"] { background: var(--sel); color: var(--accent); font-weight: 600; }
+  .adrnum { flex-shrink: 0; font-variant-numeric: tabular-nums; font-size: 12px; color: var(--muted); }
+  .adrrow[aria-current="true"] .adrnum { color: var(--accent); }
+  .adrtitle { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .struck { text-decoration: line-through; opacity: 0.65; }
+
+  .adr { height: 100%; overflow: auto; padding: 28px 32px 40px; }
+  .adr > :first-child { margin-top: 0; }
+  .adr h2 { font-size: 15px; font-weight: 650; margin: 26px 0 8px; }
+  .adr p { margin: 0 0 12px; max-width: 62ch; line-height: 1.65; text-wrap: pretty; }
+  .adr ul { margin: 0 0 12px; padding-left: 20px; max-width: 62ch; }
+  .adr li { margin-bottom: 6px; line-height: 1.65; }
+  .adr code { background: var(--sunk); padding: 1px 5px; border-radius: 4px; font-size: 12.5px; }
+
   .pane { display: flex; flex-direction: column; flex-grow: 1; min-width: 0; }
 
   .detailhead { padding: 18px 28px 14px; background: var(--card); border-bottom: 1px solid var(--line); }
@@ -126,6 +147,7 @@
   .detailhead p { margin: 4px 0 0; color: var(--muted); font-size: 13px; text-wrap: pretty; }
   .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; }
   .pill { font-size: 11px; color: var(--muted); background: var(--sunk); border-radius: 999px; padding: 2px 8px; }
+  .pill.link { border: 0; cursor: pointer; font: inherit; font-size: 11px; color: var(--accent); background: var(--sel); }
   .pill.ghost { background: transparent; border: 1px dashed var(--line); opacity: 0.7; }
   .stamp { font-size: 11px; color: var(--muted); }
 
@@ -208,6 +230,7 @@
       <div class="seg" id="axisseg" role="group" aria-label="묶는 기준"></div>
     </div>
     <nav class="list" id="list" aria-label="다이어그램 목록"></nav>
+    <nav class="decisions" id="decisions" aria-label="설계 결정"></nav>
   </aside>
 
   <main class="pane">
@@ -226,7 +249,8 @@
         <div class="frame">
           <iframe id="html-view" title="다이어그램 미리보기" hidden></iframe>
           <div id="excalidraw-stage" hidden></div>
-          <div id="fallback" class="fallback" hidden></div>
+          <div id="adr-stage" class="adr" hidden></div>
+      <div id="fallback" class="fallback" hidden></div>
         </div>
       </div>
     </section>
@@ -498,6 +522,60 @@
     saveBlob(new Blob([toStandaloneSvg(await res.text())], { type: 'image/svg+xml' }), name);
   }
 
+  /* ---------- ADR 본문 (마크다운 부분집합) ---------- */
+
+  // 제목·문단·목록·강조·코드·링크만 다룬다. ADR 을 이 범위 안에서 쓴다.
+  function renderMarkdown(md) {
+    const inline = (t) =>
+      esc(t)
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (m, text, href) => {
+          // 옆 ADR 로 거는 링크는 뷰어 안에서 열리게 바꾼다
+          const local = /^(\d{4}-[a-z0-9-]+)\.md$/.exec(href);
+          return local
+            ? '<a href="#decision/' + local[1] + '">' + text + '</a>'
+            : '<a href="' + esc(href) + '" target="_blank" rel="noopener">' + text + '</a>';
+        });
+
+    const out = [];
+    let para = [];
+    let items = null;
+    const flushPara = () => {
+      if (para.length) out.push('<p>' + inline(para.join(' ')) + '</p>');
+      para = [];
+    };
+    const flushList = () => {
+      if (items) out.push('<ul>' + items.join('') + '</ul>');
+      items = null;
+    };
+
+    for (const raw of md.split('\n')) {
+      const line = raw.trim();
+      const bullet = /^-\s+(.*)$/.exec(line);
+      const head = /^(#{1,4})\s+(.*)$/.exec(line);
+      if (bullet) {
+        flushPara();
+        items = items || [];
+        items.push('<li>' + inline(bullet[1]) + '</li>');
+      } else if (head) {
+        flushPara();
+        flushList();
+        const n = head[1].length;
+        out.push('<h' + n + '>' + inline(head[2]) + '</h' + n + '>');
+      } else if (!line) {
+        flushPara();
+        flushList();
+      } else {
+        flushList();
+        para.push(line);
+      }
+    }
+    flushPara();
+    flushList();
+    return out.join('');
+  }
+
   /* ---------- 뷰어 ---------- */
 
   const ALIASES = { mvc: 'mvc-structure', 'mvc-sequence': 'mvc-sequence' };
@@ -522,9 +600,10 @@
     '<rect x="24" y="37" width="28" height="14" rx="3" fill="var(--card)"></rect>' +
     '<path d="M31 15L20 19M45 15L56 19M20 33L31 37M56 33L45 37"></path></svg>';
 
-  const state = { q: '', tag: null, sel: null, fmt: 'html', view: 'list', allTags: false, axis: 'phase' };
+  const state = { q: '', tag: null, sel: null, fmt: 'html', view: 'list', allTags: false, axis: 'phase', adr: null };
   let INDEX = { categories: [], tags: [], diagrams: [] };
   const byId = new Map();
+  const adrById = new Map();
 
   const current = () => byId.get(state.sel) || INDEX.diagrams[0];
 
@@ -562,7 +641,7 @@
   function renderChrome() {
     el('count').textContent =
       INDEX.diagrams.length + '개 · ' +
-      (state.axis === 'phase' ? '설계 단계 ' + INDEX.phases.length : '카테고리 ' + INDEX.categories.length) + '개';
+      (state.axis === 'phase' ? 'SDLC 단계 ' + INDEX.phases.length : '카테고리 ' + INDEX.categories.length) + '개';
     const p = INDEX.projects[0];
     el('project').innerHTML = p
       ? '<strong>' + esc(p.name) + '</strong><span>' + esc(p.summary) + '</span>'
@@ -570,7 +649,7 @@
     segment(
       el('axisseg'),
       [
-        { label: '설계 단계', value: 'phase', on: state.axis === 'phase' },
+        { label: 'SDLC 단계', value: 'phase', on: state.axis === 'phase' },
         { label: '그림 종류', value: 'category', on: state.axis === 'category' },
       ],
       (v) => {
@@ -667,6 +746,33 @@
     }
   }
 
+  function renderDecisionList() {
+    const host = el('decisions');
+    host.replaceChildren();
+    const all = INDEX.decisions || [];
+    if (all.length === 0) return;
+    const h = document.createElement('div');
+    h.className = 'grouphead';
+    h.innerHTML = '<span>설계 결정</span><span class="cnt">' + all.length + '</span>';
+    host.appendChild(h);
+    const box = document.createElement('div');
+    box.className = 'groupitems';
+    for (const a of all) {
+      const b = document.createElement('button');
+      b.className = 'adrrow';
+      b.setAttribute('aria-current', String(a.id === state.adr));
+      // 대체되거나 폐기된 결정은 취소선으로 남긴다 — 지우지 않는 것이 ADR 의 요점이다
+      const dead = a.status === '대체됨' || a.status === '폐기됨';
+      b.innerHTML =
+        '<span class="adrnum">' + esc(a.number) + '</span>' +
+        '<span class="adrtitle' + (dead ? ' struck' : '') + '">' + esc(a.title) + '</span>';
+      b.title = a.status + ' · ' + a.date;
+      b.addEventListener('click', () => selectDecision(a.id));
+      box.appendChild(b);
+    }
+    host.appendChild(box);
+  }
+
   function renderGrid(list) {
     const host = el('grid');
     host.replaceChildren();
@@ -725,6 +831,50 @@
     }
   }
 
+  async function renderDecision() {
+    const a = adrById.get(state.adr);
+    if (!a) return;
+    el('d-title').textContent = a.number + '. ' + a.title;
+    el('d-summary').textContent = '';
+    el('d-meta').innerHTML =
+      '<span class="pill">' + esc(a.status) + '</span>' +
+      (a.supersedes
+        ? '<span class="pill">' + esc(adrById.get(a.supersedes).number) + ' 대체</span>'
+        : '') +
+      a.diagrams
+        .map((id) => {
+          const d = byId.get(id);
+          return d ? '<button class="pill link" data-go="' + esc(id) + '">' + esc(d.title) + '</button>' : '';
+        })
+        .join('') +
+      '<span class="stamp">· ' + esc(a.date) + '</span>';
+    el('d-meta')
+      .querySelectorAll('[data-go]')
+      .forEach((b) => b.addEventListener('click', () => select(b.dataset.go)));
+
+    el('fmtseg').replaceChildren();
+    el('fmtseg').hidden = true;
+    const actions = el('actions');
+    actions.replaceChildren();
+    const src = document.createElement('a');
+    src.className = 'btn';
+    src.href = a.path;
+    src.target = '_blank';
+    src.rel = 'noopener';
+    src.innerHTML = icon(ICON_OPEN) + '<span>원본 .md</span>';
+    actions.appendChild(src);
+
+    try {
+      const res = await fetch(a.path, { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const body = (await res.text()).replace(/^---\n[\s\S]*?\n---\n/, '');
+      el('adr-stage').innerHTML = renderMarkdown(body);
+      show('adr');
+    } catch (err) {
+      showError('<p><strong>결정 문서를 불러오지 못했습니다.</strong> (' + esc(err.message) + ')</p>');
+    }
+  }
+
   function renderDetail() {
     const d = current();
     if (!d) return;
@@ -734,8 +884,18 @@
     el('d-meta').innerHTML =
       (ph ? '<span class="pill">' + esc(ph.name) + '</span>' : '') +
       d.tags.map((t) => '<span class="pill">' + esc(t) + '</span>').join('') +
+      (d.decisions || [])
+        .map((id) => {
+          const a = adrById.get(id);
+          return a ? '<button class="pill link" data-adr="' + esc(id) + '">ADR ' + esc(a.number) + '</button>' : '';
+        })
+        .join('') +
       (d.updated ? '<span class="stamp">· 수정 ' + esc(d.updated) + '</span>' : '');
+    el('d-meta')
+      .querySelectorAll('[data-adr]')
+      .forEach((b) => b.addEventListener('click', () => selectDecision(b.dataset.adr)));
 
+    el('fmtseg').hidden = false;
     segment(
       el('fmtseg'),
       [
@@ -797,6 +957,7 @@
   function show(which) {
     el('html-view').hidden = which !== 'html';
     el('excalidraw-stage').hidden = which !== 'excalidraw';
+    el('adr-stage').hidden = which !== 'adr';
     el('fallback').hidden = which !== 'error';
   }
 
@@ -836,18 +997,34 @@
     renderList(list);
     el('detail').hidden = state.view !== 'list';
     el('gallery').hidden = state.view !== 'grid';
+    renderDecisionList();
     if (state.view === 'grid') {
       renderGrid(list);
+    } else if (state.adr) {
+      renderDecision();
     } else {
       renderDetail();
       renderStage();
     }
-    location.hash = state.view === 'grid' ? 'gallery' : state.sel + '/' + state.fmt;
+    location.hash =
+      state.view === 'grid'
+        ? 'gallery'
+        : state.adr
+        ? 'decision/' + state.adr
+        : state.sel + '/' + state.fmt;
+  }
+
+  function selectDecision(id) {
+    if (!adrById.has(id)) return;
+    state.adr = id;
+    state.view = 'list';
+    render();
   }
 
   function select(id) {
     const d = byId.get(id);
     if (!d) return;
+    state.adr = null;
     state.sel = id;
     if (state.fmt === 'excalidraw' && !d.formats.excalidraw) state.fmt = 'html';
     render();
@@ -856,6 +1033,14 @@
   function applyHash() {
     const raw = decodeURIComponent(location.hash.slice(1));
     state.view = raw === 'gallery' ? 'grid' : 'list';
+    if (raw.startsWith('decision/')) {
+      const id = raw.slice('decision/'.length);
+      if (adrById.has(id)) {
+        state.adr = id;
+        return;
+      }
+    }
+    state.adr = null;
     const [rawId, fmt] = raw.split('/');
     const id = ALIASES[rawId] || rawId;
     if (byId.has(id)) state.sel = id;
@@ -896,6 +1081,7 @@
       return;
     }
     for (const d of INDEX.diagrams) byId.set(d.id, d);
+    for (const a of INDEX.decisions || []) adrById.set(a.id, a);
     state.sel = INDEX.diagrams[0] && INDEX.diagrams[0].id;
     applyHash();
     render();
