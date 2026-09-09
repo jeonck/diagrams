@@ -86,6 +86,7 @@
     padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px;
     background: var(--card); color: var(--muted); font-size: 12px; cursor: pointer;
   }
+  .tag.more { border-style: dashed; }
   .tag[aria-pressed="true"] {
     border-color: var(--accent); color: var(--accent); background: var(--sel); font-weight: 600;
   }
@@ -510,7 +511,7 @@
     '<rect x="24" y="37" width="28" height="14" rx="3" fill="var(--card)"></rect>' +
     '<path d="M31 15L20 19M45 15L56 19M20 33L31 37M56 33L45 37"></path></svg>';
 
-  const state = { q: '', tag: null, sel: null, fmt: 'html', view: 'list' };
+  const state = { q: '', tag: null, sel: null, fmt: 'html', view: 'list', allTags: false };
   let INDEX = { categories: [], tags: [], diagrams: [] };
   const byId = new Map();
 
@@ -534,6 +535,7 @@
       const b = document.createElement('button');
       b.textContent = it.label;
       b.setAttribute('aria-pressed', String(it.on));
+      if (it.title) b.title = it.title;
       if (it.disabled) b.disabled = true;
       b.addEventListener('click', () => onPick(it.value));
       host.appendChild(b);
@@ -554,8 +556,14 @@
         render();
       }
     );
-    el('tags').replaceChildren();
-    for (const t of INDEX.tags) {
+    const host = el('tags');
+    host.replaceChildren();
+    const LIMIT = 8;
+    // 태그가 늘어나면 목록을 아래로 밀어내므로, 기본은 접어 둔다
+    const shown = state.allTags || INDEX.tags.length <= LIMIT + 1
+      ? INDEX.tags
+      : INDEX.tags.slice(0, LIMIT);
+    for (const t of shown) {
       const b = document.createElement('button');
       b.className = 'tag';
       b.textContent = t;
@@ -564,7 +572,17 @@
         state.tag = state.tag === t ? null : t;
         render();
       });
-      el('tags').appendChild(b);
+      host.appendChild(b);
+    }
+    if (shown.length < INDEX.tags.length || state.allTags) {
+      const more = document.createElement('button');
+      more.className = 'tag more';
+      more.textContent = state.allTags ? '접기' : '+' + (INDEX.tags.length - shown.length);
+      more.addEventListener('click', () => {
+        state.allTags = !state.allTags;
+        render();
+      });
+      host.appendChild(more);
     }
   }
 
@@ -682,10 +700,13 @@
       [
         { label: 'SVG / HTML', value: 'html', on: state.fmt === 'html' },
         {
-          label: 'Excalidraw',
+          label: d.formats.excalidraw ? 'Excalidraw' : 'Excalidraw 없음',
           value: 'excalidraw',
           on: state.fmt === 'excalidraw',
           disabled: !d.formats.excalidraw,
+          title: d.formats.excalidraw
+            ? null
+            : '이 다이어그램에는 편집용 .excalidraw 파일이 없습니다. SVG/HTML 만 있습니다.',
         },
       ],
       (v) => {

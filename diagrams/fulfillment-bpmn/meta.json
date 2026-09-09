@@ -1,0 +1,12 @@
+{
+  "title": "주문 이행 프로세스 (BPMN)",
+  "category": "process",
+  "kind": "BPMN",
+  "tags": [
+    "BPMN",
+    "프로세스"
+  ],
+  "summary": "주문 한 건이 부서를 넘나들며 처리되는 순서",
+  "updated": "2026-09-09",
+  "order": 20
+}

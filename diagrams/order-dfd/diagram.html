@@ -1,0 +1,160 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>주문 데이터 흐름 (레벨 1)</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f8fafc;
+    --fg: #172033;
+    --muted: #5b6475;
+    --line: #64748b;
+    --neutral: #e2e8f0;
+    --input: #bfdbfe;
+    --process: #c7d2fe;
+    --storage: #99f6e4;
+    --external: #fde68a;
+    --risk: #fecaca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #a3adbd;
+      --line: #94a3b8;
+      --neutral: #334155;
+      --input: #1d4ed8;
+      --process: #4338ca;
+      --storage: #0f766e;
+      --external: #92400e;
+      --risk: #991b1b;
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font:
+      14px/1.4 ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+  }
+  main {
+    max-width: 980px;
+    margin: 32px auto;
+    padding: 0 20px;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 650;
+    fill: var(--fg);
+  }
+  .label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: var(--fg);
+  }
+  .small {
+    font-size: 12px;
+    fill: var(--muted);
+  }
+  .node {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .neutral {
+    fill: var(--neutral);
+  }
+  .input {
+    fill: var(--input);
+  }
+  .process {
+    fill: var(--process);
+  }
+  .storage {
+    fill: var(--storage);
+  }
+  .external {
+    fill: var(--external);
+  }
+  .risk {
+    fill: var(--risk);
+  }
+  .edge {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .edge-dashed {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 6 5;
+  }
+  .arrow-head {
+    fill: var(--line);
+  }
+  .zone {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+    stroke-dasharray: 6 5;
+    opacity: 0.8;
+  }
+</style>
+<main>
+  <svg viewBox="0 0 1080 820" role="img" aria-label="주문 데이터 흐름 (레벨 1)">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--line)" />
+      </marker>
+    </defs>
+
+    <text class="title" x="24" y="34">주문 데이터 흐름 (레벨 1)</text>
+    <text class="small" x="24" y="56">주문 데이터가 어떤 처리를 거쳐 어디에 쌓이는가</text>
+
+    <!-- 연결선을 먼저 그려 화살표가 상자 뒤로 가게 한다 -->
+    <path class="edge" d="M 230 215 L 360 215" marker-end="url(#arrow)" />
+    <path class="edge" d="M 590 205 L 720 205" marker-end="url(#arrow)" />
+    <path class="edge" d="M 475 270 L 475 390" marker-end="url(#arrow)" />
+    <path class="edge" d="M 590 425 L 720 425" marker-end="url(#arrow)" />
+    <path class="edge" d="M 720 470 L 590 470" marker-end="url(#arrow)" />
+    <path class="edge" d="M 475 500 L 475 620" marker-end="url(#arrow)" />
+    <path class="edge" d="M 590 665 L 720 665" marker-end="url(#arrow)" />
+    <path class="edge" d="M 360 690 L 150 690 L 150 270" marker-end="url(#arrow)" />
+
+    <rect class="node external" x="60" y="180" width="170" height="90" rx="8" />
+    <ellipse class="node process" cx="475.0" cy="215.0" rx="115.0" ry="55.0" />
+    <ellipse class="node process" cx="475.0" cy="445.0" rx="115.0" ry="55.0" />
+    <ellipse class="node process" cx="475.0" cy="675.0" rx="115.0" ry="55.0" />
+    <rect class="node storage" x="720" y="175" width="240" height="80" rx="8" />
+    <rect class="node neutral" x="720" y="400" width="240" height="90" rx="8" />
+    <rect class="node storage" x="720" y="625" width="240" height="80" rx="8" />
+
+    <text class="label" x="145" y="230" text-anchor="middle">고객</text>
+    <text class="label" x="475" y="220" text-anchor="middle">1.0 주문 접수</text>
+    <text class="label" x="475" y="450" text-anchor="middle">2.0 결제 처리</text>
+    <text class="label" x="475" y="680" text-anchor="middle">3.0 배송 준비</text>
+    <text class="label" x="840" y="220" text-anchor="middle">D1 주문 저장소</text>
+    <text class="label" x="840" y="450" text-anchor="middle">결제 게이트웨이</text>
+    <text class="label" x="840" y="670" text-anchor="middle">D2 재고 저장소</text>
+    <text class="small" x="295" y="198" text-anchor="middle">주문 정보</text>
+    <text class="small" x="655" y="188" text-anchor="middle">주문 레코드</text>
+    <text class="small" x="540" y="334" text-anchor="middle">결제 대상</text>
+    <text class="small" x="655" y="408" text-anchor="middle">승인 요청</text>
+    <text class="small" x="655" y="490" text-anchor="middle">승인 결과</text>
+    <text class="small" x="540" y="564" text-anchor="middle">결제 완료</text>
+    <text class="small" x="655" y="648" text-anchor="middle">재고 차감</text>
+    <text class="small" x="250" y="674" text-anchor="middle">배송 알림</text>
+    <text class="small" x="24" y="764">※ 타원은 처리(process), 사각형 중 D 로 시작하는 것은 데이터 저장소, 나머지 사각형은 외부 개체입니다.</text>
+    <text class="small" x="24" y="786">DFD 는 제어 흐름이 아니라 데이터의 이동만 그립니다 — 순서나 분기는 표현하지 않습니다.</text>
+  </svg>
+</main>

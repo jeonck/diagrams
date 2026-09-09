@@ -1,0 +1,166 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>결제 처리 액티비티</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f8fafc;
+    --fg: #172033;
+    --muted: #5b6475;
+    --line: #64748b;
+    --neutral: #e2e8f0;
+    --input: #bfdbfe;
+    --process: #c7d2fe;
+    --storage: #99f6e4;
+    --external: #fde68a;
+    --risk: #fecaca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #a3adbd;
+      --line: #94a3b8;
+      --neutral: #334155;
+      --input: #1d4ed8;
+      --process: #4338ca;
+      --storage: #0f766e;
+      --external: #92400e;
+      --risk: #991b1b;
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font:
+      14px/1.4 ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+  }
+  main {
+    max-width: 980px;
+    margin: 32px auto;
+    padding: 0 20px;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 650;
+    fill: var(--fg);
+  }
+  .label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: var(--fg);
+  }
+  .small {
+    font-size: 12px;
+    fill: var(--muted);
+  }
+  .node {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .neutral {
+    fill: var(--neutral);
+  }
+  .input {
+    fill: var(--input);
+  }
+  .process {
+    fill: var(--process);
+  }
+  .storage {
+    fill: var(--storage);
+  }
+  .external {
+    fill: var(--external);
+  }
+  .risk {
+    fill: var(--risk);
+  }
+  .edge {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .edge-dashed {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 6 5;
+  }
+  .arrow-head {
+    fill: var(--line);
+  }
+  .zone {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+    stroke-dasharray: 6 5;
+    opacity: 0.8;
+  }
+</style>
+<main>
+  <svg viewBox="0 0 1000 1180" role="img" aria-label="결제 처리 액티비티">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--line)" />
+      </marker>
+    </defs>
+
+    <text class="title" x="24" y="34">결제 처리 액티비티</text>
+    <text class="small" x="24" y="56">장바구니에서 확인 메일까지, 분기와 병렬이 있는 처리 흐름</text>
+
+    <!-- 연결선을 먼저 그려 화살표가 상자 뒤로 가게 한다 -->
+    <path class="edge" d="M 460 170 L 460 220" marker-end="url(#arrow)" />
+    <path class="edge" d="M 480 300 L 480 350" marker-end="url(#arrow)" />
+    <path class="edge" d="M 360 405 L 280 405" marker-end="url(#arrow)" />
+    <path class="edge" d="M 480 460 L 480 510" marker-end="url(#arrow)" />
+    <path class="edge" d="M 480 590 L 480 640" marker-end="url(#arrow)" />
+    <path class="edge" d="M 400 650 L 260 700" marker-end="url(#arrow)" />
+    <path class="edge" d="M 560 650 L 700 700" marker-end="url(#arrow)" />
+    <path class="edge" d="M 260 780 L 400 830" marker-end="url(#arrow)" />
+    <path class="edge" d="M 700 780 L 560 830" marker-end="url(#arrow)" />
+    <path class="edge" d="M 480 840 L 480 880" marker-end="url(#arrow)" />
+    <path class="edge" d="M 480 960 L 480 1010" marker-end="url(#arrow)" />
+    <path class="edge" d="M 170 455 L 170 1040 L 400 1040" marker-end="url(#arrow)" />
+
+    <rect class="node neutral" x="400" y="110" width="120" height="60" rx="8" />
+    <rect class="node process" x="370" y="220" width="220" height="80" rx="8" />
+    <path class="node external" d="M 480.0 350 L 600 405.0 L 480.0 460 L 360 405.0 Z" />
+    <rect class="node risk" x="60" y="375" width="220" height="80" rx="8" />
+    <rect class="node process" x="370" y="510" width="220" height="80" rx="8" />
+    <rect class="node neutral" x="330" y="640" width="300" height="10" rx="8" />
+    <rect class="node process" x="150" y="700" width="220" height="80" rx="8" />
+    <rect class="node process" x="590" y="700" width="220" height="80" rx="8" />
+    <rect class="node neutral" x="330" y="830" width="300" height="10" rx="8" />
+    <rect class="node process" x="370" y="880" width="220" height="80" rx="8" />
+    <rect class="node neutral" x="400" y="1010" width="120" height="60" rx="8" />
+
+    <text class="label" x="460" y="145" text-anchor="middle">시작</text>
+    <text class="label" x="480" y="265" text-anchor="middle">장바구니 확인</text>
+    <text class="label" x="480" y="410" text-anchor="middle">재고 있음?</text>
+    <text class="label" x="170" y="420" text-anchor="middle">품절 안내</text>
+    <text class="label" x="480" y="555" text-anchor="middle">결제 요청</text>
+    <text class="label" x="260" y="745" text-anchor="middle">주문 확정</text>
+    <text class="label" x="700" y="745" text-anchor="middle">재고 차감</text>
+    <text class="label" x="480" y="925" text-anchor="middle">확인 메일 발송</text>
+    <text class="label" x="460" y="1045" text-anchor="middle">종료</text>
+    <text class="small" x="320" y="390" text-anchor="middle">[아니오]</text>
+    <text class="small" x="520" y="490" text-anchor="middle">[예]</text>
+    <text class="small" x="650" y="648">fork</text>
+    <text class="small" x="650" y="838">join</text>
+    <text class="small" x="24" y="1124">※ 마름모는 분기(결정)이고, 굵은 가로 막대는 병렬의 시작(fork)과 합류(join)입니다.</text>
+    <text class="small" x="24" y="1146">주문 확정과 재고 차감은 순서가 정해져 있지 않고 둘 다 끝나야 다음으로 넘어갑니다.</text>
+  </svg>
+</main>

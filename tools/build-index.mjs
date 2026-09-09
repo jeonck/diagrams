@@ -44,7 +44,7 @@ function readCategories() {
   return list;
 }
 
-function readDiagram(id, categoryIds) {
+function readDiagram(id, categories) {
   const dir = join(SRC, id);
   if (!SLUG.test(id)) fail(`폴더 이름 "${id}" 은 소문자·숫자·하이픈만 쓸 수 있습니다`);
 
@@ -58,7 +58,7 @@ function readDiagram(id, categoryIds) {
     fail(`${id}/meta.json 을 읽지 못했습니다 — ${err.message}`);
   }
 
-  for (const key of ['title', 'category', 'summary']) {
+  for (const key of ['title', 'category', 'kind', 'summary']) {
     if (typeof meta[key] !== 'string' || !meta[key].trim()) {
       fail(`${id}/meta.json 에 ${key} 가 없습니다`);
     }
@@ -66,10 +66,17 @@ function readDiagram(id, categoryIds) {
   if (!Array.isArray(meta.tags) || meta.tags.some((t) => typeof t !== 'string')) {
     fail(`${id}/meta.json 의 tags 는 문자열 배열이어야 합니다`);
   }
-  if (!categoryIds.has(meta.category)) {
+  if (!categories.has(meta.category)) {
     fail(
       `${id}/meta.json 의 category "${meta.category}" 가 categories.json 에 없습니다 — ` +
-        `쓸 수 있는 값: ${[...categoryIds].join(', ')}`
+        `쓸 수 있는 값: ${[...categories.keys()].join(', ')}`
+    );
+  }
+  const kinds = categories.get(meta.category).kinds;
+  if (!kinds.includes(meta.kind)) {
+    fail(
+      `${id}/meta.json 의 kind "${meta.kind}" 는 ${meta.category} 카테고리에 없습니다 — ` +
+        `쓸 수 있는 값: ${kinds.join(', ')}`
     );
   }
 
@@ -89,6 +96,7 @@ function readDiagram(id, categoryIds) {
     id,
     title: meta.title,
     category: meta.category,
+    kind: meta.kind,
     tags: meta.tags,
     summary: meta.summary,
     order: Number.isFinite(meta.order) ? meta.order : 999,
@@ -100,22 +108,30 @@ function readDiagram(id, categoryIds) {
 function build() {
   if (!existsSync(SRC)) fail('diagrams/ 폴더가 없습니다');
   const catList = readCategories();
-  const catIds = new Set(catList.map((c) => c.id));
+  const catMap = new Map(catList.map((c) => [c.id, c]));
 
   const ids = readdirSync(SRC)
     .filter((name) => statSync(join(SRC, name)).isDirectory())
     .sort();
   if (ids.length === 0) fail('diagrams/ 아래에 다이어그램이 하나도 없습니다');
 
-  const diagrams = ids.map((id) => readDiagram(id, catIds));
+  const diagrams = ids.map((id) => readDiagram(id, catMap));
   diagrams.sort((a, b) => a.order - b.order || a.title.localeCompare(b.title, 'ko'));
 
   // 카테고리는 categories.json 에 적힌 순서를 그대로 따른다.
   // 비어 있는 카테고리도 빠뜨리지 않는다 — 아직 그리지 않은 칸이 보여야 하기 때문이다.
-  const categories = catList.map((c) => ({
-    ...c,
-    count: diagrams.filter((d) => d.category === c.id).length,
-  }));
+  // 대표 종류별로 그린 것이 있는지까지 함께 계산한다.
+  // 무엇이 빠졌는지를 눈으로 대조하지 않아도 되도록.
+  const categories = catList.map((c) => {
+    const mine = diagrams.filter((d) => d.category === c.id);
+    const covered = new Set(mine.map((d) => d.kind));
+    return {
+      ...c,
+      kinds: c.kinds.map((k) => ({ name: k, covered: covered.has(k) })),
+      count: mine.length,
+      missing: c.kinds.filter((k) => !covered.has(k)),
+    };
+  });
 
   const tags = [...new Set(diagrams.flatMap((d) => d.tags))].sort((a, b) => a.localeCompare(b, 'ko'));
 
@@ -123,7 +139,9 @@ function build() {
 }
 
 const json = build();
-const count = JSON.parse(json).diagrams.length;
+const parsed = JSON.parse(json);
+const count = parsed.diagrams.length;
+const missing = parsed.categories.flatMap((c) => c.missing.map((k) => `${c.name}/${k}`));
 
 if (process.argv.includes('--check')) {
   const current = existsSync(OUT) ? readFileSync(OUT, 'utf8') : '';
@@ -134,4 +152,8 @@ if (process.argv.includes('--check')) {
 } else {
   writeFileSync(OUT, json);
   console.log(`build-index: diagrams.json 갱신 (${count}개)`);
+}
+// 아직 그리지 않은 대표 종류는 실패가 아니라 남은 일이다.
+if (missing.length > 0) {
+  console.log(`build-index: 아직 없는 대표 종류 ${missing.length}개 — ${missing.join(', ')}`);
 }

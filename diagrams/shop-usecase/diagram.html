@@ -1,0 +1,148 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>쇼핑몰 유스케이스</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f8fafc;
+    --fg: #172033;
+    --muted: #5b6475;
+    --line: #64748b;
+    --neutral: #e2e8f0;
+    --input: #bfdbfe;
+    --process: #c7d2fe;
+    --storage: #99f6e4;
+    --external: #fde68a;
+    --risk: #fecaca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #a3adbd;
+      --line: #94a3b8;
+      --neutral: #334155;
+      --input: #1d4ed8;
+      --process: #4338ca;
+      --storage: #0f766e;
+      --external: #92400e;
+      --risk: #991b1b;
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font:
+      14px/1.4 ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+  }
+  main {
+    max-width: 980px;
+    margin: 32px auto;
+    padding: 0 20px;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 650;
+    fill: var(--fg);
+  }
+  .label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: var(--fg);
+  }
+  .small {
+    font-size: 12px;
+    fill: var(--muted);
+  }
+  .node {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .neutral {
+    fill: var(--neutral);
+  }
+  .input {
+    fill: var(--input);
+  }
+  .process {
+    fill: var(--process);
+  }
+  .storage {
+    fill: var(--storage);
+  }
+  .external {
+    fill: var(--external);
+  }
+  .risk {
+    fill: var(--risk);
+  }
+  .edge {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .edge-dashed {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 6 5;
+  }
+  .arrow-head {
+    fill: var(--line);
+  }
+  .zone {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+    stroke-dasharray: 6 5;
+    opacity: 0.8;
+  }
+</style>
+<main>
+  <svg viewBox="0 0 1120 780" role="img" aria-label="쇼핑몰 유스케이스">
+    <text class="title" x="24" y="34">쇼핑몰 유스케이스</text>
+    <text class="small" x="24" y="56">누가 이 시스템으로 무엇을 할 수 있는가</text>
+
+    <!-- 연결선을 먼저 그려 화살표가 상자 뒤로 가게 한다 -->
+    <path class="edge" d="M 220 320 L 350 210" />
+    <path class="edge" d="M 220 330 L 350 330" />
+    <path class="edge" d="M 220 345 L 350 460" />
+    <path class="edge" d="M 220 360 L 350 590" />
+    <path class="edge" d="M 920 230 L 820 205" />
+    <path class="edge" d="M 590 595 L 900 585" />
+
+    <rect class="zone" x="300" y="120" width="540" height="560" rx="10" />
+    <rect class="node external" x="60" y="290" width="160" height="90" rx="8" />
+    <rect class="node external" x="920" y="180" width="160" height="90" rx="8" />
+    <rect class="node neutral" x="900" y="540" width="200" height="90" rx="8" />
+    <ellipse class="node input" cx="470.0" cy="205.0" rx="120.0" ry="45.0" />
+    <ellipse class="node input" cx="470.0" cy="335.0" rx="120.0" ry="45.0" />
+    <ellipse class="node process" cx="470.0" cy="465.0" rx="120.0" ry="45.0" />
+    <ellipse class="node process" cx="470.0" cy="595.0" rx="120.0" ry="45.0" />
+    <ellipse class="node storage" cx="720.0" cy="205.0" rx="100.0" ry="45.0" />
+
+    <text class="small" x="302" y="110">온라인 상점 (시스템 경계)</text>
+    <text class="label" x="140" y="340" text-anchor="middle">고객</text>
+    <text class="label" x="1000" y="230" text-anchor="middle">관리자</text>
+    <text class="label" x="1000" y="590" text-anchor="middle">결제 게이트웨이</text>
+    <text class="label" x="470" y="210" text-anchor="middle">상품 검색</text>
+    <text class="label" x="470" y="340" text-anchor="middle">장바구니 담기</text>
+    <text class="label" x="470" y="470" text-anchor="middle">주문하기</text>
+    <text class="label" x="470" y="600" text-anchor="middle">결제하기</text>
+    <text class="label" x="720" y="210" text-anchor="middle">재고 관리</text>
+    <text class="small" x="24" y="724">※ 타원은 유스케이스, 바깥 상자는 액터입니다. 점선 안이 우리가 만드는 시스템의 범위입니다.</text>
+    <text class="small" x="24" y="746">결제 게이트웨이는 사람이 아니라 시스템이지만, 시스템 밖에서 참여하므로 액터로 둡니다.</text>
+  </svg>
+</main>

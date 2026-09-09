@@ -1,0 +1,163 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>네트워크 토폴로지</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f8fafc;
+    --fg: #172033;
+    --muted: #5b6475;
+    --line: #64748b;
+    --neutral: #e2e8f0;
+    --input: #bfdbfe;
+    --process: #c7d2fe;
+    --storage: #99f6e4;
+    --external: #fde68a;
+    --risk: #fecaca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #a3adbd;
+      --line: #94a3b8;
+      --neutral: #334155;
+      --input: #1d4ed8;
+      --process: #4338ca;
+      --storage: #0f766e;
+      --external: #92400e;
+      --risk: #991b1b;
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font:
+      14px/1.4 ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+  }
+  main {
+    max-width: 980px;
+    margin: 32px auto;
+    padding: 0 20px;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 650;
+    fill: var(--fg);
+  }
+  .label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: var(--fg);
+  }
+  .small {
+    font-size: 12px;
+    fill: var(--muted);
+  }
+  .node {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .neutral {
+    fill: var(--neutral);
+  }
+  .input {
+    fill: var(--input);
+  }
+  .process {
+    fill: var(--process);
+  }
+  .storage {
+    fill: var(--storage);
+  }
+  .external {
+    fill: var(--external);
+  }
+  .risk {
+    fill: var(--risk);
+  }
+  .edge {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .edge-dashed {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 6 5;
+  }
+  .arrow-head {
+    fill: var(--line);
+  }
+  .zone {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+    stroke-dasharray: 6 5;
+    opacity: 0.8;
+  }
+</style>
+<main>
+  <svg viewBox="0 0 1180 830" role="img" aria-label="네트워크 토폴로지">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--line)" />
+      </marker>
+    </defs>
+
+    <text class="title" x="24" y="34">네트워크 토폴로지</text>
+    <text class="small" x="24" y="56">어떤 서브넷에 무엇이 있고, 어느 포트로 통하는가</text>
+
+    <!-- 연결선을 먼저 그려 화살표가 상자 뒤로 가게 한다 -->
+    <path class="edge" d="M 600 120 L 330 275" marker-end="url(#arrow)" />
+    <path class="edge" d="M 440 315 L 620 315" marker-end="url(#arrow)" />
+    <path class="edge" d="M 700 355 L 700 500" marker-end="url(#arrow)" />
+    <path class="edge" d="M 660 355 L 360 500" marker-end="url(#arrow)" />
+    <path class="edge" d="M 330 590 L 500 620" marker-end="url(#arrow)" />
+    <path class="edge" d="M 700 590 L 650 620" marker-end="url(#arrow)" />
+    <path class="edge" d="M 840 545 L 965 545 L 965 355" stroke-dasharray="6 5" marker-end="url(#arrow)" />
+
+    <rect class="zone" x="120" y="150" width="1000" height="600" rx="10" />
+    <rect class="zone" x="170" y="250" width="900" height="130" rx="10" />
+    <rect class="zone" x="170" y="470" width="900" height="240" rx="10" />
+    <rect class="node external" x="490" y="40" width="230" height="80" rx="8" />
+    <rect class="node external" x="220" y="275" width="220" height="80" rx="8" />
+    <rect class="node process" x="620" y="275" width="220" height="80" rx="8" />
+    <rect class="node neutral" x="880" y="275" width="170" height="80" rx="8" />
+    <rect class="node process" x="220" y="500" width="220" height="90" rx="8" />
+    <rect class="node process" x="620" y="500" width="220" height="90" rx="8" />
+    <rect class="node storage" x="420" y="620" width="300" height="80" rx="8" />
+
+    <text class="small" x="122" y="140">VPC 10.0.0.0/16</text>
+    <text class="small" x="172" y="240">퍼블릭 서브넷 10.0.1.0/24 · 10.0.2.0/24</text>
+    <text class="small" x="172" y="460">프라이빗 서브넷 10.0.10.0/24 · 10.0.20.0/24</text>
+    <text class="label" x="605" y="85" text-anchor="middle">인터넷</text>
+    <text class="label" x="330" y="320" text-anchor="middle">인터넷 게이트웨이</text>
+    <text class="label" x="730" y="320" text-anchor="middle">ALB</text>
+    <text class="label" x="965" y="320" text-anchor="middle">NAT</text>
+    <text class="label" x="330" y="550" text-anchor="middle">앱 서버 (AZ-a)</text>
+    <text class="label" x="730" y="550" text-anchor="middle">앱 서버 (AZ-c)</text>
+    <text class="label" x="570" y="665" text-anchor="middle">RDS (Multi-AZ)</text>
+    <text class="small" x="530" y="298" text-anchor="middle">443</text>
+    <text class="small" x="755" y="430" text-anchor="middle">8080</text>
+    <text class="small" x="430" y="420" text-anchor="middle">8080</text>
+    <text class="small" x="380" y="612" text-anchor="middle">5432</text>
+    <text class="small" x="790" y="614" text-anchor="middle">5432</text>
+    <text class="small" x="902" y="532" text-anchor="middle">아웃바운드</text>
+    <text class="small" x="24" y="774">※ 인터넷에서 들어오는 트래픽은 퍼블릭 서브넷의 ALB 까지만 닿습니다.</text>
+    <text class="small" x="24" y="796">앱 서버와 RDS 는 프라이빗 서브넷에 있어 밖에서 직접 접속할 수 없고, 나가는 트래픽만 NAT 를 거칩니다.</text>
+  </svg>
+</main>
