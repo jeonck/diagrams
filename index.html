@@ -50,7 +50,12 @@
     background: var(--card); border-bottom: 1px solid var(--line);
   }
   .brand { display: flex; align-items: baseline; gap: 10px; }
-  .brand strong { font-size: 16px; font-weight: 650; letter-spacing: -0.01em; }
+  .brand .home {
+    padding: 4px 8px; margin-left: -8px; border: 0; border-radius: 7px;
+    background: transparent; cursor: pointer;
+    font-size: 16px; font-weight: 650; letter-spacing: -0.01em;
+  }
+  .brand .home:hover { background: var(--sunk); color: var(--accent); }
   .count { font-size: 12px; color: var(--muted); }
   .spacer { flex-grow: 1; }
 
@@ -125,7 +130,22 @@
   .rowtitle { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .note { padding: 24px 16px; color: var(--muted); font-size: 13px; }
 
-  .decisions { border-top: 1px solid var(--line); padding: 8px 0 16px; flex-shrink: 0; max-height: 34vh; overflow: auto; }
+  .decisions {
+    border-top: 1px solid var(--line); flex-shrink: 0;
+    display: flex; flex-direction: column; min-height: 0;
+  }
+  .decisions[data-open="true"] { max-height: 32vh; }
+  .adrhead {
+    display: flex; align-items: center; gap: 7px; width: 100%;
+    padding: 11px 16px; border: 0; background: transparent; cursor: pointer;
+    font-size: 11px; font-weight: 650; letter-spacing: 0.06em;
+    color: var(--muted); text-transform: uppercase;
+  }
+  .adrhead:hover { color: var(--fg); }
+  .adrhead .cnt { margin-left: auto; font-weight: 500; letter-spacing: 0; }
+  .adrhead svg { flex-shrink: 0; transition: transform 0.12s ease; }
+  .decisions[data-open="true"] .adrhead svg { transform: rotate(90deg); }
+  .adrbody { overflow: auto; padding: 0 8px 14px; }
   .adrrow {
     display: flex; align-items: baseline; gap: 8px; width: 100%;
     padding: 6px 10px; border: 0; border-radius: 8px; background: transparent;
@@ -212,7 +232,7 @@
 
 <header class="topbar">
   <div class="brand">
-    <strong>Diagrams</strong>
+    <button class="home" id="home" title="처음 화면으로">Diagrams</button>
     <span class="count" id="count"></span>
   </div>
   <div class="spacer"></div>
@@ -607,7 +627,7 @@
     '<rect x="24" y="37" width="28" height="14" rx="3" fill="var(--card)"></rect>' +
     '<path d="M31 15L20 19M45 15L56 19M20 33L31 37M56 33L45 37"></path></svg>';
 
-  const state = { q: '', tag: null, sel: null, fmt: 'html', view: 'list', allTags: false, axis: 'phase', adr: null, project: null };
+  const state = { q: '', tag: null, sel: null, fmt: 'html', view: 'list', allTags: false, axis: 'phase', adr: null, adrOpen: false, project: null };
   let INDEX = { categories: [], tags: [], diagrams: [] };
   const byId = new Map();
   const adrById = new Map();
@@ -768,7 +788,8 @@
       for (const d of items) {
         const b = document.createElement('button');
         b.className = 'row';
-        b.setAttribute('aria-current', String(d.id === state.sel));
+        // 결정을 보는 동안에는 어떤 다이어그램도 현재가 아니다
+        b.setAttribute('aria-current', String(state.adr === null && d.id === state.sel));
         b.innerHTML =
           '<span class="rowmain"><span class="dot"></span>' +
           '<span class="rowtitle">' + esc(d.title) + '</span></span>';
@@ -783,13 +804,32 @@
     const host = el('decisions');
     host.replaceChildren();
     const all = (INDEX.decisions || []).filter(inProject);
-    if (all.length === 0) return;
-    const h = document.createElement('div');
-    h.className = 'grouphead';
-    h.innerHTML = '<span>설계 결정</span><span class="cnt">' + all.length + '</span>';
-    host.appendChild(h);
+    host.hidden = all.length === 0;
+    if (host.hidden) return;
+
+    // 사이드바의 주인공은 다이어그램 목록이므로 결정은 접어 둔다.
+    // 결정을 보고 있는 중이면 저절로 펼쳐진다.
+    const open = state.adrOpen || state.adr !== null;
+    host.dataset.open = String(open);
+
+    const head = document.createElement('button');
+    head.className = 'adrhead';
+    head.setAttribute('aria-expanded', String(open));
+    head.innerHTML =
+      '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+      'stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg>' +
+      '<span>설계 결정</span><span class="cnt">' + all.length + '</span>';
+    head.addEventListener('click', () => {
+      state.adrOpen = !open;
+      // 접으면서 보고 있던 결정도 닫아, 다이어그램 화면으로 돌아간다
+      if (!state.adrOpen) state.adr = null;
+      render();
+    });
+    host.appendChild(head);
+    if (!open) return;
+
     const box = document.createElement('div');
-    box.className = 'groupitems';
+    box.className = 'adrbody';
     for (const a of all) {
       const b = document.createElement('button');
       b.className = 'adrrow';
@@ -1046,6 +1086,26 @@
         ? 'decision/' + state.adr
         : state.sel + '/' + state.fmt;
   }
+
+  // 첫 화면으로: 검색·태그·결정을 모두 풀고 첫 프로젝트의 첫 다이어그램을 연다
+  function goHome() {
+    state.q = '';
+    state.tag = null;
+    state.allTags = false;
+    state.adr = null;
+    state.adrOpen = false;
+    state.view = 'list';
+    state.axis = 'phase';
+    state.fmt = 'html';
+    el('q').value = '';
+    const first = INDEX.projects[0];
+    state.project = first ? first.id : null;
+    const d = INDEX.diagrams.find((x) => x.project === state.project);
+    state.sel = d ? d.id : null;
+    render();
+  }
+
+  el('home').addEventListener('click', goHome);
 
   function switchProject(id) {
     const p = INDEX.projects.find((x) => x.id === id);
