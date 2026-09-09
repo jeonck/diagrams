@@ -1,0 +1,13 @@
+{
+  "title": "알림 도메인 클래스",
+  "phase": "analysis",
+  "category": "structure",
+  "kind": "클래스",
+  "tags": [
+    "클래스",
+    "도메인 모델"
+  ],
+  "summary": "알림 한 건과 그것을 보내는 채널, 시도 기록의 관계",
+  "updated": "2026-09-09",
+  "order": 10
+}

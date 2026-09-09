@@ -1,0 +1,13 @@
+{
+  "title": "알림 한 건의 지연 분해",
+  "phase": "operations",
+  "category": "process",
+  "kind": "값 흐름",
+  "tags": [
+    "값 흐름",
+    "지연"
+  ],
+  "summary": "요청이 접수되어 단말에 뜨기까지, 일한 시간과 기다린 시간",
+  "updated": "2026-09-09",
+  "order": 40
+}

@@ -1,0 +1,162 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>알림 허브 CI/CD 파이프라인</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f8fafc;
+    --fg: #172033;
+    --muted: #5b6475;
+    --line: #64748b;
+    --neutral: #e2e8f0;
+    --input: #bfdbfe;
+    --process: #c7d2fe;
+    --storage: #99f6e4;
+    --external: #fde68a;
+    --risk: #fecaca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #a3adbd;
+      --line: #94a3b8;
+      --neutral: #334155;
+      --input: #1d4ed8;
+      --process: #4338ca;
+      --storage: #0f766e;
+      --external: #92400e;
+      --risk: #991b1b;
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font:
+      14px/1.4 ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+  }
+  main {
+    max-width: 980px;
+    margin: 32px auto;
+    padding: 0 20px;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 650;
+    fill: var(--fg);
+  }
+  .label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: var(--fg);
+  }
+  .small {
+    font-size: 12px;
+    fill: var(--muted);
+  }
+  .node {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .neutral {
+    fill: var(--neutral);
+  }
+  .input {
+    fill: var(--input);
+  }
+  .process {
+    fill: var(--process);
+  }
+  .storage {
+    fill: var(--storage);
+  }
+  .external {
+    fill: var(--external);
+  }
+  .risk {
+    fill: var(--risk);
+  }
+  .edge {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .edge-dashed {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 6 5;
+  }
+  .arrow-head {
+    fill: var(--line);
+  }
+  .zone {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+    stroke-dasharray: 6 5;
+    opacity: 0.8;
+  }
+</style>
+<main>
+  <svg viewBox="0 0 1180 600" role="img" aria-label="알림 허브 CI/CD 파이프라인">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--line)" />
+      </marker>
+    </defs>
+
+    <text class="title" x="24" y="34">알림 허브 CI/CD 파이프라인</text>
+    <text class="small" x="24" y="56">한 커밋에서 두 개의 배포 단위가 함께 나가는 경로</text>
+
+    <!-- 연결선을 먼저 그려 화살표가 상자 뒤로 가게 한다 -->
+    <path class="edge" d="M 280 195 L 330 195" marker-end="url(#arrow)" />
+    <path class="edge" d="M 280 395 L 330 395" marker-end="url(#arrow)" />
+    <path class="edge" d="M 550 195 L 600 195" marker-end="url(#arrow)" />
+    <path class="edge" d="M 550 395 L 600 395" marker-end="url(#arrow)" />
+    <path class="edge" d="M 820 195 L 870 195" marker-end="url(#arrow)" />
+    <path class="edge" d="M 820 395 L 870 395" marker-end="url(#arrow)" />
+    <path class="edge" d="M 980 240 L 980 290 L 170 290 L 170 350" marker-end="url(#arrow)" />
+
+    <rect class="node input" x="60" y="150" width="220" height="90" rx="8" />
+    <rect class="node process" x="330" y="150" width="220" height="90" rx="8" />
+    <rect class="node process" x="600" y="150" width="220" height="90" rx="8" />
+    <rect class="node storage" x="870" y="150" width="220" height="90" rx="8" />
+    <rect class="node process" x="60" y="350" width="220" height="90" rx="8" />
+    <rect class="node process" x="330" y="350" width="220" height="90" rx="8" />
+    <rect class="node external" x="600" y="350" width="220" height="90" rx="8" />
+    <rect class="node process" x="870" y="350" width="220" height="90" rx="8" />
+
+    <text class="label" x="170" y="190" text-anchor="middle">커밋</text>
+    <text class="small" x="170" y="212" text-anchor="middle">기능 브랜치 push</text>
+    <text class="label" x="440" y="190" text-anchor="middle">빌드</text>
+    <text class="small" x="440" y="212" text-anchor="middle">api · worker 동시</text>
+    <text class="label" x="710" y="190" text-anchor="middle">단위 테스트</text>
+    <text class="small" x="710" y="212" text-anchor="middle">모듈별 실행</text>
+    <text class="label" x="980" y="190" text-anchor="middle">이미지 2개 빌드</text>
+    <text class="small" x="980" y="212" text-anchor="middle">같은 태그로 push</text>
+    <text class="label" x="170" y="390" text-anchor="middle">스테이징 배포</text>
+    <text class="small" x="170" y="412" text-anchor="middle">api · worker 함께</text>
+    <text class="label" x="440" y="390" text-anchor="middle">통합 테스트</text>
+    <text class="small" x="440" y="412" text-anchor="middle">큐를 통한 E2E</text>
+    <text class="label" x="710" y="390" text-anchor="middle">승인</text>
+    <text class="small" x="710" y="412" text-anchor="middle">사람이 누르는 게이트</text>
+    <text class="label" x="980" y="390" text-anchor="middle">프로덕션 배포</text>
+    <text class="small" x="980" y="412" text-anchor="middle">worker 먼저, api 나중</text>
+    <text class="small" x="350" y="282" text-anchor="middle">같은 이미지가 이후 단계로</text>
+    <text class="small" x="24" y="544">※ api 와 worker 는 같은 커밋에서 함께 빌드되고 함께 나갑니다 — 버전이 갈리면</text>
+    <text class="small" x="24" y="566">큐에 오가는 메시지 형식이 어긋납니다. 프로덕션에서는 worker 를 먼저 올려 새 형식을 읽을 수 있게 합니다.</text>
+  </svg>
+</main>

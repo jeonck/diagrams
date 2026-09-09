@@ -3,7 +3,7 @@
   "title": "재시도는 지수 백오프로 5회, 그 뒤에는 DLQ",
   "status": "채택됨",
   "date": "2026-09-08",
-  "diagrams": ["notify-state"]
+  "diagrams": ["notify-state", "notify-activity", "notify-bpmn"]
 }
 ---
 

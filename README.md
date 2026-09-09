@@ -8,7 +8,7 @@ categories.json                그림 종류 분류 (전역)
 phases.json                    설계 단계 (전역)
 projects/
   order-platform/              온라인 상점 — 설계 완료
-  notify-hub/                  알림 허브 — 설계 진행 중
+  notify-hub/                  알림 허브 — 설계 완료
     project.json               이름 · 한 줄 정의 · 상태 · 표시 순서(order)
     README.md                  프로젝트 브리프
     decisions/NNNN-....md      설계 결정 기록 (ADR)
@@ -55,11 +55,14 @@ $ node tools/build-index.mjs
 build-index: diagrams.json 갱신 (15개)
 ```
 
-**온라인 상점**은 15개 대표 종류가 모두 채워져 있고, **알림 허브**는 일부러 네 장만
-그려 두었습니다 — 빌드가 알려주는 "아직 없는 산출물" 목록이 실제로 어떻게 동작하는지
-보이기 위한 것입니다.
+두 프로젝트 모두 15개 대표 종류가 채워져 있습니다. 비어 있는 칸이 생기면
+`node tools/build-index.mjs` 가 그 목록을 알려줍니다:
 
-온라인 상점의 예제는 모두 같은 주문 도메인을 소재로 삼아,
+```
+build-index: 알림 허브 에 아직 없는 산출물 10개 — 구조/클래스, 구조/컴포넌트, ...
+```
+
+각 프로젝트의 예제는 하나의 도메인을 소재로 삼아,
 같은 시스템을 각도만 바꿔 본 그림이 되도록 했습니다 — 같은 도메인이 ERD 에서는 테이블로,
 클래스 다이어그램에서는 책임과 합성으로, 상태 머신에서는 전이로 나타납니다.
 
@@ -67,14 +70,14 @@ build-index: diagrams.json 갱신 (15개)
 
 <!-- diagrams:start -->
 
-프로젝트 2개 · 다이어그램 20개입니다.
+프로젝트 2개 · 다이어그램 30개입니다.
 이 표는 `node tools/build-index.mjs` 가 만들므로 직접 고치지 마세요.
 
 ### 온라인 상점
 
 고객이 상품을 주문하고 결제하면, 재고를 차감하고 배송까지 이어지는 커머스 백엔드
 
-`projects/order-platform/` · 설계 · 다이어그램 15개 · 설계 결정 6개
+`projects/order-platform/` · 설계 완료 · 다이어그램 15개 · 설계 결정 6개
 
 | 단계 | 종류 | 다이어그램 | 요약 |
 | --- | --- | --- | --- |
@@ -98,17 +101,25 @@ build-index: diagrams.json 갱신 (15개)
 
 다른 서비스가 보낸 이벤트를 받아 푸시·이메일·SMS로 내보내는 사내 공용 알림 플랫폼
 
-`projects/notify-hub/` · 설계 진행 중 · 다이어그램 5개 · 설계 결정 3개
-
-아직 그리지 않은 대표 종류 10개 — 구조/클래스, 구조/컴포넌트, 구조/패키지, 행위/액티비티, 데이터/ERD, 데이터/데이터 흐름(DFD), 배포·인프라/네트워크 토폴로지, 프로세스/BPMN, 프로세스/CI/CD 파이프라인, 프로세스/값 흐름
+`projects/notify-hub/` · 설계 완료 · 다이어그램 15개 · 설계 결정 3개
 
 | 단계 | 종류 | 다이어그램 | 요약 |
 | --- | --- | --- | --- |
 | 요구 | 유스케이스 | [알림 허브 유스케이스](https://jeonck.github.io/diagrams/#notify-usecase/html) | 누가 이 서비스로 무엇을 하는가 |
+| 요구 | BPMN | [실패 알림 처리 프로세스 (BPMN)](https://jeonck.github.io/diagrams/#notify-bpmn/html) | DLQ 로 넘어간 알림을 사람이 판단해 되살리거나 접는 과정 |
+| 분석 | 클래스 | [알림 도메인 클래스](https://jeonck.github.io/diagrams/#notify-class/html) | 알림 한 건과 그것을 보내는 채널, 시도 기록의 관계 |
 | 분석 | 상태 머신 | [알림 발송 상태 전이](https://jeonck.github.io/diagrams/#notify-state/html) | 알림 한 건이 접수되어 성공하거나 포기될 때까지 |
+| 분석 | ERD | [알림 도메인 ERD](https://jeonck.github.io/diagrams/#notify-erd/html) | 수신자와 알림, 그리고 시도 기록이 놓이는 표 |
+| 분석 | 데이터 흐름(DFD) | [알림 데이터 흐름 (레벨 1)](https://jeonck.github.io/diagrams/#notify-dfd/html) | 알림 데이터가 어떤 처리를 거쳐 어디에 쌓이는가 |
 | 설계 | C4 컨텍스트·컨테이너 | [알림 허브 C4 컨텍스트·컨테이너](https://jeonck.github.io/diagrams/#notify-c4/html) | 시스템 경계 안의 컨테이너와, 경계 밖의 발신자·공급자 |
+| 설계 | 컴포넌트 | [수신 API 컴포넌트](https://jeonck.github.io/diagrams/#notify-components/html) | 요청 하나가 수신 API 안에서 거치는 부품들 |
 | 설계 | 시퀀스 | [알림 발송 시퀀스](https://jeonck.github.io/diagrams/#notify-sequence/html) | 요청 한 건이 접수되어 공급자에게 나가기까지, 그리고 중복이 걸러지는 지점 |
+| 설계 | 액티비티 | [알림 발송 재시도 액티비티](https://jeonck.github.io/diagrams/#notify-activity/html) | 발송 워커 한 사이클 — 성공하거나, 백오프 뒤 다시 돌거나, 포기하거나 |
+| 설계 | 패키지 | [모듈 의존 구조](https://jeonck.github.io/diagrams/#notify-packages/html) | 따로 배포되는 두 모듈이 하나의 도메인을 공유하는 방식 |
 | 구현·운영 | 배포 | [알림 허브 배포 구성](https://jeonck.github.io/diagrams/#notify-deployment/html) | 큐를 사이에 두고 수신과 발송이 따로 확장되는 배치 |
+| 구현·운영 | 네트워크 토폴로지 | [알림 허브 네트워크 토폴로지](https://jeonck.github.io/diagrams/#notify-network/html) | 어떤 서브넷에 무엇이 있고, 어디로 나가는가 |
+| 구현·운영 | CI/CD 파이프라인 | [알림 허브 CI/CD 파이프라인](https://jeonck.github.io/diagrams/#notify-cicd/html) | 한 커밋에서 두 개의 배포 단위가 함께 나가는 경로 |
+| 구현·운영 | 값 흐름 | [알림 한 건의 지연 분해](https://jeonck.github.io/diagrams/#notify-value-stream/html) | 요청이 접수되어 단말에 뜨기까지, 일한 시간과 기다린 시간 |
 
 <!-- diagrams:end -->
 

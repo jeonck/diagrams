@@ -1,0 +1,13 @@
+{
+  "title": "실패 알림 처리 프로세스 (BPMN)",
+  "phase": "requirements",
+  "category": "process",
+  "kind": "BPMN",
+  "tags": [
+    "BPMN",
+    "운영"
+  ],
+  "summary": "DLQ 로 넘어간 알림을 사람이 판단해 되살리거나 접는 과정",
+  "updated": "2026-09-09",
+  "order": 20
+}

@@ -1,0 +1,13 @@
+{
+  "title": "수신 API 컴포넌트",
+  "phase": "design",
+  "category": "structure",
+  "kind": "컴포넌트",
+  "tags": [
+    "컴포넌트",
+    "멱등성"
+  ],
+  "summary": "요청 하나가 수신 API 안에서 거치는 부품들",
+  "updated": "2026-09-09",
+  "order": 20
+}

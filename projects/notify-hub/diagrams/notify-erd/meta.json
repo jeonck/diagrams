@@ -1,0 +1,13 @@
+{
+  "title": "알림 도메인 ERD",
+  "phase": "analysis",
+  "category": "data",
+  "kind": "ERD",
+  "tags": [
+    "ERD",
+    "도메인 모델"
+  ],
+  "summary": "수신자와 알림, 그리고 시도 기록이 놓이는 표",
+  "updated": "2026-09-09",
+  "order": 20
+}

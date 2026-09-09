@@ -1,0 +1,167 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>알림 한 건의 지연 분해</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f8fafc;
+    --fg: #172033;
+    --muted: #5b6475;
+    --line: #64748b;
+    --neutral: #e2e8f0;
+    --input: #bfdbfe;
+    --process: #c7d2fe;
+    --storage: #99f6e4;
+    --external: #fde68a;
+    --risk: #fecaca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #a3adbd;
+      --line: #94a3b8;
+      --neutral: #334155;
+      --input: #1d4ed8;
+      --process: #4338ca;
+      --storage: #0f766e;
+      --external: #92400e;
+      --risk: #991b1b;
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font:
+      14px/1.4 ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+  }
+  main {
+    max-width: 980px;
+    margin: 32px auto;
+    padding: 0 20px;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 650;
+    fill: var(--fg);
+  }
+  .label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: var(--fg);
+  }
+  .small {
+    font-size: 12px;
+    fill: var(--muted);
+  }
+  .node {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .neutral {
+    fill: var(--neutral);
+  }
+  .input {
+    fill: var(--input);
+  }
+  .process {
+    fill: var(--process);
+  }
+  .storage {
+    fill: var(--storage);
+  }
+  .external {
+    fill: var(--external);
+  }
+  .risk {
+    fill: var(--risk);
+  }
+  .edge {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .edge-dashed {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 6 5;
+  }
+  .arrow-head {
+    fill: var(--line);
+  }
+  .zone {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+    stroke-dasharray: 6 5;
+    opacity: 0.8;
+  }
+</style>
+<main>
+  <svg viewBox="0 0 1260 660" role="img" aria-label="알림 한 건의 지연 분해">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--line)" />
+      </marker>
+    </defs>
+
+    <text class="title" x="24" y="34">알림 한 건의 지연 분해</text>
+    <text class="small" x="24" y="56">요청이 접수되어 단말에 뜨기까지, 일한 시간과 기다린 시간</text>
+
+    <!-- 연결선을 먼저 그려 화살표가 상자 뒤로 가게 한다 -->
+    <path class="edge" d="M 260 225 L 300 225" marker-end="url(#arrow)" />
+    <path class="edge" d="M 500 225 L 540 225" marker-end="url(#arrow)" />
+    <path class="edge" d="M 740 225 L 780 225" marker-end="url(#arrow)" />
+    <path class="edge" d="M 980 225 L 1020 225" marker-end="url(#arrow)" />
+
+    <rect class="node process" x="60" y="170" width="200" height="110" rx="8" />
+    <rect class="node process" x="300" y="170" width="200" height="110" rx="8" />
+    <rect class="node process" x="540" y="170" width="200" height="110" rx="8" />
+    <rect class="node process" x="780" y="170" width="200" height="110" rx="8" />
+    <rect class="node process" x="1020" y="170" width="200" height="110" rx="8" />
+    <rect class="node storage" x="60" y="430" width="260" height="100" rx="8" />
+    <rect class="node risk" x="350" y="430" width="260" height="100" rx="8" />
+    <rect class="node neutral" x="640" y="430" width="260" height="100" rx="8" />
+    <rect class="node external" x="930" y="430" width="260" height="100" rx="8" />
+
+    <text class="label" x="160" y="210" text-anchor="middle">접수</text>
+    <text class="small" x="160" y="232" text-anchor="middle">처리 20ms</text>
+    <text class="small" x="160" y="252" text-anchor="middle">대기 —</text>
+    <text class="label" x="400" y="210" text-anchor="middle">큐 대기</text>
+    <text class="small" x="400" y="232" text-anchor="middle">처리 —</text>
+    <text class="small" x="400" y="252" text-anchor="middle">대기 1.5초</text>
+    <text class="label" x="640" y="210" text-anchor="middle">워커 처리</text>
+    <text class="small" x="640" y="232" text-anchor="middle">처리 80ms</text>
+    <text class="small" x="640" y="252" text-anchor="middle">대기 —</text>
+    <text class="label" x="880" y="210" text-anchor="middle">공급자 전달</text>
+    <text class="small" x="880" y="232" text-anchor="middle">처리 300ms</text>
+    <text class="small" x="880" y="252" text-anchor="middle">대기 —</text>
+    <text class="label" x="1120" y="210" text-anchor="middle">단말 도착</text>
+    <text class="small" x="1120" y="232" text-anchor="middle">처리 —</text>
+    <text class="small" x="1120" y="252" text-anchor="middle">대기 2초</text>
+    <text class="label" x="190" y="475" text-anchor="middle">처리 시간 합계</text>
+    <text class="small" x="190" y="497" text-anchor="middle">0.4초</text>
+    <text class="label" x="480" y="475" text-anchor="middle">대기 시간 합계</text>
+    <text class="small" x="480" y="497" text-anchor="middle">3.5초</text>
+    <text class="label" x="770" y="475" text-anchor="middle">전체 지연</text>
+    <text class="small" x="770" y="497" text-anchor="middle">3.9초</text>
+    <text class="label" x="1060" y="475" text-anchor="middle">흐름 효율</text>
+    <text class="small" x="1060" y="497" text-anchor="middle">0.4 ÷ 3.9 = 10%</text>
+    <text class="small" x="24" y="582">※ 숫자는 설명을 위한 예시 값입니다. 실제 측정치로 바꿔 쓰십시오.</text>
+    <text class="small" x="24" y="604">온라인 상점의 값 흐름은 기능 하나의 개발 리드타임이고, 이것은 알림 한 건의 실시간 지연입니다.</text>
+    <text class="small" x="24" y="626">지연의 90% 가 대기이고 그 대부분이 단말 도착 — 우리가 줄일 수 있는 구간은 큐 대기 1.5초입니다.</text>
+  </svg>
+</main>

@@ -1,0 +1,178 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>알림 도메인 클래스</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f8fafc;
+    --fg: #172033;
+    --muted: #5b6475;
+    --line: #64748b;
+    --neutral: #e2e8f0;
+    --input: #bfdbfe;
+    --process: #c7d2fe;
+    --storage: #99f6e4;
+    --external: #fde68a;
+    --risk: #fecaca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #a3adbd;
+      --line: #94a3b8;
+      --neutral: #334155;
+      --input: #1d4ed8;
+      --process: #4338ca;
+      --storage: #0f766e;
+      --external: #92400e;
+      --risk: #991b1b;
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font:
+      14px/1.4 ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+  }
+  main {
+    max-width: 980px;
+    margin: 32px auto;
+    padding: 0 20px;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 650;
+    fill: var(--fg);
+  }
+  .label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: var(--fg);
+  }
+  .small {
+    font-size: 12px;
+    fill: var(--muted);
+  }
+  .node {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .neutral {
+    fill: var(--neutral);
+  }
+  .input {
+    fill: var(--input);
+  }
+  .process {
+    fill: var(--process);
+  }
+  .storage {
+    fill: var(--storage);
+  }
+  .external {
+    fill: var(--external);
+  }
+  .risk {
+    fill: var(--risk);
+  }
+  .edge {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .edge-dashed {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 6 5;
+  }
+  .arrow-head {
+    fill: var(--line);
+  }
+  .zone {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+    stroke-dasharray: 6 5;
+    opacity: 0.8;
+  }
+</style>
+<main>
+  <svg viewBox="0 0 1080 720" role="img" aria-label="알림 도메인 클래스">
+    <defs>
+      <marker id="tri" viewBox="0 0 14 12" refX="14" refY="6" markerWidth="12" markerHeight="11" orient="auto">
+        <path d="M 0 0 L 14 6 L 0 12 Z" fill="var(--bg)" stroke="var(--line)" stroke-width="1.5" />
+      </marker>
+      <marker id="diamond" viewBox="0 0 16 12" refX="0" refY="6" markerWidth="14" markerHeight="11" orient="auto">
+        <path d="M 0 6 L 8 1 L 16 6 L 8 11 Z" fill="var(--line)" />
+      </marker>
+    </defs>
+
+    <text class="title" x="24" y="34">알림 도메인 클래스</text>
+    <text class="small" x="24" y="56">알림 한 건과 그것을 보내는 채널, 시도 기록의 관계</text>
+
+    <!-- 연결선을 먼저 그려 화살표가 상자 뒤로 가게 한다 -->
+    <path class="edge" d="M 300 177 L 390 177" />
+    <path class="edge" d="M 530 284 L 530 420" marker-start="url(#diamond)" />
+    <path class="edge" d="M 670 177 L 760 177" />
+    <path class="edge" d="M 880 420 L 880 242" marker-end="url(#tri)" />
+
+    <rect class="node storage" x="60" y="110" width="240" height="134" rx="8" />
+    <path class="edge" d="M 60 144 L 300 144" stroke-width="1" />
+    <path class="edge" d="M 60 194 L 300 194" stroke-width="1" />
+    <rect class="node process" x="390" y="110" width="280" height="174" rx="8" />
+    <path class="edge" d="M 390 144 L 670 144" stroke-width="1" />
+    <path class="edge" d="M 390 214 L 670 214" stroke-width="1" />
+    <rect class="node process" x="760" y="110" width="240" height="132" rx="8" />
+    <path class="edge" d="M 760 162 L 1000 162" stroke-width="1" />
+    <path class="edge" d="M 760 192 L 1000 192" stroke-width="1" />
+    <rect class="node process" x="390" y="420" width="280" height="134" rx="8" />
+    <path class="edge" d="M 390 454 L 670 454" stroke-width="1" />
+    <path class="edge" d="M 390 504 L 670 504" stroke-width="1" />
+    <rect class="node process" x="760" y="420" width="240" height="114" rx="8" />
+    <path class="edge" d="M 760 454 L 1000 454" stroke-width="1" />
+    <path class="edge" d="M 760 484 L 1000 484" stroke-width="1" />
+
+    <text class="label" x="180" y="133" text-anchor="middle">Recipient</text>
+    <text class="small" x="76" y="168">- userId: Long</text>
+    <text class="small" x="76" y="188">- locale: Locale</text>
+    <text class="small" x="76" y="218">+ channelsFor(t): List</text>
+    <text class="label" x="530" y="133" text-anchor="middle">Notification</text>
+    <text class="small" x="406" y="168">- id: Long</text>
+    <text class="small" x="406" y="188">- idempotencyKey: String</text>
+    <text class="small" x="406" y="208">- status: Status</text>
+    <text class="small" x="406" y="238">+ markSent(): void</text>
+    <text class="small" x="406" y="258">+ fail(reason): void</text>
+    <text class="small" x="880" y="130" text-anchor="middle">«abstract»</text>
+    <text class="label" x="880" y="151" text-anchor="middle">Channel</text>
+    <text class="small" x="776" y="186">- enabled: boolean</text>
+    <text class="small" x="776" y="216">+ send(msg): Result</text>
+    <text class="label" x="530" y="443" text-anchor="middle">DeliveryAttempt</text>
+    <text class="small" x="406" y="478">- attemptNo: int</text>
+    <text class="small" x="406" y="498">- at: Instant</text>
+    <text class="small" x="406" y="528">+ isRetryable(): boolean</text>
+    <text class="label" x="880" y="443" text-anchor="middle">PushChannel</text>
+    <text class="small" x="776" y="478">- deviceToken: String</text>
+    <text class="small" x="776" y="508">+ send(msg): Result</text>
+    <text class="small" x="310" y="170">1</text>
+    <text class="small" x="382" y="170" text-anchor="end">0..*</text>
+    <text class="small" x="542" y="410">1..*</text>
+    <text class="small" x="680" y="170">1</text>
+    <text class="small" x="752" y="170" text-anchor="end">0..*</text>
+    <text class="small" x="24" y="664">※ 속이 찬 마름모는 합성입니다 — 알림이 사라지면 그 시도 기록도 함께 사라집니다.</text>
+    <text class="small" x="24" y="686">Channel 은 추상 클래스이고 PushChannel · EmailChannel 이 그것을 구현합니다 (푸시만 그렸습니다).</text>
+  </svg>
+</main>
