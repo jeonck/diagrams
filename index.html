@@ -58,6 +58,20 @@
   .brand .home:hover { background: var(--sunk); color: var(--accent); }
   .count { font-size: 12px; color: var(--muted); }
   .spacer { flex-grow: 1; }
+  .sr {
+    position: absolute; width: 1px; height: 1px; margin: -1px;
+    padding: 0; border: 0; overflow: hidden; clip-path: inset(50%);
+  }
+  .navtoggle {
+    display: none; align-items: center; justify-content: center;
+    width: 38px; height: 38px; margin-left: -8px;
+    border: 0; border-radius: 9px; background: transparent;
+    color: var(--muted); cursor: pointer;
+  }
+  .navtoggle .ic-close { display: none; }
+  body[data-nav="true"] .navtoggle { background: var(--sel); color: var(--accent); }
+  body[data-nav="true"] .navtoggle .ic-open { display: none; }
+  body[data-nav="true"] .navtoggle .ic-close { display: block; }
 
   .seg { display: flex; gap: 4px; padding: 3px; background: var(--sunk); border-radius: 8px; }
   .seg button {
@@ -223,14 +237,65 @@
   .cardsum { margin-top: 4px; font-size: 12px; color: var(--muted); line-height: 1.45; text-wrap: pretty; }
 
   @media (max-width: 860px) {
-    .body { flex-direction: column; }
-    .sidebar { width: auto; border-right: 0; border-bottom: 1px solid var(--line); }
-    .list { max-height: 40vh; }
+    /* 목록은 서랍으로 밀어 두고, 첫 화면은 다이어그램이 차지한다 */
+    .navtoggle { display: inline-flex; }
+    .topbar { gap: 10px; padding: 0 14px; }
+    .count { display: none; }
+
+    .sidebar {
+      position: fixed; z-index: 30; top: 56px; left: 0; right: 0; bottom: 0;
+      width: auto; border-right: 0; border-top: 1px solid var(--line);
+      transform: translateX(-100%); visibility: hidden;
+      transition: transform 0.18s ease, visibility 0.18s;
+    }
+    body[data-nav="true"] .sidebar { transform: none; visibility: visible; }
+    .list { max-height: none; }
+    .decisions[data-open="true"] { max-height: 40vh; }
+
+    /* 손가락으로 누를 수 있는 크기로 */
+    .row, .adrrow { padding: 11px 12px; font-size: 14px; }
+    .tag { padding: 7px 12px; font-size: 13px; }
+    .seg button { padding: 8px 14px; }
+    .search { height: 42px; }
+    .search input { font-size: 16px; }
+    .projectpick select { height: 42px; font-size: 14px; }
+    .adrhead { padding: 14px 16px; }
+
     .topbar, .detailhead, .toolbar, .stage, .gallery { padding-left: 16px; padding-right: 16px; }
+    .detailhead { padding-top: 14px; padding-bottom: 12px; }
+    .detailhead h1 { font-size: 17px; }
+    .toolbar { padding-top: 10px; padding-bottom: 10px; }
+    .btn { padding: 8px 12px; }
+    /* 그림 크기에 맞춰 액자를 줄이고, 넘치면 화면이 스크롤된다 */
+    .pane { overflow-y: auto; }
+    body[data-nav="true"] .pane { overflow: hidden; }
+    .stage { padding-top: 12px; padding-bottom: 16px; flex-grow: 0; }
+    .frame { height: auto; }
+    .frame iframe { height: 70vh; }
+    #excalidraw-stage { height: auto; }
+    .adr { padding: 20px 16px 32px; }
+    .gallery { padding-top: 16px; padding-bottom: 24px; }
+    .grid { grid-template-columns: 1fr; gap: 12px; }
+  }
+
+  /* 가로로 눕힌 화면 — 머리말이 그림 자리를 덜 먹도록 */
+  @media (max-width: 860px) and (max-height: 520px) {
+    .detailhead { padding-top: 10px; padding-bottom: 10px; }
+    .detailhead p { display: none; }
+    .meta { margin-top: 6px; }
+    .toolbar { padding-top: 8px; padding-bottom: 8px; }
   }
 </style>
 
 <header class="topbar">
+  <button class="navtoggle" id="navtoggle" aria-expanded="false" aria-controls="sidebar">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <path class="ic-open" d="M4 7h16M4 12h16M4 17h16"></path>
+      <path class="ic-close" d="M6 6l12 12M18 6L6 18"></path>
+    </svg>
+    <span class="sr">목록 열기</span>
+  </button>
   <div class="brand">
     <button class="home" id="home" title="처음 화면으로">Diagrams</button>
     <span class="count" id="count"></span>
@@ -240,7 +305,7 @@
 </header>
 
 <div class="body">
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
     <div class="project" id="project"></div>
     <div class="projectpick" id="projectpick" hidden></div>
     <div class="searchwrap">
@@ -627,7 +692,7 @@
     '<rect x="24" y="37" width="28" height="14" rx="3" fill="var(--card)"></rect>' +
     '<path d="M31 15L20 19M45 15L56 19M20 33L31 37M56 33L45 37"></path></svg>';
 
-  const state = { q: '', tag: null, sel: null, fmt: 'html', view: 'list', allTags: false, axis: 'phase', adr: null, adrOpen: false, project: null };
+  const state = { q: '', tag: null, sel: null, fmt: 'html', view: 'list', allTags: false, axis: 'phase', adr: null, adrOpen: false, project: null, nav: false };
   let INDEX = { categories: [], tags: [], diagrams: [] };
   const byId = new Map();
   const adrById = new Map();
@@ -1064,8 +1129,33 @@
     show('html');
   }
 
+  // 좁은 화면에서는 액자를 그림 높이에 맞춘다 — 아래에 빈 흰 상자가 남지 않도록
+  const narrow = () => window.matchMedia('(max-width: 860px)').matches;
+
+  function fitHtmlView() {
+    const f = el('html-view');
+    f.style.height = '';
+    if (!narrow()) return;
+    try {
+      const doc = f.contentDocument;
+      if (!doc) return;
+      // 액자를 0으로 접고 재면 뷰포트가 아니라 내용 높이가 나온다
+      f.style.height = '0px';
+      const h = Math.ceil(doc.documentElement.scrollHeight) + 2;
+      f.style.height = h > 80 ? h + 'px' : '';
+    } catch (err) {
+      /* 다른 출처면 CSS 기본값(70vh)에 맡긴다 */
+    }
+  }
+
+  el('html-view').addEventListener('load', fitHtmlView);
+  window.addEventListener('resize', fitHtmlView);
+
   function render() {
     const list = hits();
+    document.body.dataset.nav = String(state.nav);
+    el('navtoggle').setAttribute('aria-expanded', String(state.nav));
+    el('navtoggle').querySelector('.sr').textContent = state.nav ? '목록 닫기' : '목록 열기';
     renderChrome();
     renderList(list);
     el('detail').hidden = state.view !== 'list';
@@ -1094,6 +1184,7 @@
     state.allTags = false;
     state.adr = null;
     state.adrOpen = false;
+    state.nav = false;
     state.view = 'list';
     state.axis = 'phase';
     state.fmt = 'html';
@@ -1106,6 +1197,18 @@
   }
 
   el('home').addEventListener('click', goHome);
+
+  el('navtoggle').addEventListener('click', () => {
+    state.nav = !state.nav;
+    render();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && state.nav) {
+      state.nav = false;
+      render();
+    }
+  });
 
   function switchProject(id) {
     const p = INDEX.projects.find((x) => x.id === id);
@@ -1128,6 +1231,7 @@
     if (!a) return;
     state.project = a.project;
     state.adr = id;
+    state.nav = false;
     state.view = 'list';
     render();
   }
@@ -1136,6 +1240,7 @@
     const d = byId.get(id);
     if (!d) return;
     state.adr = null;
+    state.nav = false;
     state.project = d.project;
     state.sel = id;
     if (state.fmt === 'excalidraw' && !d.formats.excalidraw) state.fmt = 'html';
