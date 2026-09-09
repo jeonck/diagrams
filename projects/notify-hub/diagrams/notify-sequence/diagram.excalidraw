@@ -102,7 +102,7 @@
       "x": 130,
       "y": 176,
       "width": 0,
-      "height": 464,
+      "height": 524,
       "points": [
         [
           0,
@@ -110,7 +110,7 @@
         ],
         [
           0,
-          464
+          524
         ]
       ],
       "lastCommittedPoint": null,
@@ -147,7 +147,7 @@
       "x": 410,
       "y": 176,
       "width": 0,
-      "height": 464,
+      "height": 524,
       "points": [
         [
           0,
@@ -155,7 +155,7 @@
         ],
         [
           0,
-          464
+          524
         ]
       ],
       "lastCommittedPoint": null,
@@ -192,7 +192,7 @@
       "x": 690,
       "y": 176,
       "width": 0,
-      "height": 464,
+      "height": 524,
       "points": [
         [
           0,
@@ -200,7 +200,7 @@
         ],
         [
           0,
-          464
+          524
         ]
       ],
       "lastCommittedPoint": null,
@@ -237,7 +237,7 @@
       "x": 970,
       "y": 176,
       "width": 0,
-      "height": 464,
+      "height": 524,
       "points": [
         [
           0,
@@ -245,7 +245,7 @@
         ],
         [
           0,
-          464
+          524
         ]
       ],
       "lastCommittedPoint": null,
@@ -282,7 +282,7 @@
       "x": 1250,
       "y": 176,
       "width": 0,
-      "height": 464,
+      "height": 524,
       "points": [
         [
           0,
@@ -290,7 +290,7 @@
         ],
         [
           0,
-          464
+          524
         ]
       ],
       "lastCommittedPoint": null,
@@ -379,7 +379,7 @@
       "x": 684,
       "y": 318,
       "width": 12,
-      "height": 264
+      "height": 324
     },
     {
       "angle": 0,
@@ -406,7 +406,7 @@
       "x": 964,
       "y": 413,
       "width": 12,
-      "height": 169
+      "height": 229
     },
     {
       "angle": 0,
@@ -431,7 +431,7 @@
       "id": "bar4",
       "type": "rectangle",
       "x": 1244,
-      "y": 463,
+      "y": 523,
       "width": 12,
       "height": 69
     },
@@ -809,7 +809,7 @@
       "id": "m4",
       "type": "arrow",
       "x": 976,
-      "y": 475,
+      "y": 535,
       "width": 268,
       "height": 0,
       "points": [
@@ -851,12 +851,12 @@
       "boundElements": null,
       "id": "m4_t",
       "type": "text",
-      "x": 1075.3,
-      "y": 465.0,
-      "width": 69.4,
+      "x": 1015.8,
+      "y": 525.0,
+      "width": 188.5,
       "height": 20.0,
-      "text": "⑤ 발송 요청",
-      "originalText": "⑤ 발송 요청",
+      "text": "⑥ 발송 요청 (같은 멱등키 동봉)",
+      "originalText": "⑥ 발송 요청 (같은 멱등키 동봉)",
       "fontSize": 16,
       "fontFamily": 1,
       "textAlign": "center",
@@ -895,7 +895,7 @@
       "id": "m5",
       "type": "arrow",
       "x": 1244,
-      "y": 520,
+      "y": 580,
       "width": 268,
       "height": 0,
       "points": [
@@ -938,7 +938,7 @@
       "id": "m5_t",
       "type": "text",
       "x": 1080.2,
-      "y": 510.0,
+      "y": 570.0,
       "width": 59.5,
       "height": 20.0,
       "text": "200 OK",
@@ -981,7 +981,7 @@
       "id": "m6",
       "type": "arrow",
       "x": 964,
-      "y": 570,
+      "y": 630,
       "width": 268,
       "height": 0,
       "points": [
@@ -1024,11 +1024,11 @@
       "id": "m6_t",
       "type": "text",
       "x": 760.6,
-      "y": 560.0,
+      "y": 620.0,
       "width": 138.9,
       "height": 20.0,
-      "text": "⑥ ack — 큐에서 삭제",
-      "originalText": "⑥ ack — 큐에서 삭제",
+      "text": "⑦ ack — 큐에서 삭제",
+      "originalText": "⑦ ack — 큐에서 삭제",
       "fontSize": 16,
       "fontFamily": 1,
       "textAlign": "center",
@@ -1134,6 +1134,100 @@
     {
       "angle": 0,
       "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": {
+        "type": 2
+      },
+      "isDeleted": false,
+      "link": null,
+      "locked": false,
+      "updated": 1757400000000,
+      "version": 1,
+      "seed": 830325058,
+      "versionNonce": 908978339,
+      "boundElements": [
+        {
+          "id": "sf1_t",
+          "type": "text"
+        }
+      ],
+      "id": "sf1",
+      "type": "arrow",
+      "x": 976,
+      "y": 465,
+      "width": 60,
+      "height": 35,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          60,
+          0
+        ],
+        [
+          60,
+          35
+        ],
+        [
+          0,
+          35
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": "arrow",
+      "startBinding": null,
+      "endBinding": null,
+      "elbowed": false
+    },
+    {
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": null,
+      "isDeleted": false,
+      "link": null,
+      "locked": false,
+      "updated": 1757400000000,
+      "version": 1,
+      "seed": 1101196634,
+      "versionNonce": 1840124459,
+      "boundElements": null,
+      "id": "sf1_t",
+      "type": "text",
+      "x": 936.8,
+      "y": 472.5,
+      "width": 198.4,
+      "height": 20.0,
+      "text": "⑤ 상태 선점 (조건부 UPDATE)",
+      "originalText": "⑤ 상태 선점 (조건부 UPDATE)",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "sf1",
+      "lineHeight": 1.25,
+      "autoResize": true
+    },
+    {
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
       "backgroundColor": "#ffd8a8",
       "fillStyle": "solid",
       "strokeWidth": 2,
@@ -1150,8 +1244,8 @@
       "locked": false,
       "updated": 1757400000000,
       "version": 1,
-      "seed": 830325058,
-      "versionNonce": 908978339,
+      "seed": 1382621467,
+      "versionNonce": 466893560,
       "boundElements": [
         {
           "id": "h0_t",
@@ -1182,8 +1276,8 @@
       "locked": false,
       "updated": 1757400000000,
       "version": 1,
-      "seed": 1101196634,
-      "versionNonce": 1840124459,
+      "seed": 993901618,
+      "versionNonce": 950146098,
       "boundElements": null,
       "id": "h0_t",
       "type": "text",
@@ -1220,8 +1314,8 @@
       "locked": false,
       "updated": 1757400000000,
       "version": 1,
-      "seed": 1382621467,
-      "versionNonce": 466893560,
+      "seed": 1934615551,
+      "versionNonce": 1644711903,
       "boundElements": [
         {
           "id": "h1_t",
@@ -1252,8 +1346,8 @@
       "locked": false,
       "updated": 1757400000000,
       "version": 1,
-      "seed": 993901618,
-      "versionNonce": 950146098,
+      "seed": 264573130,
+      "versionNonce": 1440726255,
       "boundElements": null,
       "id": "h1_t",
       "type": "text",
@@ -1290,8 +1384,8 @@
       "locked": false,
       "updated": 1757400000000,
       "version": 1,
-      "seed": 1934615551,
-      "versionNonce": 1644711903,
+      "seed": 1133874415,
+      "versionNonce": 1280855204,
       "boundElements": [
         {
           "id": "h2_t",
@@ -1322,8 +1416,8 @@
       "locked": false,
       "updated": 1757400000000,
       "version": 1,
-      "seed": 264573130,
-      "versionNonce": 1440726255,
+      "seed": 928488836,
+      "versionNonce": 489877003,
       "boundElements": null,
       "id": "h2_t",
       "type": "text",
@@ -1360,8 +1454,8 @@
       "locked": false,
       "updated": 1757400000000,
       "version": 1,
-      "seed": 1133874415,
-      "versionNonce": 1280855204,
+      "seed": 274168921,
+      "versionNonce": 1922896030,
       "boundElements": [
         {
           "id": "h3_t",
@@ -1392,8 +1486,8 @@
       "locked": false,
       "updated": 1757400000000,
       "version": 1,
-      "seed": 928488836,
-      "versionNonce": 489877003,
+      "seed": 546430484,
+      "versionNonce": 1195323660,
       "boundElements": null,
       "id": "h3_t",
       "type": "text",
@@ -1430,8 +1524,8 @@
       "locked": false,
       "updated": 1757400000000,
       "version": 1,
-      "seed": 274168921,
-      "versionNonce": 1922896030,
+      "seed": 1958689370,
+      "versionNonce": 602872638,
       "boundElements": [
         {
           "id": "h4_t",
@@ -1462,8 +1556,8 @@
       "locked": false,
       "updated": 1757400000000,
       "version": 1,
-      "seed": 546430484,
-      "versionNonce": 1195323660,
+      "seed": 1908001612,
+      "versionNonce": 979303005,
       "boundElements": null,
       "id": "h4_t",
       "type": "text",
@@ -1498,17 +1592,17 @@
       "locked": false,
       "updated": 1757400000000,
       "version": 1,
-      "seed": 1958689370,
-      "versionNonce": 602872638,
+      "seed": 924518824,
+      "versionNonce": 948524947,
       "boundElements": null,
       "id": "n",
       "type": "text",
       "x": 40,
-      "y": 700,
-      "width": 555.5,
-      "height": 60.0,
-      "text": "※ 수신 API 는 큐에 넣기만 하고 곧바로 202 를 돌려줍니다 — 발송 결과를 기다리지 않습니다.\n② 는 수신 단계의 중복만 막습니다. 큐가 같은 메시지를 두 번 전달하면 ④ 이후가 다시 실행되므로,\n워커 단계의 중복은 이 그림에 아직 없습니다 — ADR 0003 의 열린 질문입니다.",
-      "originalText": "※ 수신 API 는 큐에 넣기만 하고 곧바로 202 를 돌려줍니다 — 발송 결과를 기다리지 않습니다.\n② 는 수신 단계의 중복만 막습니다. 큐가 같은 메시지를 두 번 전달하면 ④ 이후가 다시 실행되므로,\n워커 단계의 중복은 이 그림에 아직 없습니다 — ADR 0003 의 열린 질문입니다.",
+      "y": 760,
+      "width": 585.3,
+      "height": 80.0,
+      "text": "※ 수신 API 는 큐에 넣기만 하고 곧바로 202 를 돌려줍니다 — 발송 결과를 기다리지 않습니다.\n② 는 수신 단계의, ⑤ 는 워커 단계의 중복을 막습니다 (ADR 0003). ⑤ 에서 갱신된 행이 0이면\n다른 워커가 이미 가져간 것이므로 조용히 넘어갑니다.\n⑥ 이후 결과를 기록하기 전에 워커가 죽으면 중복이 남을 수 있어, 공급자에도 같은 키를 보냅니다.",
+      "originalText": "※ 수신 API 는 큐에 넣기만 하고 곧바로 202 를 돌려줍니다 — 발송 결과를 기다리지 않습니다.\n② 는 수신 단계의, ⑤ 는 워커 단계의 중복을 막습니다 (ADR 0003). ⑤ 에서 갱신된 행이 0이면\n다른 워커가 이미 가져간 것이므로 조용히 넘어갑니다.\n⑥ 이후 결과를 기록하기 전에 워커가 죽으면 중복이 남을 수 있어, 공급자에도 같은 키를 보냅니다.",
       "fontSize": 16,
       "fontFamily": 1,
       "textAlign": "left",

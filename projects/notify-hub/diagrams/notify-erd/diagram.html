@@ -145,7 +145,7 @@
     <text class="label" x="530" y="133" text-anchor="middle">notification</text>
     <text class="small" x="416" y="168">PK  notification_id</text>
     <text class="small" x="416" y="188">FK  recipient_id</text>
-    <text class="small" x="416" y="208">idempotency_key</text>
+    <text class="small" x="416" y="208">idempotency_key  UNIQUE</text>
     <text class="small" x="416" y="228">status</text>
     <text class="label" x="170" y="413" text-anchor="middle">channel_preference</text>
     <text class="small" x="76" y="448">PK  pref_id</text>
@@ -160,6 +160,6 @@
     <text class="small" x="205" y="310">채널 설정</text>
     <text class="small" x="565" y="320">시도 기록</text>
     <text class="small" x="24" y="664">※ 까마귀발이 N 쪽, 짧은 막대가 1 쪽입니다.</text>
-    <text class="small" x="24" y="686">idempotency_key 는 notification 에 둡니다 — 접수 단계에서 중복을 거르기 때문입니다 (ADR 0003).</text>
+    <text class="small" x="24" y="686">idempotency_key 는 별도 저장소 없이 notification 의 유니크 제약으로 강제합니다 (ADR 0003).</text>
   </svg>
 </main>

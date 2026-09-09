@@ -7,16 +7,20 @@
 
 ## 설계 완료
 
-대표 종류 15개를 모두 그렸습니다. `node tools/build-index.mjs` 를 돌려도 남은 산출물이
-보고되지 않습니다.
+대표 종류 15개를 모두 그렸고, 설계 결정 세 건도 모두 `채택됨` 입니다.
+`node tools/build-index.mjs` 를 돌려도 남은 산출물이 보고되지 않습니다.
 
 가장 먼저 그려야 할 것으로 꼽았던 [시퀀스 다이어그램](diagrams/notify-sequence/diagram.html)이
 [0003 멱등키](decisions/0003-idempotency-key.md)의 질문을 좁혀 줬습니다 —
-**멱등키가 막는 구간(②)과 막지 못하는 구간(④ 이후)이 그림 위에 드러납니다.**
-[컴포넌트](diagrams/notify-components/diagram.html)에서 필터가 놓이는 자리를,
-[ERD](diagrams/notify-erd/diagram.html)에서 키가 저장되는 자리를 확인했습니다.
-다만 워커 단계 중복을 어떻게 다룰지는 **여전히 결론이 나지 않았고**, 0003 은 `제안됨` 그대로입니다.
-다이어그램이 다 그려졌다고 결정이 다 난 것은 아닙니다.
+멱등키가 막는 구간(②)과 막지 못하는 구간이 그림 위에 드러났고, 그 자리에 **워커의
+조건부 상태 선점(⑤)** 을 넣는 것으로 결론이 났습니다. 결정이 바뀌자
+[시퀀스](diagrams/notify-sequence/diagram.html) ·
+[액티비티](diagrams/notify-activity/diagram.html) ·
+[ERD](diagrams/notify-erd/diagram.html)가 따라 바뀌었습니다.
+
+다만 **"정확히 한 번"은 아닙니다.** 공급자가 요청을 받았지만 결과를 기록하기 전에
+워커가 죽는 창이 남아 있고, 공급자 멱등키를 지원하지 않는 채널에서는 중복이 나갈 수
+있습니다. 감수하기로 한 것이고, ADR 에 그렇게 적혀 있습니다.
 
 ## 범위
 
@@ -34,6 +38,8 @@
   영구 실패는 워커를 붙잡지 않게 합니다.
   [ADR 0002](decisions/0002-retry-with-backoff-then-dlq.md) ·
   [상태 전이](diagrams/notify-state/diagram.html)
-- **멱등키로 중복 발송을 막는다** — 아직 **제안** 단계이고 열린 질문이 셋 남았습니다.
+- **멱등키로 중복 발송을 막는다** — 수신 단계는 유니크 제약으로, 워커 단계는 조건부
+  상태 선점으로 막습니다. 새 저장소는 두지 않습니다.
   [ADR 0003](decisions/0003-idempotency-key.md) ·
-  [발송 시퀀스](diagrams/notify-sequence/diagram.html)
+  [발송 시퀀스](diagrams/notify-sequence/diagram.html) ·
+  [재시도 액티비티](diagrams/notify-activity/diagram.html)

@@ -712,7 +712,8 @@
         "excalidraw": "projects/notify-hub/diagrams/notify-activity/diagram.excalidraw"
       },
       "decisions": [
-        "0002-retry-with-backoff-then-dlq"
+        "0002-retry-with-backoff-then-dlq",
+        "0003-idempotency-key"
       ]
     },
     {
@@ -944,12 +945,13 @@
       "number": "0003",
       "project": "notify-hub",
       "title": "멱등키로 중복 발송을 막는다",
-      "status": "제안됨",
+      "status": "채택됨",
       "date": "2026-09-09",
       "diagrams": [
         "notify-sequence",
         "notify-components",
-        "notify-erd"
+        "notify-erd",
+        "notify-activity"
       ],
       "supersedes": null,
       "supersededBy": null,
