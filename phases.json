@@ -1,0 +1,6 @@
+[
+  { "id": "requirements", "name": "요구", "summary": "무엇을, 왜 만드는가" },
+  { "id": "analysis",     "name": "분석", "summary": "문제 영역을 어떻게 이해했는가" },
+  { "id": "design",       "name": "설계", "summary": "어떻게 만들 것인가" },
+  { "id": "operations",   "name": "구현·운영", "summary": "어디서 돌리고, 어떻게 내보내는가" }
+]

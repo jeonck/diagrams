@@ -1,0 +1,13 @@
+{
+  "title": "결제 처리 액티비티",
+  "phase": "design",
+  "category": "behavior",
+  "kind": "액티비티",
+  "tags": [
+    "액티비티",
+    "워크플로"
+  ],
+  "summary": "장바구니에서 확인 메일까지, 분기와 병렬이 있는 처리 흐름",
+  "updated": "2026-09-09",
+  "order": 50
+}

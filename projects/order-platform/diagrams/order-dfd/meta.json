@@ -1,0 +1,13 @@
+{
+  "title": "주문 데이터 흐름 (레벨 1)",
+  "phase": "analysis",
+  "category": "data",
+  "kind": "데이터 흐름(DFD)",
+  "tags": [
+    "DFD",
+    "데이터 흐름"
+  ],
+  "summary": "주문 데이터가 어떤 처리를 거쳐 어디에 쌓이는가",
+  "updated": "2026-09-09",
+  "order": 40
+}

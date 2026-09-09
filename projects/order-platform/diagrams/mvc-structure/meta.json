@@ -1,0 +1,13 @@
+{
+  "title": "MVC 구조",
+  "phase": "design",
+  "category": "structure",
+  "kind": "컴포넌트",
+  "tags": [
+    "패턴",
+    "컴포넌트"
+  ],
+  "summary": "Model·View·Controller 세 역할과 그 사이의 의존 방향",
+  "updated": "2026-09-09",
+  "order": 30
+}

@@ -70,7 +70,13 @@
     display: flex; flex-direction: column; width: 288px; flex-shrink: 0;
     background: var(--card); border-right: 1px solid var(--line);
   }
-  .searchwrap { padding: 14px 16px 10px; }
+  .project { padding: 16px 16px 4px; }
+  .project strong { display: block; font-size: 14px; font-weight: 650; }
+  .project span { display: block; margin-top: 2px; font-size: 12px; color: var(--muted); line-height: 1.45; text-wrap: pretty; }
+  .axiswrap { padding: 0 16px 12px; }
+  .axiswrap .seg { justify-content: stretch; }
+  .axiswrap .seg button { flex-grow: 1; }
+  .searchwrap { padding: 10px 16px 10px; }
   .search {
     display: flex; align-items: center; gap: 8px;
     padding: 0 10px; height: 36px;
@@ -120,6 +126,7 @@
   .detailhead p { margin: 4px 0 0; color: var(--muted); font-size: 13px; text-wrap: pretty; }
   .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; }
   .pill { font-size: 11px; color: var(--muted); background: var(--sunk); border-radius: 999px; padding: 2px 8px; }
+  .pill.ghost { background: transparent; border: 1px dashed var(--line); opacity: 0.7; }
   .stamp { font-size: 11px; color: var(--muted); }
 
   .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px 28px; border-bottom: 1px solid var(--line); }
@@ -186,6 +193,7 @@
 
 <div class="body">
   <aside class="sidebar">
+    <div class="project" id="project"></div>
     <div class="searchwrap">
       <div class="search">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -196,6 +204,9 @@
       </div>
     </div>
     <div class="tags" id="tags" role="group" aria-label="태그 필터"></div>
+    <div class="axiswrap">
+      <div class="seg" id="axisseg" role="group" aria-label="묶는 기준"></div>
+    </div>
     <nav class="list" id="list" aria-label="다이어그램 목록"></nav>
   </aside>
 
@@ -511,11 +522,17 @@
     '<rect x="24" y="37" width="28" height="14" rx="3" fill="var(--card)"></rect>' +
     '<path d="M31 15L20 19M45 15L56 19M20 33L31 37M56 33L45 37"></path></svg>';
 
-  const state = { q: '', tag: null, sel: null, fmt: 'html', view: 'list', allTags: false };
+  const state = { q: '', tag: null, sel: null, fmt: 'html', view: 'list', allTags: false, axis: 'phase' };
   let INDEX = { categories: [], tags: [], diagrams: [] };
   const byId = new Map();
 
   const current = () => byId.get(state.sel) || INDEX.diagrams[0];
+
+  // 같은 다이어그램을 설계 단계로도, 그림 종류로도 묶어 볼 수 있게 한다
+  const groups = () =>
+    state.axis === 'phase'
+      ? INDEX.phases.map((p) => ({ ...p, of: (d) => d.phase === p.id }))
+      : INDEX.categories.map((c) => ({ ...c, of: (d) => d.category === c.id }));
 
   function hits() {
     const needle = state.q.trim().toLowerCase();
@@ -544,7 +561,23 @@
 
   function renderChrome() {
     el('count').textContent =
-      INDEX.diagrams.length + '개 · 카테고리 ' + INDEX.categories.length + '개';
+      INDEX.diagrams.length + '개 · ' +
+      (state.axis === 'phase' ? '설계 단계 ' + INDEX.phases.length : '카테고리 ' + INDEX.categories.length) + '개';
+    const p = INDEX.projects[0];
+    el('project').innerHTML = p
+      ? '<strong>' + esc(p.name) + '</strong><span>' + esc(p.summary) + '</span>'
+      : '';
+    segment(
+      el('axisseg'),
+      [
+        { label: '설계 단계', value: 'phase', on: state.axis === 'phase' },
+        { label: '그림 종류', value: 'category', on: state.axis === 'category' },
+      ],
+      (v) => {
+        state.axis = v;
+        render();
+      }
+    );
     segment(
       el('viewseg'),
       [
@@ -597,9 +630,9 @@
       host.appendChild(p);
       return;
     }
-    for (const cat of INDEX.categories) {
-      const items = list.filter((d) => d.category === cat.id);
-      // 필터가 걸려 있을 때만 빈 카테고리를 감춘다.
+    for (const cat of groups()) {
+      const items = list.filter(cat.of);
+      // 필터가 걸려 있을 때만 빈 묶음을 감춘다.
       // 평소에는 아직 그리지 않은 칸이 보이는 편이 낫다.
       if (items.length === 0 && filtering) continue;
       const h = document.createElement('div');
@@ -612,7 +645,9 @@
       if (items.length === 0) {
         const e = document.createElement('div');
         e.className = 'emptycat';
-        e.textContent = '아직 없음 · ' + cat.kinds.slice(0, 2).join(' · ');
+        e.textContent = cat.kinds
+          ? '아직 없음 · ' + cat.kinds.slice(0, 2).map((k) => k.name).join(' · ')
+          : '아직 없음';
         host.appendChild(e);
         continue;
       }
@@ -643,8 +678,8 @@
       host.appendChild(p);
       return;
     }
-    for (const cat of INDEX.categories) {
-      const items = list.filter((d) => d.category === cat.id);
+    for (const cat of groups()) {
+      const items = list.filter(cat.of);
       if (items.length === 0 && filtering) continue;
 
       const head = document.createElement('div');
@@ -652,9 +687,13 @@
       head.innerHTML =
         '<h2>' + esc(cat.name) + '</h2>' +
         '<p>' + esc(cat.summary) + '</p>' +
-        '<div class="kinds">' +
-        cat.kinds.map((k) => '<span class="pill">' + esc(k) + '</span>').join('') +
-        '</div>';
+        (cat.kinds
+          ? '<div class="kinds">' +
+            cat.kinds
+              .map((k) => '<span class="pill' + (k.covered ? '' : ' ghost') + '">' + esc(k.name) + '</span>')
+              .join('') +
+            '</div>'
+          : '');
       host.appendChild(head);
 
       const row = document.createElement('div');
@@ -691,7 +730,9 @@
     if (!d) return;
     el('d-title').textContent = d.title;
     el('d-summary').textContent = d.summary;
+    const ph = INDEX.phases.find((x) => x.id === d.phase);
     el('d-meta').innerHTML =
+      (ph ? '<span class="pill">' + esc(ph.name) + '</span>' : '') +
       d.tags.map((t) => '<span class="pill">' + esc(t) + '</span>').join('') +
       (d.updated ? '<span class="stamp">· 수정 ' + esc(d.updated) + '</span>' : '');
 

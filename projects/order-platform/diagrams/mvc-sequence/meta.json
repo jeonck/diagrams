@@ -1,0 +1,13 @@
+{
+  "title": "MVC 요청 시퀀스",
+  "phase": "design",
+  "category": "behavior",
+  "kind": "시퀀스",
+  "tags": [
+    "패턴",
+    "시퀀스"
+  ],
+  "summary": "주문 생성 요청 한 건이 각 역할을 거쳐 응답으로 돌아오기까지",
+  "updated": "2026-09-09",
+  "order": 40
+}

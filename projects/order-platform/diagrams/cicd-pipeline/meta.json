@@ -1,0 +1,13 @@
+{
+  "title": "CI/CD 파이프라인",
+  "phase": "operations",
+  "category": "process",
+  "kind": "CI/CD 파이프라인",
+  "tags": [
+    "파이프라인",
+    "CI/CD"
+  ],
+  "summary": "커밋 한 번이 프로덕션에 닿기까지 거치는 관문",
+  "updated": "2026-09-09",
+  "order": 30
+}

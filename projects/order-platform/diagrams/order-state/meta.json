@@ -1,0 +1,13 @@
+{
+  "title": "주문 상태 전이",
+  "phase": "analysis",
+  "category": "behavior",
+  "kind": "상태 머신",
+  "tags": [
+    "상태 머신",
+    "도메인 모델"
+  ],
+  "summary": "주문 한 건이 가질 수 있는 상태와, 상태를 바꾸는 사건",
+  "updated": "2026-09-09",
+  "order": 30
+}

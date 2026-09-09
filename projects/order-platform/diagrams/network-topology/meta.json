@@ -1,0 +1,13 @@
+{
+  "title": "네트워크 토폴로지",
+  "phase": "operations",
+  "category": "deployment",
+  "kind": "네트워크 토폴로지",
+  "tags": [
+    "네트워크",
+    "VPC"
+  ],
+  "summary": "어떤 서브넷에 무엇이 있고, 어느 포트로 통하는가",
+  "updated": "2026-09-09",
+  "order": 20
+}

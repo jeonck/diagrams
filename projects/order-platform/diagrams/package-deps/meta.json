@@ -1,0 +1,13 @@
+{
+  "title": "패키지 의존 구조",
+  "phase": "design",
+  "category": "structure",
+  "kind": "패키지",
+  "tags": [
+    "패키지",
+    "의존성"
+  ],
+  "summary": "어느 패키지가 어느 패키지를 알아도 되는가",
+  "updated": "2026-09-09",
+  "order": 20
+}
