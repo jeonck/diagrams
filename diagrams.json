@@ -1,0 +1,44 @@
+{
+  "groups": [
+    "아키텍처 패턴"
+  ],
+  "tags": [
+    "구조",
+    "시퀀스",
+    "패턴"
+  ],
+  "diagrams": [
+    {
+      "id": "mvc-structure",
+      "title": "MVC 구조",
+      "group": "아키텍처 패턴",
+      "tags": [
+        "패턴",
+        "구조"
+      ],
+      "summary": "Model·View·Controller 세 역할과 그 사이의 의존 방향",
+      "order": 1,
+      "updated": "2026-09-09",
+      "formats": {
+        "html": "diagrams/mvc-structure/diagram.html",
+        "excalidraw": "diagrams/mvc-structure/diagram.excalidraw"
+      }
+    },
+    {
+      "id": "mvc-sequence",
+      "title": "MVC 요청 시퀀스",
+      "group": "아키텍처 패턴",
+      "tags": [
+        "패턴",
+        "시퀀스"
+      ],
+      "summary": "주문 생성 요청 한 건이 각 역할을 거쳐 응답으로 돌아오기까지",
+      "order": 2,
+      "updated": "2026-09-09",
+      "formats": {
+        "html": "diagrams/mvc-sequence/diagram.html",
+        "excalidraw": "diagrams/mvc-sequence/diagram.excalidraw"
+      }
+    }
+  ]
+}

@@ -29,10 +29,15 @@ jobs:
         with:
           enablement: true
 
+      # meta.json 과 diagrams.json 이 어긋난 채로 배포되는 것을 막는다
+      - name: Check diagram index
+        run: node tools/build-index.mjs --check
+
       - name: Assemble site
         run: |
           mkdir -p _site
-          tar -cf - --exclude=./.git --exclude=./.github --exclude=./_site . \
+          tar -cf - --exclude=./.git --exclude=./.github --exclude=./.claude \
+                    --exclude=./tools --exclude=./_site . \
             | tar -xf - -C _site
           touch _site/.nojekyll
           find _site -mindepth 1 | sort

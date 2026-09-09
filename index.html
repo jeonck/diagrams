@@ -2,7 +2,7 @@
 <html lang="ko">
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Diagrams — 뷰어</title>
+<title>Diagrams</title>
 <style>
   :root {
     color-scheme: light dark;
@@ -11,6 +11,9 @@
     --fg: #172033;
     --muted: #5b6475;
     --line: #cbd5e1;
+    --hair: #e2e8f0;
+    --sunk: #f1f5f9;
+    --sel: #eef2ff;
     --accent: #4338ca;
   }
   @media (prefers-color-scheme: dark) {
@@ -20,90 +23,197 @@
       --fg: #e5e7eb;
       --muted: #a3adbd;
       --line: #334155;
+      --hair: #1e293b;
+      --sunk: #172033;
+      --sel: #1e1b4b;
       --accent: #a5b4fc;
     }
   }
   * { box-sizing: border-box; }
+  html, body { height: 100%; }
   body {
     margin: 0;
+    display: flex;
+    flex-direction: column;
     background: var(--bg);
     color: var(--fg);
     font: 14px/1.5 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
       "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   }
-  main { max-width: 1040px; margin: 0 auto; padding: 32px 20px 64px; }
-  h1 { font-size: 22px; margin: 0 0 4px; }
-  .sub { color: var(--muted); margin: 0 0 28px; }
-  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  .row + .row { margin-top: 10px; }
-  button, .btn {
-    font: inherit;
-    color: var(--fg);
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 7px 14px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-  }
-  button:hover, .btn:hover { border-color: var(--accent); }
-  button[aria-pressed="true"] {
-    border-color: var(--accent);
-    color: var(--accent);
-    font-weight: 600;
-  }
-  .hint { color: var(--muted); font-size: 13px; margin: 14px 0 0; }
-  .stage {
-    margin-top: 18px;
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    overflow: hidden;
-    background: var(--card);
-  }
-  iframe { display: block; width: 100%; height: 760px; border: 0; background: var(--card); }
-  #excalidraw-stage { background: #ffffff; padding: 16px; }
-  #excalidraw-stage svg { display: block; width: 100%; height: auto; }
-  .error { padding: 24px; color: var(--muted); }
-  .error code {
-    background: rgba(127, 127, 127, 0.16);
-    padding: 2px 6px;
-    border-radius: 4px;
-  }
+  a { color: var(--accent); }
+  input, button { font: inherit; color: inherit; }
   [hidden] { display: none !important; }
+
+  .topbar {
+    display: flex; align-items: center; gap: 16px;
+    height: 56px; padding: 0 24px; flex-shrink: 0;
+    background: var(--card); border-bottom: 1px solid var(--line);
+  }
+  .brand { display: flex; align-items: baseline; gap: 10px; }
+  .brand strong { font-size: 16px; font-weight: 650; letter-spacing: -0.01em; }
+  .count { font-size: 12px; color: var(--muted); }
+  .spacer { flex-grow: 1; }
+
+  .seg { display: flex; gap: 4px; padding: 3px; background: var(--sunk); border-radius: 8px; }
+  .seg button {
+    padding: 5px 12px; border: 0; border-radius: 6px; background: transparent;
+    color: var(--muted); font-size: 13px; cursor: pointer;
+  }
+  .seg button[aria-pressed="true"] {
+    background: var(--card); color: var(--accent); font-weight: 600;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.1);
+  }
+
+  .body { display: flex; flex-grow: 1; min-height: 0; }
+
+  .sidebar {
+    display: flex; flex-direction: column; width: 288px; flex-shrink: 0;
+    background: var(--card); border-right: 1px solid var(--line);
+  }
+  .searchwrap { padding: 14px 16px 10px; }
+  .search {
+    display: flex; align-items: center; gap: 8px;
+    padding: 0 10px; height: 36px;
+    border: 1px solid var(--line); border-radius: 8px; background: var(--bg);
+  }
+  .search:focus-within { border-color: var(--accent); }
+  .search input {
+    flex-grow: 1; min-width: 0; border: 0; background: transparent;
+    font-size: 13px; outline: none;
+  }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 16px 12px; }
+  .tag {
+    padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px;
+    background: var(--card); color: var(--muted); font-size: 12px; cursor: pointer;
+  }
+  .tag[aria-pressed="true"] {
+    border-color: var(--accent); color: var(--accent); background: var(--sel); font-weight: 600;
+  }
+
+  .list { flex-grow: 1; overflow: auto; border-top: 1px solid var(--hair); padding: 8px 0 16px; }
+  .grouphead {
+    padding: 12px 16px 4px; font-size: 11px; font-weight: 650;
+    letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase;
+  }
+  .groupitems { display: flex; flex-direction: column; gap: 2px; padding: 0 8px; }
+  .row {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    width: 100%; padding: 7px 10px; border: 0; border-radius: 8px;
+    background: transparent; text-align: left; font-size: 13px; cursor: pointer;
+  }
+  .row:hover { background: var(--sunk); }
+  .row[aria-current="true"] { background: var(--sel); color: var(--accent); font-weight: 600; }
+  .rowmain { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; background: var(--line); }
+  .row[aria-current="true"] .dot { background: var(--accent); }
+  .rowtitle { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .note { padding: 24px 16px; color: var(--muted); font-size: 13px; }
+
+  .pane { display: flex; flex-direction: column; flex-grow: 1; min-width: 0; }
+
+  .detailhead { padding: 18px 28px 14px; background: var(--card); border-bottom: 1px solid var(--line); }
+  .detailhead h1 { margin: 0; font-size: 19px; font-weight: 650; letter-spacing: -0.01em; }
+  .detailhead p { margin: 4px 0 0; color: var(--muted); font-size: 13px; text-wrap: pretty; }
+  .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; }
+  .pill { font-size: 11px; color: var(--muted); background: var(--sunk); border-radius: 999px; padding: 2px 8px; }
+  .stamp { font-size: 11px; color: var(--muted); }
+
+  .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px 28px; border-bottom: 1px solid var(--line); }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border: 1px solid var(--line); border-radius: 8px;
+    background: var(--card); font-size: 13px; cursor: pointer; text-decoration: none;
+  }
+  .btn:hover { border-color: var(--accent); }
+  .btn[disabled] { opacity: 0.55; cursor: default; }
+  .btn.primary { border-color: var(--accent); color: var(--accent); }
+
+  .stage { flex-grow: 1; padding: 20px 28px 28px; min-height: 0; }
+  .frame {
+    height: 100%; border: 1px solid var(--line); border-radius: 12px;
+    background: var(--card); overflow: hidden;
+  }
+  .frame iframe { display: block; width: 100%; height: 100%; border: 0; }
+  #excalidraw-stage { height: 100%; overflow: auto; background: #ffffff; padding: 16px; }
+  #excalidraw-stage svg { display: block; width: 100%; height: auto; }
+  .fallback { padding: 24px; color: var(--muted); }
+  .fallback code { background: var(--sunk); padding: 2px 6px; border-radius: 4px; }
+
+  .gallery { flex-grow: 1; overflow: auto; padding: 24px 28px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+  .card {
+    display: block; text-align: left; padding: 12px; border-radius: 12px;
+    border: 1px solid var(--line); background: var(--card); cursor: pointer;
+  }
+  .card:hover { border-color: var(--accent); }
+  .card[aria-current="true"] { border-color: var(--accent); }
+  .thumb {
+    height: 116px; border-radius: 8px; background: var(--sunk);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cardtitle { font-size: 14px; font-weight: 600; margin-top: 12px; }
+  .cardsum { margin-top: 4px; font-size: 12px; color: var(--muted); line-height: 1.45; text-wrap: pretty; }
+
+  @media (max-width: 860px) {
+    .body { flex-direction: column; }
+    .sidebar { width: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+    .list { max-height: 40vh; }
+    .topbar, .detailhead, .toolbar, .stage, .gallery { padding-left: 16px; padding-right: 16px; }
+  }
 </style>
-<main>
-  <h1>Diagrams</h1>
-  <p class="sub">이 저장소의 다이어그램을 브라우저에서 바로 보는 뷰어입니다.</p>
 
-  <div class="row" id="picker" role="group" aria-label="다이어그램 선택"></div>
-  <div class="row" id="modes" role="group" aria-label="보기 형식"></div>
-  <div class="row" id="actions"></div>
-
-  <div class="stage">
-    <iframe id="html-view" title="다이어그램(HTML)" hidden></iframe>
-    <div id="excalidraw-stage" hidden></div>
-    <div id="fallback" class="error" hidden></div>
+<header class="topbar">
+  <div class="brand">
+    <strong>Diagrams</strong>
+    <span class="count" id="count"></span>
   </div>
+  <div class="spacer"></div>
+  <div class="seg" id="viewseg" role="group" aria-label="보기 방식"></div>
+</header>
 
-  <p class="hint" id="hint"></p>
-</main>
+<div class="body">
+  <aside class="sidebar">
+    <div class="searchwrap">
+      <div class="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" style="flex-shrink:0;color:var(--muted)">
+          <circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path>
+        </svg>
+        <input id="q" type="search" placeholder="제목·태그 검색" aria-label="다이어그램 검색" />
+      </div>
+    </div>
+    <div class="tags" id="tags" role="group" aria-label="태그 필터"></div>
+    <nav class="list" id="list" aria-label="다이어그램 목록"></nav>
+  </aside>
+
+  <main class="pane">
+    <section id="detail" style="display:flex;flex-direction:column;flex-grow:1;min-height:0">
+      <div class="detailhead">
+        <h1 id="d-title"></h1>
+        <p id="d-summary"></p>
+        <div class="meta" id="d-meta"></div>
+      </div>
+      <div class="toolbar">
+        <div class="seg" id="fmtseg" role="group" aria-label="형식"></div>
+        <div class="spacer"></div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px" id="actions"></div>
+      </div>
+      <div class="stage">
+        <div class="frame">
+          <iframe id="html-view" title="다이어그램 미리보기" hidden></iframe>
+          <div id="excalidraw-stage" hidden></div>
+          <div id="fallback" class="fallback" hidden></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="gallery" id="gallery" hidden>
+      <div class="grid" id="grid"></div>
+    </section>
+  </main>
+</div>
+
 <script>
-  const DIAGRAMS = [
-    {
-      id: 'mvc',
-      title: 'MVC 패턴',
-      html: 'mvc/mvc-diagram.html',
-      excalidraw: 'mvc/mvc-diagram.excalidraw',
-    },
-    {
-      id: 'mvc-sequence',
-      title: 'MVC 요청 시퀀스',
-      html: 'mvc/mvc-sequence.html',
-      excalidraw: 'mvc/mvc-sequence.excalidraw',
-    },
-  ];
-
   /* ---------- 최소 Excalidraw 렌더러 (외부 라이브러리 없음) ---------- */
 
   const rng = (seed) => {
@@ -366,167 +476,317 @@
 
   /* ---------- 뷰어 ---------- */
 
-  const picker = document.getElementById('picker');
-  const modes = document.getElementById('modes');
-  const actions = document.getElementById('actions');
-  const htmlView = document.getElementById('html-view');
-  const exStage = document.getElementById('excalidraw-stage');
-  const fallback = document.getElementById('fallback');
-  const hint = document.getElementById('hint');
+  const ALIASES = { mvc: 'mvc-structure', 'mvc-sequence': 'mvc-sequence' };
 
-  let current = DIAGRAMS[0];
-  let mode = 'html';
+  const el = (id) => document.getElementById(id);
+  const esc = (s) =>
+    String(s).replace(/[&<>"']/g, (c) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])
+    );
 
-  function show(which) {
-    htmlView.hidden = which !== 'html';
-    exStage.hidden = which !== 'excalidraw';
-    fallback.hidden = which !== 'error';
+  const ICON_OPEN = 'M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5';
+  const ICON_DL = 'M12 4v11M7 12l5 5 5-5M4 20h16';
+  const icon = (d) =>
+    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+    'stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="' + d + '"></path></svg>';
+  const THUMB =
+    '<svg width="76" height="52" viewBox="0 0 76 52" fill="none" stroke="currentColor" ' +
+    'stroke-width="1.5" style="color:var(--muted)">' +
+    '<rect x="24" y="1" width="28" height="14" rx="3" fill="var(--card)"></rect>' +
+    '<rect x="1" y="19" width="28" height="14" rx="3" fill="var(--card)"></rect>' +
+    '<rect x="47" y="19" width="28" height="14" rx="3" fill="var(--card)"></rect>' +
+    '<rect x="24" y="37" width="28" height="14" rx="3" fill="var(--card)"></rect>' +
+    '<path d="M31 15L20 19M45 15L56 19M20 33L31 37M56 33L45 37"></path></svg>';
+
+  const state = { q: '', tag: null, sel: null, fmt: 'html', view: 'list' };
+  let INDEX = { groups: [], tags: [], diagrams: [] };
+  const byId = new Map();
+
+  const current = () => byId.get(state.sel) || INDEX.diagrams[0];
+
+  function hits() {
+    const needle = state.q.trim().toLowerCase();
+    return INDEX.diagrams.filter((d) => {
+      const q =
+        !needle ||
+        d.title.toLowerCase().includes(needle) ||
+        d.summary.toLowerCase().includes(needle) ||
+        d.tags.some((t) => t.toLowerCase().includes(needle));
+      return q && (!state.tag || d.tags.includes(state.tag));
+    });
   }
 
-  async function renderExcalidrawFile(url) {
-    try {
-      const res = await fetch(url, { cache: 'no-store' });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      exStage.replaceChildren(renderExcalidraw(await res.json()));
-      show('excalidraw');
-      fitArrowLabels(exStage);
-    } catch (err) {
-      fallback.innerHTML =
-        '<p><strong>Excalidraw 파일을 불러오지 못했습니다.</strong> (' +
-        String(err.message) + ')</p>' +
-        '<p><code>file://</code> 로 직접 열면 브라우저 보안 정책 때문에 파일을 읽을 수 없습니다. ' +
-        '저장소 폴더에서 <code>python3 -m http.server</code> 를 실행해 ' +
-        '<code>http://localhost:8000</code> 으로 열거나, GitHub Pages로 보세요.</p>' +
-        '<p>아래 “파일 열기”로 <code>.excalidraw</code> 파일을 직접 선택해도 됩니다.</p>';
-      show('error');
+  function segment(host, items, onPick) {
+    host.replaceChildren();
+    for (const it of items) {
+      const b = document.createElement('button');
+      b.textContent = it.label;
+      b.setAttribute('aria-pressed', String(it.on));
+      if (it.disabled) b.disabled = true;
+      b.addEventListener('click', () => onPick(it.value));
+      host.appendChild(b);
     }
   }
 
-  function renderActions() {
-    actions.replaceChildren();
-    const add = (node) => actions.appendChild(node);
+  function renderChrome() {
+    el('count').textContent =
+      INDEX.diagrams.length + '개 · ' + INDEX.groups.length + '개 묶음';
+    segment(
+      el('viewseg'),
+      [
+        { label: '목록', value: 'list', on: state.view === 'list' },
+        { label: '갤러리', value: 'grid', on: state.view === 'grid' },
+      ],
+      (v) => {
+        state.view = v;
+        render();
+      }
+    );
+    el('tags').replaceChildren();
+    for (const t of INDEX.tags) {
+      const b = document.createElement('button');
+      b.className = 'tag';
+      b.textContent = t;
+      b.setAttribute('aria-pressed', String(state.tag === t));
+      b.addEventListener('click', () => {
+        state.tag = state.tag === t ? null : t;
+        render();
+      });
+      el('tags').appendChild(b);
+    }
+  }
 
-    const link = (text, href, download) => {
+  function renderList(list) {
+    const host = el('list');
+    host.replaceChildren();
+    if (list.length === 0) {
+      const p = document.createElement('div');
+      p.className = 'note';
+      p.textContent = '조건에 맞는 다이어그램이 없습니다.';
+      host.appendChild(p);
+      return;
+    }
+    for (const group of INDEX.groups) {
+      const items = list.filter((d) => d.group === group);
+      if (items.length === 0) continue;
+      const h = document.createElement('div');
+      h.className = 'grouphead';
+      h.textContent = group;
+      host.appendChild(h);
+      const box = document.createElement('div');
+      box.className = 'groupitems';
+      for (const d of items) {
+        const b = document.createElement('button');
+        b.className = 'row';
+        b.setAttribute('aria-current', String(d.id === state.sel));
+        b.innerHTML =
+          '<span class="rowmain"><span class="dot"></span>' +
+          '<span class="rowtitle">' + esc(d.title) + '</span></span>';
+        b.addEventListener('click', () => select(d.id));
+        box.appendChild(b);
+      }
+      host.appendChild(box);
+    }
+  }
+
+  function renderGrid(list) {
+    const host = el('grid');
+    host.replaceChildren();
+    if (list.length === 0) {
+      const p = document.createElement('div');
+      p.className = 'note';
+      p.textContent = '조건에 맞는 다이어그램이 없습니다.';
+      host.appendChild(p);
+      return;
+    }
+    for (const d of list) {
+      const b = document.createElement('button');
+      b.className = 'card';
+      b.setAttribute('aria-current', String(d.id === state.sel));
+      b.innerHTML =
+        '<div class="thumb">' + THUMB + '</div>' +
+        '<div class="cardtitle">' + esc(d.title) + '</div>' +
+        '<div class="cardsum">' + esc(d.summary) + '</div>' +
+        '<div class="meta">' +
+        d.tags.map((t) => '<span class="pill">' + esc(t) + '</span>').join('') +
+        '</div>';
+      b.addEventListener('click', () => {
+        state.view = 'list';
+        select(d.id);
+      });
+      host.appendChild(b);
+    }
+  }
+
+  function renderDetail() {
+    const d = current();
+    if (!d) return;
+    el('d-title').textContent = d.title;
+    el('d-summary').textContent = d.summary;
+    el('d-meta').innerHTML =
+      d.tags.map((t) => '<span class="pill">' + esc(t) + '</span>').join('') +
+      (d.updated ? '<span class="stamp">· 수정 ' + esc(d.updated) + '</span>' : '');
+
+    segment(
+      el('fmtseg'),
+      [
+        { label: 'SVG / HTML', value: 'html', on: state.fmt === 'html' },
+        {
+          label: 'Excalidraw',
+          value: 'excalidraw',
+          on: state.fmt === 'excalidraw',
+          disabled: !d.formats.excalidraw,
+        },
+      ],
+      (v) => {
+        state.fmt = v;
+        render();
+      }
+    );
+
+    const actions = el('actions');
+    actions.replaceChildren();
+    const link = (label, href, download, primary) => {
       const a = document.createElement('a');
-      a.className = 'btn';
+      a.className = 'btn' + (primary ? ' primary' : '');
       a.href = href;
-      a.textContent = text;
+      a.innerHTML = icon(download ? ICON_DL : ICON_OPEN) + '<span>' + esc(label) + '</span>';
       if (download) a.download = download;
       else {
         a.target = '_blank';
         a.rel = 'noopener';
       }
-      add(a);
+      actions.appendChild(a);
     };
 
-    if (mode === 'html') {
-      link('새 탭에서 열기', current.html);
-      link('.html 내려받기', current.html, current.id + '.html');
-
-      const svg = document.createElement('button');
-      svg.textContent = '.svg 내려받기';
-      svg.addEventListener('click', async () => {
-        svg.disabled = true;
+    if (state.fmt === 'html') {
+      link('새 탭', d.formats.html);
+      link('.html', d.formats.html, d.id + '.html');
+      const b = document.createElement('button');
+      b.className = 'btn primary';
+      b.innerHTML = icon(ICON_DL) + '<span>.svg</span>';
+      b.addEventListener('click', async () => {
+        b.disabled = true;
         try {
-          await downloadSvg(current.html, current.id + '.svg');
+          await downloadSvg(d.formats.html, d.id + '.svg');
         } catch (err) {
-          hint.textContent =
-            'SVG 를 만들지 못했습니다 (' + err.message + '). ' +
-            'file:// 로 열면 브라우저가 파일을 읽지 못합니다 — ' +
-            '로컬 서버나 GitHub Pages 로 열어 주세요.';
+          showError('SVG 를 만들지 못했습니다 (' + err.message + ').');
         } finally {
-          svg.disabled = false;
+          b.disabled = false;
         }
       });
-      add(svg);
+      actions.appendChild(b);
+    } else {
+      link('원본 JSON', d.formats.excalidraw);
+      link('.excalidraw', d.formats.excalidraw, d.id + '.excalidraw');
     }
+  }
 
-    if (mode === 'excalidraw') {
-      link('원본 JSON 보기', current.excalidraw);
-      link('.excalidraw 내려받기', current.excalidraw, current.id + '.excalidraw');
+  function show(which) {
+    el('html-view').hidden = which !== 'html';
+    el('excalidraw-stage').hidden = which !== 'excalidraw';
+    el('fallback').hidden = which !== 'error';
+  }
 
-      const label = document.createElement('label');
-      label.className = 'btn';
-      label.textContent = '파일 열기…';
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = '.excalidraw,application/json';
-      input.hidden = true;
-      input.addEventListener('change', async () => {
-        const file = input.files[0];
-        if (!file) return;
-        try {
-          exStage.replaceChildren(renderExcalidraw(JSON.parse(await file.text())));
-          show('excalidraw');
-          fitArrowLabels(exStage);
-        } catch (err) {
-          fallback.textContent = '이 파일을 읽을 수 없습니다: ' + err.message;
-          show('error');
-        }
-      });
-      label.appendChild(input);
-      add(label);
+  function showError(html) {
+    el('fallback').innerHTML = html;
+    show('error');
+  }
+
+  async function renderStage() {
+    const d = current();
+    if (!d) return;
+    if (state.fmt === 'excalidraw' && d.formats.excalidraw) {
+      try {
+        const res = await fetch(d.formats.excalidraw, { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const stage = el('excalidraw-stage');
+        stage.replaceChildren(renderExcalidraw(await res.json()));
+        show('excalidraw');
+        fitArrowLabels(stage);
+      } catch (err) {
+        showError(
+          '<p><strong>Excalidraw 파일을 불러오지 못했습니다.</strong> (' + esc(err.message) + ')</p>' +
+          '<p><code>file://</code> 로 직접 열면 브라우저 보안 정책 때문에 파일을 읽을 수 없습니다. ' +
+          '저장소 폴더에서 <code>python3 -m http.server</code> 를 실행해 ' +
+          '<code>http://localhost:8000</code> 으로 열거나, GitHub Pages 로 보세요.</p>'
+        );
+      }
+      return;
     }
+    el('html-view').src = d.formats.html;
+    show('html');
+  }
 
-    hint.textContent =
-      mode === 'excalidraw'
-        ? '미리보기는 이 페이지의 간이 렌더러로 그린 것입니다. 편집하려면 파일을 내려받아 excalidraw.com 캔버스에 끌어다 놓으세요.'
-        : '외부 리소스 없이 인라인 SVG만 사용하는 단일 HTML 파일이며, 라이트/다크 모드를 모두 지원합니다.';
+  function render() {
+    const list = hits();
+    renderChrome();
+    renderList(list);
+    el('detail').hidden = state.view !== 'list';
+    el('gallery').hidden = state.view !== 'grid';
+    if (state.view === 'grid') {
+      renderGrid(list);
+    } else {
+      renderDetail();
+      renderStage();
+    }
+    location.hash = state.view === 'grid' ? 'gallery' : state.sel + '/' + state.fmt;
+  }
+
+  function select(id) {
+    const d = byId.get(id);
+    if (!d) return;
+    state.sel = id;
+    if (state.fmt === 'excalidraw' && !d.formats.excalidraw) state.fmt = 'html';
+    render();
   }
 
   function applyHash() {
-    const [id, m] = decodeURIComponent(location.hash.slice(1)).split('/');
-    const found = DIAGRAMS.find((d) => d.id === id);
-    if (found) current = found;
-    if (m === 'html' || m === 'excalidraw') mode = m;
+    const raw = decodeURIComponent(location.hash.slice(1));
+    state.view = raw === 'gallery' ? 'grid' : 'list';
+    const [rawId, fmt] = raw.split('/');
+    const id = ALIASES[rawId] || rawId;
+    if (byId.has(id)) state.sel = id;
+    if (fmt === 'html' || fmt === 'excalidraw') state.fmt = fmt;
+    const d = current();
+    if (d && state.fmt === 'excalidraw' && !d.formats.excalidraw) state.fmt = 'html';
   }
 
-  function load() {
-    location.hash = current.id + '/' + mode;
-    renderActions();
-    if (mode === 'html') {
-      htmlView.src = current.html;
-      show('html');
-    } else {
-      renderExcalidrawFile(current.excalidraw);
+  el('q').addEventListener('input', (e) => {
+    state.q = e.target.value;
+    render();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && document.activeElement !== el('q')) {
+      e.preventDefault();
+      el('q').focus();
     }
-  }
-
-  function buildButtons() {
-    picker.replaceChildren();
-    DIAGRAMS.forEach((d) => {
-      const b = document.createElement('button');
-      b.textContent = d.title;
-      b.setAttribute('aria-pressed', String(d === current));
-      b.addEventListener('click', () => {
-        current = d;
-        buildButtons();
-        load();
-      });
-      picker.appendChild(b);
-    });
-    modes.replaceChildren();
-    [['html', 'SVG / HTML'], ['excalidraw', 'Excalidraw']].forEach(([m, text]) => {
-      const b = document.createElement('button');
-      b.textContent = text;
-      b.setAttribute('aria-pressed', String(m === mode));
-      b.addEventListener('click', () => {
-        mode = m;
-        buildButtons();
-        load();
-      });
-      modes.appendChild(b);
-    });
-  }
-
-  applyHash();
-  buildButtons();
-  load();
+  });
 
   window.addEventListener('hashchange', () => {
     applyHash();
-    buildButtons();
-    load();
+    render();
   });
+
+  (async function boot() {
+    try {
+      const res = await fetch('diagrams.json', { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      INDEX = await res.json();
+    } catch (err) {
+      document.querySelector('.body').innerHTML =
+        '<div class="note" style="padding:32px">' +
+        '<p><strong>목록(diagrams.json)을 불러오지 못했습니다.</strong> (' + esc(err.message) + ')</p>' +
+        '<p><code>file://</code> 로 직접 열면 브라우저가 파일을 읽지 못합니다. ' +
+        '저장소 폴더에서 <code>python3 -m http.server</code> 를 실행해 ' +
+        '<code>http://localhost:8000</code> 으로 열거나, GitHub Pages 로 보세요.</p></div>';
+      return;
+    }
+    for (const d of INDEX.diagrams) byId.set(d.id, d);
+    state.sel = INDEX.diagrams[0] && INDEX.diagrams[0].id;
+    applyHash();
+    render();
+  })();
 </script>
 </html>

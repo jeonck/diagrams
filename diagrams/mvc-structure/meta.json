@@ -1,0 +1,11 @@
+{
+  "title": "MVC 구조",
+  "group": "아키텍처 패턴",
+  "tags": [
+    "패턴",
+    "구조"
+  ],
+  "summary": "Model·View·Controller 세 역할과 그 사이의 의존 방향",
+  "updated": "2026-09-09",
+  "order": 1
+}
