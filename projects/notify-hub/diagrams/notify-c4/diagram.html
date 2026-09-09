@@ -1,0 +1,163 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>알림 허브 C4 컨텍스트·컨테이너</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f8fafc;
+    --fg: #172033;
+    --muted: #5b6475;
+    --line: #64748b;
+    --neutral: #e2e8f0;
+    --input: #bfdbfe;
+    --process: #c7d2fe;
+    --storage: #99f6e4;
+    --external: #fde68a;
+    --risk: #fecaca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #a3adbd;
+      --line: #94a3b8;
+      --neutral: #334155;
+      --input: #1d4ed8;
+      --process: #4338ca;
+      --storage: #0f766e;
+      --external: #92400e;
+      --risk: #991b1b;
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font:
+      14px/1.4 ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+  }
+  main {
+    max-width: 980px;
+    margin: 32px auto;
+    padding: 0 20px;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 650;
+    fill: var(--fg);
+  }
+  .label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: var(--fg);
+  }
+  .small {
+    font-size: 12px;
+    fill: var(--muted);
+  }
+  .node {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .neutral {
+    fill: var(--neutral);
+  }
+  .input {
+    fill: var(--input);
+  }
+  .process {
+    fill: var(--process);
+  }
+  .storage {
+    fill: var(--storage);
+  }
+  .external {
+    fill: var(--external);
+  }
+  .risk {
+    fill: var(--risk);
+  }
+  .edge {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .edge-dashed {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 6 5;
+  }
+  .arrow-head {
+    fill: var(--line);
+  }
+  .zone {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+    stroke-dasharray: 6 5;
+    opacity: 0.8;
+  }
+</style>
+<main>
+  <svg viewBox="0 0 1200 780" role="img" aria-label="알림 허브 C4 컨텍스트·컨테이너">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--line)" />
+      </marker>
+    </defs>
+
+    <text class="title" x="24" y="34">알림 허브 C4 컨텍스트·컨테이너</text>
+    <text class="small" x="24" y="56">시스템 경계 안의 컨테이너와, 경계 밖의 발신자·공급자</text>
+
+    <!-- 연결선을 먼저 그려 화살표가 상자 뒤로 가게 한다 -->
+    <path class="edge" d="M 280 270 L 370 250" marker-end="url(#arrow)" />
+    <path class="edge" d="M 490 300 L 490 360" marker-end="url(#arrow)" />
+    <path class="edge" d="M 490 450 L 490 500" marker-end="url(#arrow)" />
+    <path class="edge" d="M 610 250 L 700 360" marker-end="url(#arrow)" />
+    <path class="edge" d="M 560 500 L 700 450" marker-end="url(#arrow)" />
+    <path class="edge" d="M 610 540 L 940 540" marker-end="url(#arrow)" />
+
+    <rect class="zone" x="320" y="150" width="560" height="470" rx="10" />
+    <rect class="node external" x="60" y="220" width="220" height="100" rx="8" />
+    <rect class="node input" x="370" y="200" width="240" height="100" rx="8" />
+    <rect class="node storage" x="370" y="360" width="240" height="90" rx="8" />
+    <rect class="node process" x="370" y="500" width="240" height="100" rx="8" />
+    <rect class="node storage" x="650" y="360" width="200" height="90" rx="8" />
+    <rect class="node neutral" x="940" y="500" width="220" height="100" rx="8" />
+
+    <text class="small" x="322" y="140">알림 허브 — 우리가 만드는 시스템</text>
+    <text class="label" x="170" y="255" text-anchor="middle">발신 서비스</text>
+    <text class="small" x="170" y="277" text-anchor="middle">[External System]</text>
+    <text class="small" x="170" y="297" text-anchor="middle">주문 플랫폼 등</text>
+    <text class="label" x="490" y="245" text-anchor="middle">수신 API</text>
+    <text class="small" x="490" y="267" text-anchor="middle">[Container: Spring]</text>
+    <text class="label" x="490" y="400" text-anchor="middle">이벤트 큐</text>
+    <text class="small" x="490" y="422" text-anchor="middle">[Container: SQS]</text>
+    <text class="label" x="490" y="545" text-anchor="middle">발송 워커</text>
+    <text class="small" x="490" y="567" text-anchor="middle">[Container: Spring]</text>
+    <text class="label" x="750" y="400" text-anchor="middle">이력 DB</text>
+    <text class="small" x="750" y="422" text-anchor="middle">[Container: PostgreSQL]</text>
+    <text class="label" x="1050" y="545" text-anchor="middle">푸시 · 이메일 공급자</text>
+    <text class="small" x="1050" y="567" text-anchor="middle">[External System]</text>
+    <text class="small" x="325" y="230" text-anchor="middle">알림 요청</text>
+    <text class="small" x="540" y="334" text-anchor="middle">적재</text>
+    <text class="small" x="540" y="478" text-anchor="middle">선점</text>
+    <text class="small" x="720" y="296" text-anchor="middle">접수 기록</text>
+    <text class="small" x="668" y="508" text-anchor="middle">결과 기록</text>
+    <text class="small" x="775" y="522" text-anchor="middle">발송 [HTTPS]</text>
+    <text class="small" x="24" y="724">※ 수신 API 는 큐에 넣기만 하고 즉시 202 를 돌려줍니다. 발송은 워커가 따로 합니다.</text>
+    <text class="small" x="24" y="746">발신 서비스는 공급자가 느려도 기다리지 않습니다 — 큐가 그 둘을 떼어 놓습니다.</text>
+  </svg>
+</main>

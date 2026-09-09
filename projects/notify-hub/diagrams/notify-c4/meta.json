@@ -1,0 +1,13 @@
+{
+  "title": "알림 허브 C4 컨텍스트·컨테이너",
+  "phase": "design",
+  "category": "structure",
+  "kind": "C4 컨텍스트·컨테이너",
+  "tags": [
+    "C4",
+    "아키텍처"
+  ],
+  "summary": "시스템 경계 안의 컨테이너와, 경계 밖의 발신자·공급자",
+  "updated": "2026-09-09",
+  "order": 10
+}

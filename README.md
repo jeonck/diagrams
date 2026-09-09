@@ -7,8 +7,9 @@
 categories.json                그림 종류 분류 (전역)
 phases.json                    설계 단계 (전역)
 projects/
-  order-platform/
-    project.json               프로젝트 이름 · 한 줄 정의 · 상태
+  order-platform/              온라인 상점 — 설계 완료
+  notify-hub/                  알림 허브 — 설계 진행 중
+    project.json               이름 · 한 줄 정의 · 상태 · 표시 순서(order)
     README.md                  프로젝트 브리프
     decisions/NNNN-....md      설계 결정 기록 (ADR)
     diagrams/<slug>/           meta.json · diagram.html · diagram.excalidraw
@@ -54,7 +55,11 @@ $ node tools/build-index.mjs
 build-index: diagrams.json 갱신 (15개)
 ```
 
-현재 15개 대표 종류가 모두 채워져 있습니다. 예제는 모두 같은 주문 도메인을 소재로 삼아,
+**온라인 상점**은 15개 대표 종류가 모두 채워져 있고, **알림 허브**는 일부러 네 장만
+그려 두었습니다 — 빌드가 알려주는 "아직 없는 산출물" 목록이 실제로 어떻게 동작하는지
+보이기 위한 것입니다.
+
+온라인 상점의 예제는 모두 같은 주문 도메인을 소재로 삼아,
 같은 시스템을 각도만 바꿔 본 그림이 되도록 했습니다 — 같은 도메인이 ERD 에서는 테이블로,
 클래스 다이어그램에서는 책임과 합성으로, 상태 머신에서는 전이로 나타납니다.
 
@@ -62,10 +67,14 @@ build-index: diagrams.json 갱신 (15개)
 
 <!-- diagrams:start -->
 
-**온라인 상점** — 고객이 상품을 주문하고 결제하면, 재고를 차감하고 배송까지 이어지는 커머스 백엔드
-
-SDLC 단계순으로 15개입니다. 파일은 `projects/<프로젝트>/diagrams/<slug>/` 에 있고,
+프로젝트 2개 · 다이어그램 19개입니다.
 이 표는 `node tools/build-index.mjs` 가 만들므로 직접 고치지 마세요.
+
+### 온라인 상점
+
+고객이 상품을 주문하고 결제하면, 재고를 차감하고 배송까지 이어지는 커머스 백엔드
+
+`projects/order-platform/` · 설계 · 다이어그램 15개 · 설계 결정 6개
 
 | 단계 | 종류 | 다이어그램 | 요약 |
 | --- | --- | --- | --- |
@@ -84,6 +93,21 @@ SDLC 단계순으로 15개입니다. 파일은 `projects/<프로젝트>/diagrams
 | 구현·운영 | 네트워크 토폴로지 | [네트워크 토폴로지](https://jeonck.github.io/diagrams/#network-topology/html) | 어떤 서브넷에 무엇이 있고, 어느 포트로 통하는가 |
 | 구현·운영 | CI/CD 파이프라인 | [CI/CD 파이프라인](https://jeonck.github.io/diagrams/#cicd-pipeline/html) | 커밋 한 번이 프로덕션에 닿기까지 거치는 관문 |
 | 구현·운영 | 값 흐름 | [주문 기능 값 흐름](https://jeonck.github.io/diagrams/#value-stream/html) | 요구 하나가 배포되기까지, 일한 시간과 기다린 시간 |
+
+### 알림 허브
+
+다른 서비스가 보낸 이벤트를 받아 푸시·이메일·SMS로 내보내는 사내 공용 알림 플랫폼
+
+`projects/notify-hub/` · 설계 진행 중 · 다이어그램 4개 · 설계 결정 3개
+
+아직 그리지 않은 대표 종류 11개 — 구조/클래스, 구조/컴포넌트, 구조/패키지, 행위/시퀀스, 행위/액티비티, 데이터/ERD, 데이터/데이터 흐름(DFD), 배포·인프라/네트워크 토폴로지, 프로세스/BPMN, 프로세스/CI/CD 파이프라인, 프로세스/값 흐름
+
+| 단계 | 종류 | 다이어그램 | 요약 |
+| --- | --- | --- | --- |
+| 요구 | 유스케이스 | [알림 허브 유스케이스](https://jeonck.github.io/diagrams/#notify-usecase/html) | 누가 이 서비스로 무엇을 하는가 |
+| 분석 | 상태 머신 | [알림 발송 상태 전이](https://jeonck.github.io/diagrams/#notify-state/html) | 알림 한 건이 접수되어 성공하거나 포기될 때까지 |
+| 설계 | C4 컨텍스트·컨테이너 | [알림 허브 C4 컨텍스트·컨테이너](https://jeonck.github.io/diagrams/#notify-c4/html) | 시스템 경계 안의 컨테이너와, 경계 밖의 발신자·공급자 |
+| 구현·운영 | 배포 | [알림 허브 배포 구성](https://jeonck.github.io/diagrams/#notify-deployment/html) | 큐를 사이에 두고 수신과 발송이 따로 확장되는 배치 |
 
 <!-- diagrams:end -->
 
@@ -130,6 +154,10 @@ projects/<프로젝트>/diagrams/<slug>/
 ```
 
 새 프로젝트는 `projects/<이름>/` 아래에 `project.json` 과 `diagrams/` 를 만들면 됩니다.
+프로젝트가 둘 이상이면 뷰어 사이드바에 전환기가 생기고, 목록·태그·결정이 모두
+선택한 프로젝트로 좁혀집니다. 표시 순서는 `project.json` 의 `order` 가 정합니다.
+다이어그램 slug 는 프로젝트를 넘나들어 고유해야 하므로, 같은 종류를 여러 프로젝트에서
+그릴 때는 `notify-state` 처럼 프로젝트를 접두어로 붙이면 편합니다.
 
 `meta.json`:
 

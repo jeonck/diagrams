@@ -1,0 +1,13 @@
+{
+  "title": "알림 허브 유스케이스",
+  "phase": "requirements",
+  "category": "behavior",
+  "kind": "유스케이스",
+  "tags": [
+    "유스케이스",
+    "요구사항"
+  ],
+  "summary": "누가 이 서비스로 무엇을 하는가",
+  "updated": "2026-09-09",
+  "order": 10
+}

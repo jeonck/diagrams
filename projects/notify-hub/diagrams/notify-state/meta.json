@@ -1,0 +1,13 @@
+{
+  "title": "알림 발송 상태 전이",
+  "phase": "analysis",
+  "category": "behavior",
+  "kind": "상태 머신",
+  "tags": [
+    "상태 머신",
+    "재시도"
+  ],
+  "summary": "알림 한 건이 접수되어 성공하거나 포기될 때까지",
+  "updated": "2026-09-09",
+  "order": 10
+}

@@ -1,0 +1,13 @@
+{
+  "title": "알림 허브 배포 구성",
+  "phase": "operations",
+  "category": "deployment",
+  "kind": "배포",
+  "tags": [
+    "배포",
+    "큐"
+  ],
+  "summary": "큐를 사이에 두고 수신과 발송이 따로 확장되는 배치",
+  "updated": "2026-09-09",
+  "order": 10
+}

@@ -4,25 +4,25 @@
       "id": "requirements",
       "name": "요구",
       "summary": "무엇을, 왜 만드는가",
-      "count": 2
+      "count": 3
     },
     {
       "id": "analysis",
       "name": "분석",
       "summary": "문제 영역을 어떻게 이해했는가",
-      "count": 4
+      "count": 5
     },
     {
       "id": "design",
       "name": "설계",
       "summary": "어떻게 만들 것인가",
-      "count": 5
+      "count": 6
     },
     {
       "id": "operations",
       "name": "구현·운영",
       "summary": "어디서 돌리고, 어떻게 내보내는가",
-      "count": 4
+      "count": 5
     }
   ],
   "categories": [
@@ -48,7 +48,7 @@
           "covered": true
         }
       ],
-      "count": 4
+      "count": 5
     },
     {
       "id": "behavior",
@@ -72,7 +72,7 @@
           "covered": true
         }
       ],
-      "count": 4
+      "count": 6
     },
     {
       "id": "data",
@@ -104,7 +104,7 @@
           "covered": true
         }
       ],
-      "count": 2
+      "count": 3
     },
     {
       "id": "process",
@@ -142,7 +142,9 @@
     "워크플로",
     "유스케이스",
     "의존성",
+    "재시도",
     "컴포넌트",
+    "큐",
     "클래스",
     "파이프라인",
     "패키지",
@@ -162,9 +164,33 @@
       "summary": "고객이 상품을 주문하고 결제하면, 재고를 차감하고 배송까지 이어지는 커머스 백엔드",
       "status": "설계",
       "started": "2026-09",
+      "order": 10,
       "count": 15,
       "decisions": 6,
       "missing": []
+    },
+    {
+      "id": "notify-hub",
+      "name": "알림 허브",
+      "summary": "다른 서비스가 보낸 이벤트를 받아 푸시·이메일·SMS로 내보내는 사내 공용 알림 플랫폼",
+      "status": "설계 진행 중",
+      "started": "2026-09",
+      "order": 20,
+      "count": 4,
+      "decisions": 3,
+      "missing": [
+        "구조/클래스",
+        "구조/컴포넌트",
+        "구조/패키지",
+        "행위/시퀀스",
+        "행위/액티비티",
+        "데이터/ERD",
+        "데이터/데이터 흐름(DFD)",
+        "배포·인프라/네트워크 토폴로지",
+        "프로세스/BPMN",
+        "프로세스/CI/CD 파이프라인",
+        "프로세스/값 흐름"
+      ]
     }
   ],
   "diagrams": [
@@ -483,6 +509,92 @@
       "decisions": [
         "0006-manual-approval-before-production"
       ]
+    },
+    {
+      "id": "notify-usecase",
+      "project": "notify-hub",
+      "title": "알림 허브 유스케이스",
+      "phase": "requirements",
+      "category": "behavior",
+      "kind": "유스케이스",
+      "tags": [
+        "유스케이스",
+        "요구사항"
+      ],
+      "summary": "누가 이 서비스로 무엇을 하는가",
+      "order": 10,
+      "updated": "2026-09-09",
+      "formats": {
+        "html": "projects/notify-hub/diagrams/notify-usecase/diagram.html",
+        "excalidraw": "projects/notify-hub/diagrams/notify-usecase/diagram.excalidraw"
+      },
+      "decisions": []
+    },
+    {
+      "id": "notify-state",
+      "project": "notify-hub",
+      "title": "알림 발송 상태 전이",
+      "phase": "analysis",
+      "category": "behavior",
+      "kind": "상태 머신",
+      "tags": [
+        "상태 머신",
+        "재시도"
+      ],
+      "summary": "알림 한 건이 접수되어 성공하거나 포기될 때까지",
+      "order": 10,
+      "updated": "2026-09-09",
+      "formats": {
+        "html": "projects/notify-hub/diagrams/notify-state/diagram.html",
+        "excalidraw": "projects/notify-hub/diagrams/notify-state/diagram.excalidraw"
+      },
+      "decisions": [
+        "0002-retry-with-backoff-then-dlq"
+      ]
+    },
+    {
+      "id": "notify-c4",
+      "project": "notify-hub",
+      "title": "알림 허브 C4 컨텍스트·컨테이너",
+      "phase": "design",
+      "category": "structure",
+      "kind": "C4 컨텍스트·컨테이너",
+      "tags": [
+        "C4",
+        "아키텍처"
+      ],
+      "summary": "시스템 경계 안의 컨테이너와, 경계 밖의 발신자·공급자",
+      "order": 10,
+      "updated": "2026-09-09",
+      "formats": {
+        "html": "projects/notify-hub/diagrams/notify-c4/diagram.html",
+        "excalidraw": "projects/notify-hub/diagrams/notify-c4/diagram.excalidraw"
+      },
+      "decisions": [
+        "0001-queue-between-receive-and-send"
+      ]
+    },
+    {
+      "id": "notify-deployment",
+      "project": "notify-hub",
+      "title": "알림 허브 배포 구성",
+      "phase": "operations",
+      "category": "deployment",
+      "kind": "배포",
+      "tags": [
+        "배포",
+        "큐"
+      ],
+      "summary": "큐를 사이에 두고 수신과 발송이 따로 확장되는 배치",
+      "order": 10,
+      "updated": "2026-09-09",
+      "formats": {
+        "html": "projects/notify-hub/diagrams/notify-deployment/diagram.html",
+        "excalidraw": "projects/notify-hub/diagrams/notify-deployment/diagram.excalidraw"
+      },
+      "decisions": [
+        "0001-queue-between-receive-and-send"
+      ]
     }
   ],
   "decisions": [
@@ -571,6 +683,47 @@
       "supersedes": null,
       "supersededBy": null,
       "path": "projects/order-platform/decisions/0006-manual-approval-before-production.md"
+    },
+    {
+      "id": "0001-queue-between-receive-and-send",
+      "number": "0001",
+      "project": "notify-hub",
+      "title": "수신과 발송 사이에 큐를 둔다",
+      "status": "채택됨",
+      "date": "2026-09-07",
+      "diagrams": [
+        "notify-c4",
+        "notify-deployment"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "path": "projects/notify-hub/decisions/0001-queue-between-receive-and-send.md"
+    },
+    {
+      "id": "0002-retry-with-backoff-then-dlq",
+      "number": "0002",
+      "project": "notify-hub",
+      "title": "재시도는 지수 백오프로 5회, 그 뒤에는 DLQ",
+      "status": "채택됨",
+      "date": "2026-09-08",
+      "diagrams": [
+        "notify-state"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "path": "projects/notify-hub/decisions/0002-retry-with-backoff-then-dlq.md"
+    },
+    {
+      "id": "0003-idempotency-key",
+      "number": "0003",
+      "project": "notify-hub",
+      "title": "멱등키로 중복 발송을 막는다",
+      "status": "제안됨",
+      "date": "2026-09-09",
+      "diagrams": [],
+      "supersedes": null,
+      "supersededBy": null,
+      "path": "projects/notify-hub/decisions/0003-idempotency-key.md"
     }
   ]
 }

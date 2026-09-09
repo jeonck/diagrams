@@ -207,6 +207,7 @@ function build() {
     projects.push({
       id: pid,
       ...meta,
+      order: Number.isFinite(meta.order) ? meta.order : 999,
       count: mine.length,
       decisions: myAdrs.length,
       // 이 프로젝트에 아직 없는 대표 종류 = 남은 설계 산출물
@@ -215,15 +216,20 @@ function build() {
     diagrams.push(...mine);
   }
 
+  // 프로젝트 순서는 project.json 의 order 가 정한다. 폴더 이름순은 뜻이 없다.
+  projects.sort((a, b) => a.order - b.order || a.name.localeCompare(b.name, 'ko'));
+  const projectRank = new Map(projects.map((p, i) => [p.id, i]));
+
   diagrams.sort(
     (a, b) =>
-      a.project.localeCompare(b.project) ||
+      projectRank.get(a.project) - projectRank.get(b.project) ||
       phaseRank.get(a.phase) - phaseRank.get(b.phase) ||
       a.order - b.order ||
       a.title.localeCompare(b.title, 'ko')
   );
 
   // 다이어그램에서 결정으로 거꾸로 갈 수 있게 한다
+  decisions.sort((a, b) => projectRank.get(a.project) - projectRank.get(b.project) || a.id.localeCompare(b.id));
   for (const d of diagrams) {
     d.decisions = decisions.filter((a) => a.project === d.project && a.diagrams.includes(d.id)).map((a) => a.id);
   }
@@ -243,25 +249,32 @@ function build() {
 // ── README 표 ───────────────────────────────────────────────
 function renderTable(index) {
   const phaseName = new Map(index.phases.map((p) => [p.id, p.name]));
-  const rows = index.diagrams.map((d) => {
-    const link = `[${d.title}](${SITE}#${d.id}/html)`;
-    return `| ${phaseName.get(d.phase)} | ${d.kind} | ${link} | ${d.summary} |`;
-  });
-  const p = index.projects[0];
-  return [
+  const lines = [
     START,
     '',
-    `**${p.name}** — ${p.summary}`,
-    '',
-    `SDLC 단계순으로 ${index.diagrams.length}개입니다. 파일은 \`projects/<프로젝트>/diagrams/<slug>/\` 에 있고,`,
+    `프로젝트 ${index.projects.length}개 · 다이어그램 ${index.diagrams.length}개입니다.`,
     '이 표는 `node tools/build-index.mjs` 가 만들므로 직접 고치지 마세요.',
-    '',
-    '| 단계 | 종류 | 다이어그램 | 요약 |',
-    '| --- | --- | --- | --- |',
-    ...rows,
-    '',
-    END,
-  ].join('\n');
+  ];
+  for (const p of index.projects) {
+    const mine = index.diagrams.filter((d) => d.project === p.id);
+    lines.push(
+      '',
+      `### ${p.name}`,
+      '',
+      `${p.summary}`,
+      '',
+      `\`projects/${p.id}/\` · ${p.status} · 다이어그램 ${p.count}개 · 설계 결정 ${p.decisions}개`
+    );
+    if (p.missing.length > 0) {
+      lines.push('', `아직 그리지 않은 대표 종류 ${p.missing.length}개 — ${p.missing.join(', ')}`);
+    }
+    lines.push('', '| 단계 | 종류 | 다이어그램 | 요약 |', '| --- | --- | --- | --- |');
+    for (const d of mine) {
+      lines.push(`| ${phaseName.get(d.phase)} | ${d.kind} | [${d.title}](${SITE}#${d.id}/html) | ${d.summary} |`);
+    }
+  }
+  lines.push('', END);
+  return lines.join('\n');
 }
 
 function spliceDoc(table) {
