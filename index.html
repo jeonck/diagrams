@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Diagrams — 뷰어</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --fg: #172033;
+    --muted: #5b6475;
+    --line: #cbd5e1;
+    --accent: #4338ca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f172a;
+      --card: #111c33;
+      --fg: #e5e7eb;
+      --muted: #a3adbd;
+      --line: #334155;
+      --accent: #a5b4fc;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 14px/1.5 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+      "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  }
+  main { max-width: 1040px; margin: 0 auto; padding: 32px 20px 64px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 28px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .row + .row { margin-top: 10px; }
+  button, .btn {
+    font: inherit;
+    color: var(--fg);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 7px 14px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+  }
+  button:hover, .btn:hover { border-color: var(--accent); }
+  button[aria-pressed="true"] {
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .hint { color: var(--muted); font-size: 13px; margin: 14px 0 0; }
+  .stage {
+    margin-top: 18px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--card);
+  }
+  iframe { display: block; width: 100%; height: 760px; border: 0; background: var(--card); }
+  #excalidraw-stage { background: #ffffff; padding: 16px; }
+  #excalidraw-stage svg { display: block; width: 100%; height: auto; }
+  .error { padding: 24px; color: var(--muted); }
+  .error code {
+    background: rgba(127, 127, 127, 0.16);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  [hidden] { display: none !important; }
+</style>
+<main>
+  <h1>Diagrams</h1>
+  <p class="sub">이 저장소의 다이어그램을 브라우저에서 바로 보는 뷰어입니다.</p>
+
+  <div class="row" id="picker" role="group" aria-label="다이어그램 선택"></div>
+  <div class="row" id="modes" role="group" aria-label="보기 형식"></div>
+  <div class="row" id="actions"></div>
+
+  <div class="stage">
+    <iframe id="html-view" title="다이어그램(HTML)" hidden></iframe>
+    <div id="excalidraw-stage" hidden></div>
+    <div id="fallback" class="error" hidden></div>
+  </div>
+
+  <p class="hint" id="hint"></p>
+</main>
+<script>
+  const DIAGRAMS = [
+    {
+      id: 'mvc',
+      title: 'MVC 패턴',
+      html: 'mvc/mvc-diagram.html',
+      excalidraw: 'mvc/mvc-diagram.excalidraw',
+    },
+  ];
+
+  /* ---------- 최소 Excalidraw 렌더러 (외부 라이브러리 없음) ---------- */
+
+  const rng = (seed) => {
+    let s = (seed >>> 0) || 1;
+    return () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296;
+  };
+  const svgEl = (name, attrs) => {
+    const n = document.createElementNS('http://www.w3.org/2000/svg', name);
+    for (const k in attrs) if (attrs[k] != null) n.setAttribute(k, attrs[k]);
+    return n;
+  };
+
+  // 둥근 사각형 외곽선을 점열로 샘플링
+  function roundRectPoints(x, y, w, h, r) {
+    r = Math.min(r, w / 2, h / 2);
+    const pts = [];
+    const corner = (cx, cy, from) => {
+      for (let i = 0; i <= 4; i++) {
+        const a = from + (Math.PI / 2) * (i / 4);
+        pts.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]);
+      }
+    };
+    pts.push([x + r, y]);
+    pts.push([x + w - r, y]);
+    corner(x + w - r, y + r, -Math.PI / 2);
+    pts.push([x + w, y + h - r]);
+    corner(x + w - r, y + h - r, 0);
+    pts.push([x + r, y + h]);
+    corner(x + r, y + h - r, Math.PI / 2);
+    pts.push([x, y + r]);
+    corner(x + r, y + r, Math.PI);
+    return pts;
+  }
+
+  const pathFrom = (pts, rand, amp, close) =>
+    pts
+      .map((p, i) => {
+        const jx = p[0] + (rand() - 0.5) * amp;
+        const jy = p[1] + (rand() - 0.5) * amp;
+        return (i ? 'L' : 'M') + jx.toFixed(1) + ' ' + jy.toFixed(1);
+      })
+      .join(' ') + (close ? ' Z' : '');
+
+  const DASH = { dashed: '9 7', dotted: '2 5' };
+
+  function drawShape(g, el) {
+    const rand = rng(el.seed);
+    const pts =
+      el.type === 'ellipse'
+        ? Array.from({ length: 33 }, (_, i) => {
+            const a = (i / 32) * Math.PI * 2;
+            return [
+              el.x + el.width / 2 + (el.width / 2) * Math.cos(a),
+              el.y + el.height / 2 + (el.height / 2) * Math.sin(a),
+            ];
+          })
+        : el.type === 'diamond'
+        ? [
+            [el.x + el.width / 2, el.y],
+            [el.x + el.width, el.y + el.height / 2],
+            [el.x + el.width / 2, el.y + el.height],
+            [el.x, el.y + el.height / 2],
+          ]
+        : roundRectPoints(el.x, el.y, el.width, el.height, el.roundness ? 14 : 0);
+
+    if (el.backgroundColor && el.backgroundColor !== 'transparent') {
+      g.appendChild(
+        svgEl('path', {
+          d: pathFrom(pts, rng(el.seed), 0, true),
+          fill: el.backgroundColor,
+          stroke: 'none',
+        })
+      );
+    }
+    const dash = DASH[el.strokeStyle] || null;
+    const passes = dash ? 1 : 2;
+    for (let i = 0; i < passes; i++) {
+      g.appendChild(
+        svgEl('path', {
+          d: pathFrom(pts, rand, 1.6, true),
+          fill: 'none',
+          stroke: el.strokeColor,
+          'stroke-width': el.strokeWidth,
+          'stroke-linecap': 'round',
+          'stroke-linejoin': 'round',
+          'stroke-dasharray': dash,
+          opacity: (el.opacity / 100) * (i ? 0.75 : 1),
+        })
+      );
+    }
+  }
+
+  function drawArrow(g, el) {
+    const rand = rng(el.seed);
+    const pts = el.points.map((p) => [el.x + p[0], el.y + p[1]]);
+    const dash = DASH[el.strokeStyle] || null;
+    const stroke = {
+      fill: 'none',
+      stroke: el.strokeColor,
+      'stroke-width': el.strokeWidth,
+      'stroke-linecap': 'round',
+      'stroke-dasharray': dash,
+    };
+    for (let i = 0; i < (dash ? 1 : 2); i++) {
+      g.appendChild(
+        svgEl('path', {
+          ...stroke,
+          d: pathFrom(pts, rand, 1.4, false),
+          opacity: i ? 0.75 : 1,
+        })
+      );
+    }
+    const head = (tip, prev) => {
+      const a = Math.atan2(tip[1] - prev[1], tip[0] - prev[0]);
+      for (const s of [1, -1]) {
+        const b = a + s * 0.42 + Math.PI;
+        g.appendChild(
+          svgEl('path', {
+            ...stroke,
+            'stroke-dasharray': null,
+            d:
+              'M' + tip[0].toFixed(1) + ' ' + tip[1].toFixed(1) +
+              'L' + (tip[0] + 16 * Math.cos(b)).toFixed(1) + ' ' +
+              (tip[1] + 16 * Math.sin(b)).toFixed(1),
+          })
+        );
+      }
+    };
+    if (el.endArrowhead) head(pts[pts.length - 1], pts[pts.length - 2]);
+    if (el.startArrowhead) head(pts[0], pts[1]);
+  }
+
+  const FONT =
+    '"Comic Sans MS", "Segoe Print", "Bradley Hand", "Apple SD Gothic Neo", ' +
+    '"Malgun Gothic", ui-rounded, system-ui, sans-serif';
+
+  function drawText(g, el, container, bg) {
+    const lines = el.text.split('\n');
+    const lh = el.fontSize * (el.lineHeight || 1.25);
+    let cx, top, anchor, host = g;
+    if (container && container.type === 'arrow') {
+      const pts = container.points;
+      const mid = Math.floor((pts.length - 1) / 2);
+      cx = container.x + (pts[mid][0] + pts[mid + 1][0]) / 2;
+      const cy = container.y + (pts[mid][1] + pts[mid + 1][1]) / 2;
+      top = cy - (lines.length * lh) / 2;
+      anchor = 'middle';
+      // 화살표 라벨: 선을 가리는 배경을 깔고, 마운트 후 실제 글자 크기에 맞춘다
+      host = svgEl('g', { class: 'arrow-label' });
+      host.appendChild(svgEl('rect', { fill: bg, stroke: 'none' }));
+      g.appendChild(host);
+    } else if (container) {
+      cx = container.x + container.width / 2;
+      top = container.y + container.height / 2 - (lines.length * lh) / 2;
+      anchor = 'middle';
+    } else {
+      cx = el.x;
+      top = el.y;
+      anchor = 'start';
+    }
+    const t = svgEl('text', {
+      x: cx, y: top,
+      'text-anchor': anchor,
+      fill: el.strokeColor,
+      'font-family': FONT,
+      'font-size': el.fontSize,
+      opacity: el.opacity / 100,
+    });
+    lines.forEach((line, i) => {
+      const ts = svgEl('tspan', { x: cx, dy: i === 0 ? lh * 0.78 : lh });
+      ts.textContent = line;
+      t.appendChild(ts);
+    });
+    host.appendChild(t);
+  }
+
+  // getBBox 는 문서에 붙은 뒤에만 값이 나오므로 마운트 후에 실행한다
+  function fitArrowLabels(svg) {
+    svg.querySelectorAll('g.arrow-label').forEach((group) => {
+      const box = group.querySelector('text').getBBox();
+      const rect = group.querySelector('rect');
+      rect.setAttribute('x', box.x - 8);
+      rect.setAttribute('y', box.y - 4);
+      rect.setAttribute('width', box.width + 16);
+      rect.setAttribute('height', box.height + 8);
+    });
+  }
+
+  function renderExcalidraw(doc) {
+    const els = doc.elements.filter((e) => !e.isDeleted);
+    const byId = Object.fromEntries(els.map((e) => [e.id, e]));
+    const bg = (doc.appState && doc.appState.viewBackgroundColor) || '#ffffff';
+
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    for (const e of els) {
+      const xs = e.type === 'arrow' ? e.points.map((p) => e.x + p[0]) : [e.x, e.x + e.width];
+      const ys = e.type === 'arrow' ? e.points.map((p) => e.y + p[1]) : [e.y, e.y + e.height];
+      minX = Math.min(minX, ...xs); maxX = Math.max(maxX, ...xs);
+      minY = Math.min(minY, ...ys); maxY = Math.max(maxY, ...ys);
+    }
+    const pad = 32;
+    const svg = svgEl('svg', {
+      viewBox: [minX - pad, minY - pad, maxX - minX + pad * 2, maxY - minY + pad * 2].join(' '),
+      xmlns: 'http://www.w3.org/2000/svg',
+      role: 'img',
+    });
+    const g = svgEl('g', {});
+    svg.appendChild(g);
+    for (const e of els) {
+      if (e.type === 'text') drawText(g, e, e.containerId ? byId[e.containerId] : null, bg);
+      else if (e.type === 'arrow' || e.type === 'line') drawArrow(g, e);
+      else drawShape(g, e);
+    }
+    return svg;
+  }
+
+  /* ---------- 뷰어 ---------- */
+
+  const picker = document.getElementById('picker');
+  const modes = document.getElementById('modes');
+  const actions = document.getElementById('actions');
+  const htmlView = document.getElementById('html-view');
+  const exStage = document.getElementById('excalidraw-stage');
+  const fallback = document.getElementById('fallback');
+  const hint = document.getElementById('hint');
+
+  let current = DIAGRAMS[0];
+  let mode = 'html';
+
+  function show(which) {
+    htmlView.hidden = which !== 'html';
+    exStage.hidden = which !== 'excalidraw';
+    fallback.hidden = which !== 'error';
+  }
+
+  async function renderExcalidrawFile(url) {
+    try {
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      exStage.replaceChildren(renderExcalidraw(await res.json()));
+      show('excalidraw');
+      fitArrowLabels(exStage);
+    } catch (err) {
+      fallback.innerHTML =
+        '<p><strong>Excalidraw 파일을 불러오지 못했습니다.</strong> (' +
+        String(err.message) + ')</p>' +
+        '<p><code>file://</code> 로 직접 열면 브라우저 보안 정책 때문에 파일을 읽을 수 없습니다. ' +
+        '저장소 폴더에서 <code>python3 -m http.server</code> 를 실행해 ' +
+        '<code>http://localhost:8000</code> 으로 열거나, GitHub Pages로 보세요.</p>' +
+        '<p>아래 “파일 열기”로 <code>.excalidraw</code> 파일을 직접 선택해도 됩니다.</p>';
+      show('error');
+    }
+  }
+
+  function renderActions() {
+    actions.replaceChildren();
+    const add = (node) => actions.appendChild(node);
+
+    const open = document.createElement('a');
+    open.className = 'btn';
+    open.target = '_blank';
+    open.rel = 'noopener';
+    open.href = mode === 'html' ? current.html : current.excalidraw;
+    open.textContent = mode === 'html' ? '새 탭에서 열기' : '원본 JSON 보기';
+    add(open);
+
+    if (mode === 'excalidraw') {
+      const dl = document.createElement('a');
+      dl.className = 'btn';
+      dl.href = current.excalidraw;
+      dl.download = current.id + '.excalidraw';
+      dl.textContent = '.excalidraw 내려받기';
+      add(dl);
+
+      const label = document.createElement('label');
+      label.className = 'btn';
+      label.textContent = '파일 열기…';
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.excalidraw,application/json';
+      input.hidden = true;
+      input.addEventListener('change', async () => {
+        const file = input.files[0];
+        if (!file) return;
+        try {
+          exStage.replaceChildren(renderExcalidraw(JSON.parse(await file.text())));
+          show('excalidraw');
+          fitArrowLabels(exStage);
+        } catch (err) {
+          fallback.textContent = '이 파일을 읽을 수 없습니다: ' + err.message;
+          show('error');
+        }
+      });
+      label.appendChild(input);
+      add(label);
+    }
+
+    hint.textContent =
+      mode === 'excalidraw'
+        ? '미리보기는 이 페이지의 간이 렌더러로 그린 것입니다. 편집하려면 파일을 내려받아 excalidraw.com 캔버스에 끌어다 놓으세요.'
+        : '외부 리소스 없이 인라인 SVG만 사용하는 단일 HTML 파일이며, 라이트/다크 모드를 모두 지원합니다.';
+  }
+
+  function applyHash() {
+    const [id, m] = decodeURIComponent(location.hash.slice(1)).split('/');
+    const found = DIAGRAMS.find((d) => d.id === id);
+    if (found) current = found;
+    if (m === 'html' || m === 'excalidraw') mode = m;
+  }
+
+  function load() {
+    location.hash = current.id + '/' + mode;
+    renderActions();
+    if (mode === 'html') {
+      htmlView.src = current.html;
+      show('html');
+    } else {
+      renderExcalidrawFile(current.excalidraw);
+    }
+  }
+
+  function buildButtons() {
+    picker.replaceChildren();
+    DIAGRAMS.forEach((d) => {
+      const b = document.createElement('button');
+      b.textContent = d.title;
+      b.setAttribute('aria-pressed', String(d === current));
+      b.addEventListener('click', () => {
+        current = d;
+        buildButtons();
+        load();
+      });
+      picker.appendChild(b);
+    });
+    modes.replaceChildren();
+    [['html', 'SVG / HTML'], ['excalidraw', 'Excalidraw']].forEach(([m, text]) => {
+      const b = document.createElement('button');
+      b.textContent = text;
+      b.setAttribute('aria-pressed', String(m === mode));
+      b.addEventListener('click', () => {
+        mode = m;
+        buildButtons();
+        load();
+      });
+      modes.appendChild(b);
+    });
+  }
+
+  applyHash();
+  buildButtons();
+  load();
+
+  window.addEventListener('hashchange', () => {
+    applyHash();
+    buildButtons();
+    load();
+  });
+</script>
+</html>
