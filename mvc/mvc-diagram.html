@@ -1,0 +1,177 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MVC 다이어그램</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f8fafc;
+    --fg: #172033;
+    --muted: #5b6475;
+    --line: #64748b;
+    --neutral: #e2e8f0;
+    --input: #bfdbfe;
+    --process: #c7d2fe;
+    --storage: #99f6e4;
+    --external: #fde68a;
+    --risk: #fecaca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #a3adbd;
+      --line: #94a3b8;
+      --neutral: #334155;
+      --input: #1d4ed8;
+      --process: #4338ca;
+      --storage: #0f766e;
+      --external: #92400e;
+      --risk: #991b1b;
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font:
+      14px/1.4 ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+  }
+  main {
+    max-width: 980px;
+    margin: 32px auto;
+    padding: 0 20px;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 650;
+    fill: var(--fg);
+  }
+  .label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: var(--fg);
+  }
+  .small {
+    font-size: 12px;
+    fill: var(--muted);
+  }
+  .node {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .neutral {
+    fill: var(--neutral);
+  }
+  .input {
+    fill: var(--input);
+  }
+  .process {
+    fill: var(--process);
+  }
+  .storage {
+    fill: var(--storage);
+  }
+  .external {
+    fill: var(--external);
+  }
+  .risk {
+    fill: var(--risk);
+  }
+  .edge {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .edge-dashed {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 6 5;
+  }
+  .arrow-head {
+    fill: var(--line);
+  }
+  .zone {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+    stroke-dasharray: 6 5;
+    opacity: 0.8;
+  }
+</style>
+<main>
+  <svg viewBox="0 0 900 710" role="img" aria-label="MVC 패턴 다이어그램">
+    <defs>
+      <marker
+        id="arrow"
+        viewBox="0 0 10 10"
+        refX="9"
+        refY="5"
+        markerWidth="7"
+        markerHeight="7"
+        orient="auto-start-reverse"
+      >
+        <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head" />
+      </marker>
+    </defs>
+
+    <text class="title" x="24" y="38">MVC (Model–View–Controller) 패턴</text>
+    <text class="small" x="24" y="60">
+      사용자 입력 → 제어 → 상태 변경 → 화면 갱신으로 이어지는 순환 구조
+    </text>
+
+    <!-- connectors first so arrows sit behind boxes -->
+    <line class="edge" x1="390" y1="182" x2="190" y2="306" marker-end="url(#arrow)" />
+    <line class="edge" x1="710" y1="306" x2="510" y2="182" marker-end="url(#arrow)" />
+    <line class="edge" x1="190" y1="410" x2="390" y2="522" marker-end="url(#arrow)" />
+    <line class="edge" x1="510" y1="522" x2="710" y2="410" marker-end="url(#arrow)" />
+    <line class="edge-dashed" x1="310" y1="358" x2="590" y2="358" marker-end="url(#arrow)" />
+
+    <!-- nodes -->
+    <rect class="node input" x="340" y="98" width="220" height="84" rx="10" />
+    <rect class="node process" x="70" y="306" width="240" height="104" rx="10" />
+    <rect class="node external" x="590" y="306" width="240" height="104" rx="10" />
+    <rect class="node storage" x="330" y="522" width="240" height="104" rx="10" />
+
+    <!-- node text -->
+    <text class="label" x="450" y="134" text-anchor="middle">사용자 (User)</text>
+    <text class="small" x="450" y="158" text-anchor="middle">브라우저 · 클라이언트</text>
+
+    <text class="label" x="190" y="342" text-anchor="middle">Controller</text>
+    <text class="small" x="190" y="366" text-anchor="middle">입력 해석 · 흐름 제어</text>
+    <text class="small" x="190" y="386" text-anchor="middle">요청 라우팅 · 유효성 검증</text>
+
+    <text class="label" x="710" y="342" text-anchor="middle">View</text>
+    <text class="small" x="710" y="366" text-anchor="middle">표현 · 렌더링</text>
+    <text class="small" x="710" y="386" text-anchor="middle">템플릿 · 화면 구성</text>
+
+    <text class="label" x="450" y="558" text-anchor="middle">Model</text>
+    <text class="small" x="450" y="582" text-anchor="middle">도메인 데이터 · 상태</text>
+    <text class="small" x="450" y="602" text-anchor="middle">비즈니스 규칙 · 영속성</text>
+
+    <!-- edge labels -->
+    <text class="small" x="250" y="246" text-anchor="end">① 사용자 입력 · 요청</text>
+    <text class="small" x="650" y="246">④ 화면 응답</text>
+    <text class="small" x="270" y="490" text-anchor="end">② 상태 변경 요청</text>
+    <text class="small" x="630" y="490">③ 변경 통지 · 데이터 조회</text>
+    <text class="small" x="450" y="348" text-anchor="middle">뷰 선택 · 갱신 지시</text>
+
+    <text class="small" x="24" y="662">
+      ※ 점선은 변형에 따라 달라지는 경로입니다. Observer 변형에서는 Model이 View에
+    </text>
+    <text class="small" x="24" y="682">
+      직접 변경을 통지하고, Passive View 변형에서는 Controller가 View를 갱신합니다.
+    </text>
+  </svg>
+</main>
