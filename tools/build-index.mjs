@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = join(ROOT, 'diagrams');
+const CATS = join(SRC, 'categories.json');
 const OUT = join(ROOT, 'diagrams.json');
 
 const FORMATS = { html: 'diagram.html', excalidraw: 'diagram.excalidraw' };
@@ -19,7 +20,31 @@ const fail = (msg) => {
   process.exit(1);
 };
 
-function readDiagram(id) {
+function readCategories() {
+  if (!existsSync(CATS)) fail('diagrams/categories.json 이 없습니다');
+  let list;
+  try {
+    list = JSON.parse(readFileSync(CATS, 'utf8'));
+  } catch (err) {
+    fail(`categories.json 을 읽지 못했습니다 — ${err.message}`);
+  }
+  if (!Array.isArray(list) || list.length === 0) fail('categories.json 은 비어 있지 않은 배열이어야 합니다');
+  const seen = new Set();
+  for (const c of list) {
+    for (const key of ['id', 'name', 'summary']) {
+      if (typeof c[key] !== 'string' || !c[key].trim()) fail(`categories.json 항목에 ${key} 가 없습니다`);
+    }
+    if (!SLUG.test(c.id)) fail(`categories.json 의 id "${c.id}" 는 소문자·숫자·하이픈만 쓸 수 있습니다`);
+    if (seen.has(c.id)) fail(`categories.json 에 id "${c.id}" 가 두 번 나옵니다`);
+    seen.add(c.id);
+    if (!Array.isArray(c.kinds) || c.kinds.some((k) => typeof k !== 'string')) {
+      fail(`categories.json 의 ${c.id}.kinds 는 문자열 배열이어야 합니다`);
+    }
+  }
+  return list;
+}
+
+function readDiagram(id, categoryIds) {
   const dir = join(SRC, id);
   if (!SLUG.test(id)) fail(`폴더 이름 "${id}" 은 소문자·숫자·하이픈만 쓸 수 있습니다`);
 
@@ -33,13 +58,19 @@ function readDiagram(id) {
     fail(`${id}/meta.json 을 읽지 못했습니다 — ${err.message}`);
   }
 
-  for (const key of ['title', 'group', 'summary']) {
+  for (const key of ['title', 'category', 'summary']) {
     if (typeof meta[key] !== 'string' || !meta[key].trim()) {
       fail(`${id}/meta.json 에 ${key} 가 없습니다`);
     }
   }
   if (!Array.isArray(meta.tags) || meta.tags.some((t) => typeof t !== 'string')) {
     fail(`${id}/meta.json 의 tags 는 문자열 배열이어야 합니다`);
+  }
+  if (!categoryIds.has(meta.category)) {
+    fail(
+      `${id}/meta.json 의 category "${meta.category}" 가 categories.json 에 없습니다 — ` +
+        `쓸 수 있는 값: ${[...categoryIds].join(', ')}`
+    );
   }
 
   const formats = {};
@@ -57,7 +88,7 @@ function readDiagram(id) {
   return {
     id,
     title: meta.title,
-    group: meta.group,
+    category: meta.category,
     tags: meta.tags,
     summary: meta.summary,
     order: Number.isFinite(meta.order) ? meta.order : 999,
@@ -68,26 +99,27 @@ function readDiagram(id) {
 
 function build() {
   if (!existsSync(SRC)) fail('diagrams/ 폴더가 없습니다');
+  const catList = readCategories();
+  const catIds = new Set(catList.map((c) => c.id));
+
   const ids = readdirSync(SRC)
     .filter((name) => statSync(join(SRC, name)).isDirectory())
     .sort();
   if (ids.length === 0) fail('diagrams/ 아래에 다이어그램이 하나도 없습니다');
 
-  const diagrams = ids.map(readDiagram);
+  const diagrams = ids.map((id) => readDiagram(id, catIds));
   diagrams.sort((a, b) => a.order - b.order || a.title.localeCompare(b.title, 'ko'));
 
-  // 묶음 순서: 그 묶음에서 가장 앞선 order, 같으면 이름순
-  const rank = new Map();
-  for (const d of diagrams) {
-    if (!rank.has(d.group)) rank.set(d.group, d.order);
-  }
-  const groups = [...rank.keys()].sort(
-    (a, b) => rank.get(a) - rank.get(b) || a.localeCompare(b, 'ko')
-  );
+  // 카테고리는 categories.json 에 적힌 순서를 그대로 따른다.
+  // 비어 있는 카테고리도 빠뜨리지 않는다 — 아직 그리지 않은 칸이 보여야 하기 때문이다.
+  const categories = catList.map((c) => ({
+    ...c,
+    count: diagrams.filter((d) => d.category === c.id).length,
+  }));
 
   const tags = [...new Set(diagrams.flatMap((d) => d.tags))].sort((a, b) => a.localeCompare(b, 'ko'));
 
-  return JSON.stringify({ groups, tags, diagrams }, null, 2) + '\n';
+  return JSON.stringify({ categories, tags, diagrams }, null, 2) + '\n';
 }
 
 const json = build();

@@ -92,9 +92,12 @@
 
   .list { flex-grow: 1; overflow: auto; border-top: 1px solid var(--hair); padding: 8px 0 16px; }
   .grouphead {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
     padding: 12px 16px 4px; font-size: 11px; font-weight: 650;
     letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase;
   }
+  .grouphead .cnt { font-weight: 500; letter-spacing: 0; }
+  .emptycat { padding: 4px 18px 2px; font-size: 12px; color: var(--muted); opacity: 0.75; }
   .groupitems { display: flex; flex-direction: column; gap: 2px; padding: 0 8px; }
   .row {
     display: flex; align-items: center; justify-content: space-between; gap: 8px;
@@ -141,6 +144,15 @@
 
   .gallery { flex-grow: 1; overflow: auto; padding: 24px 28px; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+  .sectionhead { margin: 26px 0 12px; }
+  .sectionhead:first-child { margin-top: 0; }
+  .sectionhead h2 { margin: 0; font-size: 15px; font-weight: 650; letter-spacing: -0.01em; }
+  .sectionhead p { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
+  .kinds { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .emptycard {
+    display: flex; align-items: center; justify-content: center; min-height: 120px;
+    border: 1px dashed var(--line); border-radius: 12px; color: var(--muted); font-size: 13px;
+  }
   .card {
     display: block; text-align: left; padding: 12px; border-radius: 12px;
     border: 1px solid var(--line); background: var(--card); cursor: pointer;
@@ -208,7 +220,7 @@
     </section>
 
     <section class="gallery" id="gallery" hidden>
-      <div class="grid" id="grid"></div>
+      <div id="grid"></div>
     </section>
   </main>
 </div>
@@ -499,7 +511,7 @@
     '<path d="M31 15L20 19M45 15L56 19M20 33L31 37M56 33L45 37"></path></svg>';
 
   const state = { q: '', tag: null, sel: null, fmt: 'html', view: 'list' };
-  let INDEX = { groups: [], tags: [], diagrams: [] };
+  let INDEX = { categories: [], tags: [], diagrams: [] };
   const byId = new Map();
 
   const current = () => byId.get(state.sel) || INDEX.diagrams[0];
@@ -530,7 +542,7 @@
 
   function renderChrome() {
     el('count').textContent =
-      INDEX.diagrams.length + '개 · ' + INDEX.groups.length + '개 묶음';
+      INDEX.diagrams.length + '개 · 카테고리 ' + INDEX.categories.length + '개';
     segment(
       el('viewseg'),
       [
@@ -559,20 +571,33 @@
   function renderList(list) {
     const host = el('list');
     host.replaceChildren();
-    if (list.length === 0) {
+    const filtering = state.q.trim() !== '' || state.tag !== null;
+    if (filtering && list.length === 0) {
       const p = document.createElement('div');
       p.className = 'note';
       p.textContent = '조건에 맞는 다이어그램이 없습니다.';
       host.appendChild(p);
       return;
     }
-    for (const group of INDEX.groups) {
-      const items = list.filter((d) => d.group === group);
-      if (items.length === 0) continue;
+    for (const cat of INDEX.categories) {
+      const items = list.filter((d) => d.category === cat.id);
+      // 필터가 걸려 있을 때만 빈 카테고리를 감춘다.
+      // 평소에는 아직 그리지 않은 칸이 보이는 편이 낫다.
+      if (items.length === 0 && filtering) continue;
       const h = document.createElement('div');
       h.className = 'grouphead';
-      h.textContent = group;
+      h.title = cat.summary;
+      h.innerHTML =
+        '<span>' + esc(cat.name) + '</span>' +
+        '<span class="cnt">' + (items.length || '—') + '</span>';
       host.appendChild(h);
+      if (items.length === 0) {
+        const e = document.createElement('div');
+        e.className = 'emptycat';
+        e.textContent = '아직 없음 · ' + cat.kinds.slice(0, 2).join(' · ');
+        host.appendChild(e);
+        continue;
+      }
       const box = document.createElement('div');
       box.className = 'groupitems';
       for (const d of items) {
@@ -592,29 +617,54 @@
   function renderGrid(list) {
     const host = el('grid');
     host.replaceChildren();
-    if (list.length === 0) {
+    const filtering = state.q.trim() !== '' || state.tag !== null;
+    if (filtering && list.length === 0) {
       const p = document.createElement('div');
       p.className = 'note';
       p.textContent = '조건에 맞는 다이어그램이 없습니다.';
       host.appendChild(p);
       return;
     }
-    for (const d of list) {
-      const b = document.createElement('button');
-      b.className = 'card';
-      b.setAttribute('aria-current', String(d.id === state.sel));
-      b.innerHTML =
-        '<div class="thumb">' + THUMB + '</div>' +
-        '<div class="cardtitle">' + esc(d.title) + '</div>' +
-        '<div class="cardsum">' + esc(d.summary) + '</div>' +
-        '<div class="meta">' +
-        d.tags.map((t) => '<span class="pill">' + esc(t) + '</span>').join('') +
+    for (const cat of INDEX.categories) {
+      const items = list.filter((d) => d.category === cat.id);
+      if (items.length === 0 && filtering) continue;
+
+      const head = document.createElement('div');
+      head.className = 'sectionhead';
+      head.innerHTML =
+        '<h2>' + esc(cat.name) + '</h2>' +
+        '<p>' + esc(cat.summary) + '</p>' +
+        '<div class="kinds">' +
+        cat.kinds.map((k) => '<span class="pill">' + esc(k) + '</span>').join('') +
         '</div>';
-      b.addEventListener('click', () => {
-        state.view = 'list';
-        select(d.id);
-      });
-      host.appendChild(b);
+      host.appendChild(head);
+
+      const row = document.createElement('div');
+      row.className = 'grid';
+      if (items.length === 0) {
+        const e = document.createElement('div');
+        e.className = 'emptycard';
+        e.textContent = '아직 그리지 않았습니다';
+        row.appendChild(e);
+      }
+      for (const d of items) {
+        const b = document.createElement('button');
+        b.className = 'card';
+        b.setAttribute('aria-current', String(d.id === state.sel));
+        b.innerHTML =
+          '<div class="thumb">' + THUMB + '</div>' +
+          '<div class="cardtitle">' + esc(d.title) + '</div>' +
+          '<div class="cardsum">' + esc(d.summary) + '</div>' +
+          '<div class="meta">' +
+          d.tags.map((t) => '<span class="pill">' + esc(t) + '</span>').join('') +
+          '</div>';
+        b.addEventListener('click', () => {
+          state.view = 'list';
+          select(d.id);
+        });
+        row.appendChild(b);
+      }
+      host.appendChild(row);
     }
   }
 
