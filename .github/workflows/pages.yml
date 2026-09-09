@@ -32,8 +32,10 @@ jobs:
       - name: Assemble site
         run: |
           mkdir -p _site
-          rsync -a --exclude '.git' --exclude '.github' --exclude '_site' ./ _site/
+          tar -cf - --exclude=./.git --exclude=./.github --exclude=./_site . \
+            | tar -xf - -C _site
           touch _site/.nojekyll
+          find _site -mindepth 1 | sort
 
       - uses: actions/upload-pages-artifact@v3
         with:
