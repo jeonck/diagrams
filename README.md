@@ -15,6 +15,17 @@
   저장소 폴더에서 `python3 -m http.server` 를 실행해 `http://localhost:8000` 으로 열거나, GitHub Pages로 보세요.
   (뷰어의 "파일 열기…" 버튼으로 `.excalidraw` 파일을 직접 선택하면 `file://`에서도 볼 수 있습니다.)
 
+## 스킬
+
+- [`.claude/skills/diagram-maker/`](.claude/skills/diagram-maker) — 이 저장소의 다이어그램을 그릴 때 쓰는
+  [openclaw/openclaw](https://github.com/openclaw/openclaw) 의 `diagram-maker` 스킬(MIT).
+  저장소 안에 있으므로 이 저장소에서 작업하는 Claude Code 세션에서 자동으로 잡힙니다.
+  개인 환경 전체에서 쓰려면 `~/.claude/skills/` 아래로 복사하세요:
+
+  ```sh
+  cp -r .claude/skills/diagram-maker ~/.claude/skills/
+  ```
+
 ## MVC
 
 - [`mvc/mvc-diagram.html`](mvc/mvc-diagram.html) — MVC(Model–View–Controller) 패턴의 대표 구조.
