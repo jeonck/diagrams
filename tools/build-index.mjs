@@ -11,6 +11,10 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = join(ROOT, 'diagrams');
 const CATS = join(SRC, 'categories.json');
 const OUT = join(ROOT, 'diagrams.json');
+const DOC = join(ROOT, 'README.md');
+const SITE = 'https://jeonck.github.io/diagrams/';
+const START = '<!-- diagrams:start -->';
+const END = '<!-- diagrams:end -->';
 
 const FORMATS = { html: 'diagram.html', excalidraw: 'diagram.excalidraw' };
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
@@ -138,20 +142,65 @@ function build() {
   return JSON.stringify({ categories, tags, diagrams }, null, 2) + '\n';
 }
 
+// README 의 다이어그램 표도 같은 인덱스에서 만든다. 손으로 적으면 반드시 어긋난다.
+function renderTable(index) {
+  const byCat = new Map(index.categories.map((c) => [c.id, c.name]));
+  const rows = index.diagrams
+    .slice()
+    .sort((a, b) => {
+      const ai = index.categories.findIndex((c) => c.id === a.category);
+      const bi = index.categories.findIndex((c) => c.id === b.category);
+      return ai - bi || a.order - b.order || a.title.localeCompare(b.title, 'ko');
+    })
+    .map((d) => {
+      const link = `[${d.title}](${SITE}#${d.id}/html)`;
+      return `| ${byCat.get(d.category)} | ${d.kind} | ${link} | ${d.summary} |`;
+    });
+  return [
+    START,
+    '',
+    `현재 ${index.diagrams.length}개입니다. 파일은 \`diagrams/<slug>/\` 에 있고, 이 표는`,
+    '`node tools/build-index.mjs` 가 만들므로 직접 고치지 마세요.',
+    '',
+    '| 카테고리 | 종류 | 다이어그램 | 요약 |',
+    '| --- | --- | --- | --- |',
+    ...rows,
+    '',
+    END,
+  ].join('\n');
+}
+
+function spliceDoc(table) {
+  const doc = readFileSync(DOC, 'utf8');
+  const a = doc.indexOf(START);
+  const b = doc.indexOf(END);
+  if (a === -1 || b === -1 || b < a) {
+    fail(`README.md 에 ${START} / ${END} 표시가 없습니다`);
+  }
+  return doc.slice(0, a) + table + doc.slice(b + END.length);
+}
+
 const json = build();
 const parsed = JSON.parse(json);
 const count = parsed.diagrams.length;
 const missing = parsed.categories.flatMap((c) => c.missing.map((k) => `${c.name}/${k}`));
+
+const table = renderTable(parsed);
+const doc = spliceDoc(table);
 
 if (process.argv.includes('--check')) {
   const current = existsSync(OUT) ? readFileSync(OUT, 'utf8') : '';
   if (current !== json) {
     fail('diagrams.json 이 meta.json 들과 어긋납니다 — `node tools/build-index.mjs` 를 실행해 커밋하세요');
   }
-  console.log(`build-index: diagrams.json 최신입니다 (${count}개)`);
+  if (readFileSync(DOC, 'utf8') !== doc) {
+    fail('README.md 의 다이어그램 표가 어긋납니다 — `node tools/build-index.mjs` 를 실행해 커밋하세요');
+  }
+  console.log(`build-index: diagrams.json · README 표 최신입니다 (${count}개)`);
 } else {
   writeFileSync(OUT, json);
-  console.log(`build-index: diagrams.json 갱신 (${count}개)`);
+  writeFileSync(DOC, doc);
+  console.log(`build-index: diagrams.json · README 표 갱신 (${count}개)`);
 }
 // 아직 그리지 않은 대표 종류는 실패가 아니라 남은 일이다.
 if (missing.length > 0) {
