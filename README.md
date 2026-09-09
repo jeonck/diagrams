@@ -67,7 +67,7 @@ build-index: diagrams.json 갱신 (15개)
 
 <!-- diagrams:start -->
 
-프로젝트 2개 · 다이어그램 19개입니다.
+프로젝트 2개 · 다이어그램 20개입니다.
 이 표는 `node tools/build-index.mjs` 가 만들므로 직접 고치지 마세요.
 
 ### 온라인 상점
@@ -98,15 +98,16 @@ build-index: diagrams.json 갱신 (15개)
 
 다른 서비스가 보낸 이벤트를 받아 푸시·이메일·SMS로 내보내는 사내 공용 알림 플랫폼
 
-`projects/notify-hub/` · 설계 진행 중 · 다이어그램 4개 · 설계 결정 3개
+`projects/notify-hub/` · 설계 진행 중 · 다이어그램 5개 · 설계 결정 3개
 
-아직 그리지 않은 대표 종류 11개 — 구조/클래스, 구조/컴포넌트, 구조/패키지, 행위/시퀀스, 행위/액티비티, 데이터/ERD, 데이터/데이터 흐름(DFD), 배포·인프라/네트워크 토폴로지, 프로세스/BPMN, 프로세스/CI/CD 파이프라인, 프로세스/값 흐름
+아직 그리지 않은 대표 종류 10개 — 구조/클래스, 구조/컴포넌트, 구조/패키지, 행위/액티비티, 데이터/ERD, 데이터/데이터 흐름(DFD), 배포·인프라/네트워크 토폴로지, 프로세스/BPMN, 프로세스/CI/CD 파이프라인, 프로세스/값 흐름
 
 | 단계 | 종류 | 다이어그램 | 요약 |
 | --- | --- | --- | --- |
 | 요구 | 유스케이스 | [알림 허브 유스케이스](https://jeonck.github.io/diagrams/#notify-usecase/html) | 누가 이 서비스로 무엇을 하는가 |
 | 분석 | 상태 머신 | [알림 발송 상태 전이](https://jeonck.github.io/diagrams/#notify-state/html) | 알림 한 건이 접수되어 성공하거나 포기될 때까지 |
 | 설계 | C4 컨텍스트·컨테이너 | [알림 허브 C4 컨텍스트·컨테이너](https://jeonck.github.io/diagrams/#notify-c4/html) | 시스템 경계 안의 컨테이너와, 경계 밖의 발신자·공급자 |
+| 설계 | 시퀀스 | [알림 발송 시퀀스](https://jeonck.github.io/diagrams/#notify-sequence/html) | 요청 한 건이 접수되어 공급자에게 나가기까지, 그리고 중복이 걸러지는 지점 |
 | 구현·운영 | 배포 | [알림 허브 배포 구성](https://jeonck.github.io/diagrams/#notify-deployment/html) | 큐를 사이에 두고 수신과 발송이 따로 확장되는 배치 |
 
 <!-- diagrams:end -->

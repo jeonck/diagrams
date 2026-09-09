@@ -16,7 +16,7 @@
       "id": "design",
       "name": "설계",
       "summary": "어떻게 만들 것인가",
-      "count": 6
+      "count": 7
     },
     {
       "id": "operations",
@@ -72,7 +72,7 @@
           "covered": true
         }
       ],
-      "count": 6
+      "count": 7
     },
     {
       "id": "data",
@@ -133,6 +133,7 @@
     "데이터 흐름",
     "도메인 모델",
     "리드타임",
+    "멱등성",
     "배포",
     "상태 머신",
     "시퀀스",
@@ -176,13 +177,12 @@
       "status": "설계 진행 중",
       "started": "2026-09",
       "order": 20,
-      "count": 4,
+      "count": 5,
       "decisions": 3,
       "missing": [
         "구조/클래스",
         "구조/컴포넌트",
         "구조/패키지",
-        "행위/시퀀스",
         "행위/액티비티",
         "데이터/ERD",
         "데이터/데이터 흐름(DFD)",
@@ -575,6 +575,28 @@
       ]
     },
     {
+      "id": "notify-sequence",
+      "project": "notify-hub",
+      "title": "알림 발송 시퀀스",
+      "phase": "design",
+      "category": "behavior",
+      "kind": "시퀀스",
+      "tags": [
+        "시퀀스",
+        "멱등성"
+      ],
+      "summary": "요청 한 건이 접수되어 공급자에게 나가기까지, 그리고 중복이 걸러지는 지점",
+      "order": 20,
+      "updated": "2026-09-09",
+      "formats": {
+        "html": "projects/notify-hub/diagrams/notify-sequence/diagram.html",
+        "excalidraw": "projects/notify-hub/diagrams/notify-sequence/diagram.excalidraw"
+      },
+      "decisions": [
+        "0003-idempotency-key"
+      ]
+    },
+    {
       "id": "notify-deployment",
       "project": "notify-hub",
       "title": "알림 허브 배포 구성",
@@ -720,7 +742,9 @@
       "title": "멱등키로 중복 발송을 막는다",
       "status": "제안됨",
       "date": "2026-09-09",
-      "diagrams": [],
+      "diagrams": [
+        "notify-sequence"
+      ],
       "supersedes": null,
       "supersededBy": null,
       "path": "projects/notify-hub/decisions/0003-idempotency-key.md"

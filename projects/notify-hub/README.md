@@ -7,13 +7,15 @@
 
 ## 아직 설계 중입니다
 
-이 프로젝트는 일부러 **미완성 상태로 두었습니다.** 다이어그램이 네 장뿐이고,
-`node tools/build-index.mjs` 를 돌리면 아직 그리지 않은 대표 종류 11개를 알려줍니다.
+이 프로젝트는 일부러 **미완성 상태로 두었습니다.** 다이어그램이 다섯 장뿐이고,
+`node tools/build-index.mjs` 를 돌리면 아직 그리지 않은 대표 종류 10개를 알려줍니다.
 저장소가 "남은 설계 산출물"을 어떻게 드러내는지 보이기 위한 것입니다.
 
-가장 먼저 그려야 할 것은 **시퀀스 다이어그램**입니다 —
-[0003 멱등키](decisions/0003-idempotency-key.md)의 열린 질문들이 결국
-"어느 단계에서 무엇을 확인하는가"의 문제라, 시간 순서로 그려 봐야 답이 나옵니다.
+가장 먼저 그려야 할 것으로 꼽았던 [시퀀스 다이어그램](diagrams/notify-sequence/diagram.html)은
+그렸습니다. [0003 멱등키](decisions/0003-idempotency-key.md)의 열린 질문이
+"어느 단계에서 무엇을 확인하는가"의 문제였는데, 시간 순서로 그려 보니
+**멱등키가 막는 구간(②)과 막지 못하는 구간(④ 이후)이 눈에 보입니다.**
+결론은 아직 안 났지만, 무엇을 결정해야 하는지는 좁혀졌습니다.
 
 ## 범위
 
@@ -32,4 +34,5 @@
   [ADR 0002](decisions/0002-retry-with-backoff-then-dlq.md) ·
   [상태 전이](diagrams/notify-state/diagram.html)
 - **멱등키로 중복 발송을 막는다** — 아직 **제안** 단계이고 열린 질문이 셋 남았습니다.
-  [ADR 0003](decisions/0003-idempotency-key.md)
+  [ADR 0003](decisions/0003-idempotency-key.md) ·
+  [발송 시퀀스](diagrams/notify-sequence/diagram.html)

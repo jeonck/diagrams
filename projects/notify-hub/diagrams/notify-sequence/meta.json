@@ -1,0 +1,10 @@
+{
+  "title": "알림 발송 시퀀스",
+  "phase": "design",
+  "category": "behavior",
+  "kind": "시퀀스",
+  "tags": ["시퀀스", "멱등성"],
+  "summary": "요청 한 건이 접수되어 공급자에게 나가기까지, 그리고 중복이 걸러지는 지점",
+  "updated": "2026-09-09",
+  "order": 20
+}
