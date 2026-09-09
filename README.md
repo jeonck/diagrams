@@ -2,6 +2,9 @@
 
 다이어그램 모음.
 
+공개 주소: **https://jeonck.github.io/diagrams/**
+(`main` 에 푸시하면 `.github/workflows/pages.yml` 이 GitHub Pages로 자동 배포합니다.)
+
 ## 뷰어
 
 - [`index.html`](index.html) — 저장소의 다이어그램을 브라우저에서 바로 보는 뷰어.
