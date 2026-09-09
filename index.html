@@ -96,6 +96,12 @@
       html: 'mvc/mvc-diagram.html',
       excalidraw: 'mvc/mvc-diagram.excalidraw',
     },
+    {
+      id: 'mvc-sequence',
+      title: 'MVC 요청 시퀀스',
+      html: 'mvc/mvc-sequence.html',
+      excalidraw: 'mvc/mvc-sequence.excalidraw',
+    },
   ];
 
   /* ---------- 최소 Excalidraw 렌더러 (외부 라이브러리 없음) ---------- */
@@ -314,6 +320,50 @@
     return svg;
   }
 
+  /* ---------- 다운로드 ---------- */
+
+  function saveBlob(blob, name) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  // 다이어그램 HTML 은 <style> + 인라인 <svg> 로만 되어 있으므로,
+  // 스타일을 svg 안으로 옮기면 그 자체로 열리는 .svg 파일이 된다.
+  function toStandaloneSvg(source) {
+    const svg = (source.match(/<svg[\s\S]*?<\/svg>/) || [])[0];
+    if (!svg) throw new Error('이 문서에서 <svg> 를 찾지 못했습니다');
+    const style = (source.match(/<style>([\s\S]*?)<\/style>/) || [, ''])[1]
+      // 페이지 레이아웃용 규칙은 단독 SVG 에서 방해만 된다
+      .replace(/\b(main|svg)\s*\{[^}]*\}/g, '')
+      // body 의 폰트·배경은 살려야 하므로 루트 <svg> 규칙으로 옮긴다
+      .replace(/\bbody\s*\{/, 'svg {');
+    const vb = ((svg.match(/viewBox="([^"]+)"/) || [, '0 0 800 600'])[1]).trim().split(/\s+/);
+    return (
+      '<?xml version="1.0" encoding="UTF-8"?>\n' +
+      svg.replace(
+        /<svg\b/,
+        '<svg xmlns="http://www.w3.org/2000/svg" width="' + vb[2] + '" height="' + vb[3] + '"'
+      ).replace(
+        /(<svg[^>]*>)/,
+        '$1<style>' + style + '</style>' +
+          '<rect x="' + vb[0] + '" y="' + vb[1] + '" width="' + vb[2] + '" height="' + vb[3] +
+          '" fill="var(--bg)" />'
+      )
+    );
+  }
+
+  async function downloadSvg(url, name) {
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    saveBlob(new Blob([toStandaloneSvg(await res.text())], { type: 'image/svg+xml' }), name);
+  }
+
   /* ---------- 뷰어 ---------- */
 
   const picker = document.getElementById('picker');
@@ -356,21 +406,44 @@
     actions.replaceChildren();
     const add = (node) => actions.appendChild(node);
 
-    const open = document.createElement('a');
-    open.className = 'btn';
-    open.target = '_blank';
-    open.rel = 'noopener';
-    open.href = mode === 'html' ? current.html : current.excalidraw;
-    open.textContent = mode === 'html' ? '새 탭에서 열기' : '원본 JSON 보기';
-    add(open);
+    const link = (text, href, download) => {
+      const a = document.createElement('a');
+      a.className = 'btn';
+      a.href = href;
+      a.textContent = text;
+      if (download) a.download = download;
+      else {
+        a.target = '_blank';
+        a.rel = 'noopener';
+      }
+      add(a);
+    };
+
+    if (mode === 'html') {
+      link('새 탭에서 열기', current.html);
+      link('.html 내려받기', current.html, current.id + '.html');
+
+      const svg = document.createElement('button');
+      svg.textContent = '.svg 내려받기';
+      svg.addEventListener('click', async () => {
+        svg.disabled = true;
+        try {
+          await downloadSvg(current.html, current.id + '.svg');
+        } catch (err) {
+          hint.textContent =
+            'SVG 를 만들지 못했습니다 (' + err.message + '). ' +
+            'file:// 로 열면 브라우저가 파일을 읽지 못합니다 — ' +
+            '로컬 서버나 GitHub Pages 로 열어 주세요.';
+        } finally {
+          svg.disabled = false;
+        }
+      });
+      add(svg);
+    }
 
     if (mode === 'excalidraw') {
-      const dl = document.createElement('a');
-      dl.className = 'btn';
-      dl.href = current.excalidraw;
-      dl.download = current.id + '.excalidraw';
-      dl.textContent = '.excalidraw 내려받기';
-      add(dl);
+      link('원본 JSON 보기', current.excalidraw);
+      link('.excalidraw 내려받기', current.excalidraw, current.id + '.excalidraw');
 
       const label = document.createElement('label');
       label.className = 'btn';

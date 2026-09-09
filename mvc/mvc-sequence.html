@@ -1,0 +1,183 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MVC 시퀀스 다이어그램</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f8fafc;
+    --fg: #172033;
+    --muted: #5b6475;
+    --line: #64748b;
+    --neutral: #e2e8f0;
+    --input: #bfdbfe;
+    --process: #c7d2fe;
+    --storage: #99f6e4;
+    --external: #fde68a;
+    --risk: #fecaca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #a3adbd;
+      --line: #94a3b8;
+      --neutral: #334155;
+      --input: #1d4ed8;
+      --process: #4338ca;
+      --storage: #0f766e;
+      --external: #92400e;
+      --risk: #991b1b;
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font:
+      14px/1.4 ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+  }
+  main {
+    max-width: 980px;
+    margin: 32px auto;
+    padding: 0 20px;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 650;
+    fill: var(--fg);
+  }
+  .label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: var(--fg);
+  }
+  .small {
+    font-size: 12px;
+    fill: var(--muted);
+  }
+  .node {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .neutral {
+    fill: var(--neutral);
+  }
+  .input {
+    fill: var(--input);
+  }
+  .process {
+    fill: var(--process);
+  }
+  .storage {
+    fill: var(--storage);
+  }
+  .external {
+    fill: var(--external);
+  }
+  .risk {
+    fill: var(--risk);
+  }
+  .edge {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .edge-dashed {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 6 5;
+  }
+  .arrow-head {
+    fill: var(--line);
+  }
+  .zone {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+    stroke-dasharray: 6 5;
+    opacity: 0.8;
+  }
+</style>
+<main>
+  <svg viewBox="0 0 1040 676" role="img" aria-label="MVC 요청 처리 시퀀스 다이어그램">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--line)" />
+      </marker>
+      <marker id="ret" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10" fill="none" stroke="var(--line)" stroke-width="1.4" />
+      </marker>
+    </defs>
+
+    <text class="title" x="24" y="34">MVC 요청 처리 시퀀스</text>
+    <text class="small" x="24" y="56">주문 생성 요청 한 건이 각 역할을 거쳐 응답으로 돌아오기까지</text>
+
+    <!-- 생명선 -->
+    <line class="zone" x1="95" y1="134" x2="95" y2="574" />
+    <line class="zone" x1="305" y1="134" x2="305" y2="574" />
+    <line class="zone" x1="515" y1="134" x2="515" y2="574" />
+    <line class="zone" x1="725" y1="134" x2="725" y2="574" />
+    <line class="zone" x1="935" y1="134" x2="935" y2="574" />
+
+    <!-- 메시지: 노드보다 먼저 그려 화살표가 박스 뒤로 간다 -->
+    <path class="edge" d="M 100 175 L 300 175" marker-end="url(#arrow)" />
+    <path class="edge" d="M 310 282 L 510 282" marker-end="url(#arrow)" />
+    <path class="edge" d="M 520 326 L 720 326" marker-end="url(#arrow)" />
+    <path class="edge" d="M 720 366 L 520 366" stroke-dasharray="7 5" marker-end="url(#ret)" />
+    <path class="edge" d="M 510 406 L 310 406" stroke-dasharray="7 5" marker-end="url(#ret)" />
+    <path class="edge" d="M 310 450 L 930 450" marker-end="url(#arrow)" />
+    <path class="edge" d="M 930 490 L 310 490" stroke-dasharray="7 5" marker-end="url(#ret)" />
+    <path class="edge" d="M 300 530 L 100 530" stroke-dasharray="7 5" marker-end="url(#ret)" />
+    <path class="edge" d="M 310 218 L 366 218 L 366 244 L 310 244" marker-end="url(#arrow)" />
+
+    <!-- 활성 구간 -->
+    <rect class="node input" x="90" y="165" width="10" height="375" rx="2" />
+    <rect class="node process" x="300" y="165" width="10" height="375" rx="2" />
+    <rect class="node storage" x="510" y="258" width="10" height="144" rx="2" />
+    <rect class="node neutral" x="720" y="316" width="10" height="60" rx="2" />
+    <rect class="node external" x="930" y="440" width="10" height="60" rx="2" />
+
+    <!-- 참여자 -->
+    <rect class="node input" x="20" y="78" width="150" height="56" rx="8" />
+    <rect class="node process" x="230" y="78" width="150" height="56" rx="8" />
+    <rect class="node storage" x="440" y="78" width="150" height="56" rx="8" />
+    <rect class="node neutral" x="650" y="78" width="150" height="56" rx="8" />
+    <rect class="node external" x="860" y="78" width="150" height="56" rx="8" />
+
+    <text class="label" x="95" y="102" text-anchor="middle">사용자</text>
+    <text class="small" x="95" y="122" text-anchor="middle">브라우저</text>
+    <text class="label" x="305" y="102" text-anchor="middle">Controller</text>
+    <text class="small" x="305" y="122" text-anchor="middle">요청 처리</text>
+    <text class="label" x="515" y="102" text-anchor="middle">Model</text>
+    <text class="small" x="515" y="122" text-anchor="middle">도메인 로직</text>
+    <text class="label" x="725" y="102" text-anchor="middle">Repository</text>
+    <text class="small" x="725" y="122" text-anchor="middle">영속성</text>
+    <text class="label" x="935" y="102" text-anchor="middle">View</text>
+    <text class="small" x="935" y="122" text-anchor="middle">렌더링</text>
+
+    <text class="small" x="200" y="167" text-anchor="middle">① POST /orders</text>
+    <text class="small" x="410" y="260" text-anchor="middle">③ createOrder(cmd)</text>
+    <text class="small" x="620" y="318" text-anchor="middle">④ save(order)</text>
+    <text class="small" x="620" y="358" text-anchor="middle">order #1024</text>
+    <text class="small" x="410" y="398" text-anchor="middle">Order</text>
+    <text class="small" x="620" y="442" text-anchor="middle">⑤ render(order)</text>
+    <text class="small" x="620" y="482" text-anchor="middle">HTML</text>
+    <text class="small" x="200" y="522" text-anchor="middle">200 OK + HTML</text>
+    <text class="small" x="376" y="235">② 입력 검증</text>
+
+    <text class="small" x="24" y="612">※ 실선은 호출, 점선은 반환입니다. 세로 막대는 각 참여자가 처리 중인 구간을 뜻합니다.</text>
+    <text class="small" x="24" y="632">Repository는 MVC의 세 역할이 아니라 Model이 영속성을 맡길 대상이라 회색으로 두었습니다.</text>
+  </svg>
+</main>
