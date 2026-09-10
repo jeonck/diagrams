@@ -20,6 +20,10 @@ jobs:
           # check-freshness 가 코드 변경일을 보려면 전체 이력이 필요하다
           fetch-depth: 0
 
+      # 도구가 잘못 동작하면 검사들이 통과해도 소용없다. 도구부터 본다.
+      - name: Test tools
+        run: node --test tools/tests/*.test.mjs
+
       # meta.json 과 diagrams.json 이 어긋난 채로 들어오는 것을 막는다
       - name: Check diagram index
         run: node tools/build-index.mjs --check

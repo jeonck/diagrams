@@ -16,6 +16,7 @@ projects/
 diagrams.json                  생성물 — 손으로 고치지 않습니다
 index.html                     뷰어
 tools/
+  tests/                       도구들의 시험 (node --test)
   new-diagram.mjs              새 다이어그램의 뼈대를 만든다
   build-index.mjs              diagrams.json 과 README 표를 만든다
   check-freshness.mjs          낡았을 수 있는 그림을 찾는다
@@ -29,8 +30,8 @@ git clone https://github.com/jeonck/diagrams && cd diagrams
 python3 -m http.server        # http://localhost:8000 에서 뷰어가 열립니다
 ```
 
-필요한 것은 **Node 16 이상**(`tools/*.mjs`)과 **Python 3.8 이상**(`tools/generators/`)
-뿐입니다. 설치할 패키지도, 빌드 단계도 없습니다 — 뷰어는 브라우저가 그대로 여는 한 장짜리
+필요한 것은 **Node 18 이상**(`tools/*.mjs` 와 `node --test`)과 **Python 3.8 이상**
+(`tools/generators/`) 뿐입니다. 설치할 패키지도, 빌드 단계도 없습니다 — 뷰어는 브라우저가 그대로 여는 한 장짜리
 HTML 이고, 도구는 표준 라이브러리만 씁니다.
 
 ```sh
@@ -38,6 +39,7 @@ node tools/new-diagram.mjs --help    # 새 다이어그램 뼈대 만들기
 node tools/build-index.mjs           # 목록·README 표 다시 만들기
 python3 tools/generators/build.py    # 그림 30장 다시 찍기
 node tools/check-freshness.mjs       # 낡았을 수 있는 그림 찾기
+node --test tools/tests/*.test.mjs   # 도구들이 제대로 도는지 시험
 ```
 
 **포크해서 쓰신다면** GitHub Pages 를 한 번 켜야 합니다 — 저장소
@@ -364,6 +366,7 @@ cp -r .claude/skills/diagram-maker ~/.claude/skills/
 
 | 검사 | 잡는 것 | 막나 |
 |---|---|---|
+| `node --test tools/tests/*.test.mjs` | 도구 자체가 잘못 동작함 | 예 |
 | `node tools/build-index.mjs --check` | `meta.json` ↔ `diagrams.json` ↔ README 표가 어긋남 | 예 |
 | `python3 tools/generators/build.py --check` | 스펙 ↔ 그림 파일이 어긋남 | 예 |
 | `node tools/check-freshness.mjs` | 결정·코드보다 뒤처진 그림 | 아니오 (잡 요약에 표로 남깁니다) |
@@ -450,6 +453,21 @@ cp -r .claude/skills/diagram-maker ~/.claude/skills/
 먼저 무너지는 것은 용량이 아니라 소유권(저장소 하나 = PR 큐 하나)이므로, **프로젝트가 5개를
 넘을 때** 각 저장소의 인덱스 조각을 합치는 연합 구조로 갑니다. 뷰어가 모든 경로를
 매니페스트에서 읽으므로 그때도 뷰어는 바뀌지 않습니다.
+
+### 남이 쓸 수 있게
+
+갓 클론한 저장소에서 세 검사와 전체 재생성이 그대로 도는지 먼저 확인했습니다 —
+절대 경로 0건, 재생성 후 변경 0줄. 그 다음 남은 구멍을 막았습니다.
+
+| 무엇을 | 왜 |
+|---|---|
+| PR 검사 (`check.yml`) | 배포 워크플로가 `main` 푸시에만 걸려 있어, 남이 올린 변경은 **머지된 뒤에야** 잘못이 드러났습니다 |
+| 시작하기 · 요구사항 · Pages 켜는 법 | 무엇이 있어야 도는지, 포크하면 무엇을 켜야 하는지가 문서에 없었습니다 (이 저장소도 처음에 `Resource not accessible by integration` 으로 막혔습니다) |
+| `new-diagram.mjs` | 새 그림을 넣으려면 폴더·`meta.json`·스펙을 손으로 만들어야 했습니다. 이제 명령 하나로 뼈대가 서고 바로 뷰어에 보입니다 |
+| 도구 시험 17건 | 검사가 통과해도 **도구가 잘못 동작하면** 소용없습니다. 저장소를 임시 폴더로 복사해 진짜 명령을 돌리고, 일부러 망가뜨린 뒤 제대로 잡는지 봅니다 |
+
+아직 안 한 것: **레이아웃은 자동이 아닙니다.** 스펙에 좌표를 사람이 직접 쓰고, 상자를 옮기면
+거기 붙은 선도 함께 옮겨야 합니다. 고칠 수 있는 버그가 아니라 이 도구의 성격입니다.
 
 ### 환경 때문에 이렇게 된 것
 
