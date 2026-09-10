@@ -999,8 +999,11 @@
       state.lang === 'en'
         ? mine + ' diagrams · ' + axisCount
         : mine + '개 · ' + axisCount + '개';
-    const projects = visibleProjects();
-    const p = projects.find((x) => x.id === state.project) || projects[0];
+    const projects = visibleProjects().slice();
+    const current = INDEX.projects.find((x) => x.id === state.project);
+    // 화면 언어와 다른 프로젝트를 보고 있더라도 선택기가 비어 보이면 안 된다
+    if (current && !projects.some((x) => x.id === current.id)) projects.push(current);
+    const p = current || projects[0];
     el('project').innerHTML = p
       ? '<strong>' + esc(p.name) + '</strong><span>' + esc(p.summary) +
         (p.missing && p.missing.length
@@ -1587,6 +1590,14 @@
     render();
   }
 
+  // 주소로 바로 들어온 그림·결정이 다른 언어로 쓰였으면 화면도 그 언어로 맞춘다.
+  // 링크를 받은 사람이 반쪽만 번역된 화면을 보는 일을 막는다. 저장은 하지 않는다 —
+  // 링크를 따라간 것이지 사용자가 고른 것이 아니다.
+  function followLang() {
+    const p = INDEX.projects.find((x) => x.id === state.project);
+    if (p && p.lang !== state.lang) state.lang = p.lang;
+  }
+
   function applyHash() {
     const raw = decodeURIComponent(location.hash.slice(1));
     state.view = raw === 'gallery' ? 'grid' : 'list';
@@ -1595,6 +1606,7 @@
       if (adrById.has(id)) {
         state.adr = id;
         state.project = adrById.get(id).project;
+        followLang();
         return;
       }
     }
@@ -1604,6 +1616,7 @@
     if (byId.has(id)) {
       state.sel = id;
       state.project = byId.get(id).project;
+      followLang();
     }
     if (fmt === 'html' || fmt === 'excalidraw') state.fmt = fmt;
     const d = current();
