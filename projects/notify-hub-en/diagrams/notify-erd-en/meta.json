@@ -1,0 +1,13 @@
+{
+  "title": "Notification Domain ERD",
+  "phase": "analysis",
+  "category": "data",
+  "kind": "ERD",
+  "tags": [
+    "ERD",
+    "domain model"
+  ],
+  "summary": "The tables that hold recipients, notifications and delivery attempts",
+  "updated": "2026-09-10",
+  "order": 20
+}

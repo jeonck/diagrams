@@ -1,0 +1,160 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Notification Hub deployment</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f8fafc;
+    --fg: #172033;
+    --muted: #5b6475;
+    --line: #64748b;
+    --neutral: #e2e8f0;
+    --input: #bfdbfe;
+    --process: #c7d2fe;
+    --storage: #99f6e4;
+    --external: #fde68a;
+    --risk: #fecaca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #a3adbd;
+      --line: #94a3b8;
+      --neutral: #334155;
+      --input: #1d4ed8;
+      --process: #4338ca;
+      --storage: #0f766e;
+      --external: #92400e;
+      --risk: #991b1b;
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font:
+      14px/1.4 ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+  }
+  main {
+    max-width: 980px;
+    margin: 32px auto;
+    padding: 0 20px;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 650;
+    fill: var(--fg);
+  }
+  .label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: var(--fg);
+  }
+  .small {
+    font-size: 12px;
+    fill: var(--muted);
+  }
+  .node {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .neutral {
+    fill: var(--neutral);
+  }
+  .input {
+    fill: var(--input);
+  }
+  .process {
+    fill: var(--process);
+  }
+  .storage {
+    fill: var(--storage);
+  }
+  .external {
+    fill: var(--external);
+  }
+  .risk {
+    fill: var(--risk);
+  }
+  .edge {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .edge-dashed {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 6 5;
+  }
+  .arrow-head {
+    fill: var(--line);
+  }
+  .zone {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+    stroke-dasharray: 6 5;
+    opacity: 0.8;
+  }
+</style>
+<main>
+  <svg viewBox="0 0 1200 800" role="img" aria-label="Notification Hub deployment">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--line)" />
+      </marker>
+    </defs>
+
+    <text class="title" x="24" y="34">Notification Hub Deployment</text>
+    <text class="small" x="24" y="56">Intake and sending scale separately, with the queue between them</text>
+
+    <!-- 연결선을 먼저 그려 화살표가 상자 뒤로 가게 한다 -->
+    <path class="edge" d="M 260 275 L 340 245" marker-end="url(#arrow)" />
+    <path class="edge" d="M 460 290 L 460 370" marker-end="url(#arrow)" />
+    <path class="edge" d="M 460 450 L 460 540" marker-end="url(#arrow)" />
+    <path class="edge" d="M 580 410 L 680 410" stroke-dasharray="6 5" marker-end="url(#arrow)" />
+    <path class="edge" d="M 580 585 L 680 585" marker-end="url(#arrow)" />
+    <path class="edge" d="M 900 585 L 960 585" marker-end="url(#arrow)" />
+
+    <rect class="zone" x="300" y="150" width="620" height="540" rx="10" />
+    <rect class="node external" x="60" y="230" width="200" height="90" rx="8" />
+    <rect class="node process" x="340" y="200" width="240" height="90" rx="8" />
+    <rect class="node storage" x="340" y="370" width="240" height="80" rx="8" />
+    <rect class="node process" x="340" y="540" width="240" height="90" rx="8" />
+    <rect class="node risk" x="680" y="370" width="220" height="80" rx="8" />
+    <rect class="node storage" x="680" y="540" width="220" height="90" rx="8" />
+    <rect class="node neutral" x="960" y="540" width="220" height="90" rx="8" />
+
+    <text class="small" x="302" y="140">Private subnet</text>
+    <text class="label" x="160" y="280" text-anchor="middle">Sending Service</text>
+    <text class="label" x="460" y="240" text-anchor="middle">Intake API ×2</text>
+    <text class="small" x="460" y="262" text-anchor="middle">Stateless</text>
+    <text class="label" x="460" y="415" text-anchor="middle">Event Queue</text>
+    <text class="label" x="460" y="580" text-anchor="middle">Send Workers ×4</text>
+    <text class="small" x="460" y="602" text-anchor="middle">Scales with queue depth</text>
+    <text class="label" x="790" y="415" text-anchor="middle">DLQ</text>
+    <text class="label" x="790" y="590" text-anchor="middle">Delivery History DB</text>
+    <text class="label" x="1070" y="590" text-anchor="middle">External Providers</text>
+    <text class="small" x="300" y="242" text-anchor="middle">Request</text>
+    <text class="small" x="515" y="334" text-anchor="middle">Enqueue</text>
+    <text class="small" x="510" y="498" text-anchor="middle">Claim</text>
+    <text class="small" x="630" y="392" text-anchor="middle">After 5 tries</text>
+    <text class="small" x="630" y="568" text-anchor="middle">Record result</text>
+    <text class="small" x="930" y="568" text-anchor="middle">Send</text>
+    <text class="small" x="24" y="744">Note: the intake API and the send workers scale separately across the queue — when traffic spikes,</text>
+    <text class="small" x="24" y="766">intake only has to enqueue, and the backlog is worked off by adding more workers.</text>
+  </svg>
+</main>

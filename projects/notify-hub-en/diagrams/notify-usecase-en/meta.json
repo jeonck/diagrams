@@ -1,0 +1,13 @@
+{
+  "title": "Notification Hub Use Cases",
+  "phase": "requirements",
+  "category": "behavior",
+  "kind": "Use case",
+  "tags": [
+    "Use case",
+    "Requirements"
+  ],
+  "summary": "Who does what with this service",
+  "updated": "2026-09-10",
+  "order": 10
+}

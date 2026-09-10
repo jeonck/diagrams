@@ -1,0 +1,158 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Notification Data Flow (Level 1)</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f8fafc;
+    --fg: #172033;
+    --muted: #5b6475;
+    --line: #64748b;
+    --neutral: #e2e8f0;
+    --input: #bfdbfe;
+    --process: #c7d2fe;
+    --storage: #99f6e4;
+    --external: #fde68a;
+    --risk: #fecaca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #a3adbd;
+      --line: #94a3b8;
+      --neutral: #334155;
+      --input: #1d4ed8;
+      --process: #4338ca;
+      --storage: #0f766e;
+      --external: #92400e;
+      --risk: #991b1b;
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font:
+      14px/1.4 ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+  }
+  main {
+    max-width: 980px;
+    margin: 32px auto;
+    padding: 0 20px;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 650;
+    fill: var(--fg);
+  }
+  .label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: var(--fg);
+  }
+  .small {
+    font-size: 12px;
+    fill: var(--muted);
+  }
+  .node {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .neutral {
+    fill: var(--neutral);
+  }
+  .input {
+    fill: var(--input);
+  }
+  .process {
+    fill: var(--process);
+  }
+  .storage {
+    fill: var(--storage);
+  }
+  .external {
+    fill: var(--external);
+  }
+  .risk {
+    fill: var(--risk);
+  }
+  .edge {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .edge-dashed {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 6 5;
+  }
+  .arrow-head {
+    fill: var(--line);
+  }
+  .zone {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+    stroke-dasharray: 6 5;
+    opacity: 0.8;
+  }
+</style>
+<main>
+  <svg viewBox="0 0 1080 840" role="img" aria-label="Notification Data Flow (Level 1)">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--line)" />
+      </marker>
+    </defs>
+
+    <text class="title" x="24" y="34">Notification Data Flow (Level 1)</text>
+    <text class="small" x="24" y="56">Which processes notification data passes through, and where it comes to rest</text>
+
+    <!-- 연결선을 먼저 그려 화살표가 상자 뒤로 가게 한다 -->
+    <path class="edge" d="M 240 225 L 340 225" marker-end="url(#arrow)" />
+    <path class="edge" d="M 590 215 L 720 215" marker-end="url(#arrow)" />
+    <path class="edge" d="M 465 280 L 465 400" marker-end="url(#arrow)" />
+    <path class="edge" d="M 590 440 L 720 440" marker-end="url(#arrow)" />
+    <path class="edge" d="M 720 470 L 590 470" marker-end="url(#arrow)" />
+    <path class="edge" d="M 465 510 L 465 630" marker-end="url(#arrow)" />
+    <path class="edge" d="M 590 675 L 720 675" marker-end="url(#arrow)" />
+
+    <rect class="node external" x="60" y="180" width="180" height="90" rx="8" />
+    <ellipse class="node process" cx="465.0" cy="225.0" rx="125.0" ry="55.0" />
+    <rect class="node storage" x="720" y="185" width="260" height="80" rx="8" />
+    <ellipse class="node process" cx="465.0" cy="455.0" rx="125.0" ry="55.0" />
+    <rect class="node neutral" x="720" y="410" width="260" height="90" rx="8" />
+    <ellipse class="node process" cx="465.0" cy="685.0" rx="125.0" ry="55.0" />
+    <rect class="node storage" x="720" y="635" width="260" height="80" rx="8" />
+
+    <text class="label" x="150" y="230" text-anchor="middle">Sending service</text>
+    <text class="label" x="465" y="230" text-anchor="middle">1.0 Intake</text>
+    <text class="label" x="850" y="230" text-anchor="middle">D1 Notification store</text>
+    <text class="label" x="465" y="460" text-anchor="middle">2.0 Send</text>
+    <text class="label" x="850" y="460" text-anchor="middle">External provider</text>
+    <text class="label" x="465" y="690" text-anchor="middle">3.0 Retry · give up</text>
+    <text class="label" x="850" y="680" text-anchor="middle">D2 Delivery history</text>
+    <text class="small" x="290" y="208" text-anchor="middle">Send request</text>
+    <text class="small" x="655" y="198" text-anchor="middle">Intake record</text>
+    <text class="small" x="535" y="344" text-anchor="middle">Due to send</text>
+    <text class="small" x="655" y="423" text-anchor="middle">Message payload</text>
+    <text class="small" x="655" y="490" text-anchor="middle">Send result</text>
+    <text class="small" x="535" y="574" text-anchor="middle">Failed items</text>
+    <text class="small" x="655" y="658" text-anchor="middle">Delivery attempt</text>
+    <text class="small" x="24" y="784">Note: an ellipse is a process, a rectangle named D-something is a data store, and the rest are external entities.</text>
+    <text class="small" x="24" y="806">A DFD draws the movement of data only — control such as how many times a retry runs lives in the state transition diagram.</text>
+  </svg>
+</main>

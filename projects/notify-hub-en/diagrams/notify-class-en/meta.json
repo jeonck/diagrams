@@ -1,0 +1,13 @@
+{
+  "title": "Notification Domain Classes",
+  "phase": "analysis",
+  "category": "structure",
+  "kind": "Class",
+  "tags": [
+    "Class",
+    "Domain Model"
+  ],
+  "summary": "How one notification relates to the channel that sends it and to its delivery attempts",
+  "updated": "2026-09-10",
+  "order": 10
+}

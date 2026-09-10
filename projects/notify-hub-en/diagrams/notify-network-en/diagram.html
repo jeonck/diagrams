@@ -1,0 +1,165 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Notification Hub network topology</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f8fafc;
+    --fg: #172033;
+    --muted: #5b6475;
+    --line: #64748b;
+    --neutral: #e2e8f0;
+    --input: #bfdbfe;
+    --process: #c7d2fe;
+    --storage: #99f6e4;
+    --external: #fde68a;
+    --risk: #fecaca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #a3adbd;
+      --line: #94a3b8;
+      --neutral: #334155;
+      --input: #1d4ed8;
+      --process: #4338ca;
+      --storage: #0f766e;
+      --external: #92400e;
+      --risk: #991b1b;
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font:
+      14px/1.4 ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+  }
+  main {
+    max-width: 980px;
+    margin: 32px auto;
+    padding: 0 20px;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 650;
+    fill: var(--fg);
+  }
+  .label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: var(--fg);
+  }
+  .small {
+    font-size: 12px;
+    fill: var(--muted);
+  }
+  .node {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .neutral {
+    fill: var(--neutral);
+  }
+  .input {
+    fill: var(--input);
+  }
+  .process {
+    fill: var(--process);
+  }
+  .storage {
+    fill: var(--storage);
+  }
+  .external {
+    fill: var(--external);
+  }
+  .risk {
+    fill: var(--risk);
+  }
+  .edge {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .edge-dashed {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 6 5;
+  }
+  .arrow-head {
+    fill: var(--line);
+  }
+  .zone {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+    stroke-dasharray: 6 5;
+    opacity: 0.8;
+  }
+</style>
+<main>
+  <svg viewBox="0 0 1180 940" role="img" aria-label="Notification Hub network topology">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--line)" />
+      </marker>
+    </defs>
+
+    <text class="title" x="24" y="34">Notification Hub Network Topology</text>
+    <text class="small" x="24" y="56">What sits in which subnet, and where traffic leaves</text>
+
+    <!-- 연결선을 먼저 그려 화살표가 상자 뒤로 가게 한다 -->
+    <path class="edge" d="M 300 310 L 420 310" marker-end="url(#arrow)" />
+    <path class="edge" d="M 530 350 L 530 470" marker-end="url(#arrow)" />
+    <path class="edge" d="M 640 330 L 700 330 L 700 515 L 760 515" marker-end="url(#arrow)" />
+    <path class="edge" d="M 880 470 L 880 350" marker-end="url(#arrow)" />
+    <path class="edge" d="M 1000 310 L 1080 310 L 1080 720 L 1000 720" marker-end="url(#arrow)" />
+    <path class="edge" d="M 760 720 L 300 720" marker-end="url(#arrow)" />
+
+    <rect class="zone" x="320" y="180" width="820" height="640" rx="10" />
+    <rect class="zone" x="360" y="240" width="740" height="150" rx="10" />
+    <rect class="zone" x="360" y="440" width="740" height="160" rx="10" />
+    <rect class="zone" x="360" y="650" width="740" height="130" rx="10" />
+    <rect class="node external" x="60" y="265" width="240" height="90" rx="8" />
+    <rect class="node process" x="420" y="270" width="220" height="80" rx="8" />
+    <rect class="node process" x="760" y="270" width="240" height="80" rx="8" />
+    <rect class="node storage" x="420" y="470" width="220" height="90" rx="8" />
+    <rect class="node neutral" x="760" y="470" width="240" height="90" rx="8" />
+    <rect class="node process" x="760" y="680" width="240" height="80" rx="8" />
+    <rect class="node external" x="60" y="680" width="240" height="90" rx="8" />
+
+    <text class="small" x="322" y="170">VPC 10.20.0.0/16</text>
+    <text class="small" x="362" y="230">Private subnet · App 10.20.10.0/24</text>
+    <text class="small" x="362" y="430">Private subnet · Data 10.20.20.0/24</text>
+    <text class="small" x="362" y="640">Public subnet 10.20.1.0/24</text>
+    <text class="label" x="180" y="315" text-anchor="middle">Internal Services</text>
+    <text class="label" x="530" y="315" text-anchor="middle">Intake API ×2</text>
+    <text class="label" x="880" y="315" text-anchor="middle">Send Workers ×4</text>
+    <text class="label" x="530" y="520" text-anchor="middle">Delivery History DB</text>
+    <text class="label" x="880" y="520" text-anchor="middle">SQS VPC Endpoint</text>
+    <text class="label" x="880" y="725" text-anchor="middle">NAT Gateway</text>
+    <text class="label" x="180" y="730" text-anchor="middle">Push · Email Providers</text>
+    <text class="small" x="360" y="292" text-anchor="middle">443</text>
+    <text class="small" x="585" y="414" text-anchor="middle">5432</text>
+    <text class="small" x="674" y="320" text-anchor="middle">Enqueue</text>
+    <text class="small" x="932" y="414" text-anchor="middle">Claim</text>
+    <text class="small" x="1020" y="635" text-anchor="middle">443 outbound</text>
+    <text class="small" x="530" y="703" text-anchor="middle">Internet</text>
+    <text class="small" x="24" y="862">Note: nothing reaches this service from the internet — requests only come from the internal service network.</text>
+    <text class="small" x="24" y="884">Only outbound traffic passes through NAT to reach the providers. The queue is attached over a VPC endpoint, so it never crosses the internet.</text>
+    <text class="small" x="24" y="906">The send workers also talk to the history DB over 5432 — the lines would overlap, so only the intake API path is drawn.</text>
+  </svg>
+</main>

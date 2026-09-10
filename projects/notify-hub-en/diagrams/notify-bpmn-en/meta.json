@@ -1,0 +1,13 @@
+{
+  "title": "Failed Notification Handling (BPMN)",
+  "phase": "requirements",
+  "category": "process",
+  "kind": "BPMN",
+  "tags": [
+    "BPMN",
+    "Operations"
+  ],
+  "summary": "How a person decides to requeue or give up on a notification that fell into the DLQ",
+  "updated": "2026-09-10",
+  "order": 20
+}

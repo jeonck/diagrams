@@ -1,0 +1,13 @@
+{
+  "title": "Notification Hub Network Topology",
+  "phase": "operations",
+  "category": "deployment",
+  "kind": "Network topology",
+  "tags": [
+    "Network",
+    "VPC"
+  ],
+  "summary": "What sits in which subnet, and where traffic leaves",
+  "updated": "2026-09-10",
+  "order": 20
+}

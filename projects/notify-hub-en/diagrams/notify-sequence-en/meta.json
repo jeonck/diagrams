@@ -1,0 +1,13 @@
+{
+  "title": "Notification Send Sequence",
+  "phase": "design",
+  "category": "behavior",
+  "kind": "Sequence",
+  "tags": [
+    "Sequence",
+    "Idempotency"
+  ],
+  "summary": "One request from intake out to the provider, and where duplicates are filtered out",
+  "updated": "2026-09-10",
+  "order": 30
+}

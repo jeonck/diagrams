@@ -1,0 +1,165 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Notification Domain ERD</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f8fafc;
+    --fg: #172033;
+    --muted: #5b6475;
+    --line: #64748b;
+    --neutral: #e2e8f0;
+    --input: #bfdbfe;
+    --process: #c7d2fe;
+    --storage: #99f6e4;
+    --external: #fde68a;
+    --risk: #fecaca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #a3adbd;
+      --line: #94a3b8;
+      --neutral: #334155;
+      --input: #1d4ed8;
+      --process: #4338ca;
+      --storage: #0f766e;
+      --external: #92400e;
+      --risk: #991b1b;
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font:
+      14px/1.4 ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+  }
+  main {
+    max-width: 980px;
+    margin: 32px auto;
+    padding: 0 20px;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 650;
+    fill: var(--fg);
+  }
+  .label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: var(--fg);
+  }
+  .small {
+    font-size: 12px;
+    fill: var(--muted);
+  }
+  .node {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .neutral {
+    fill: var(--neutral);
+  }
+  .input {
+    fill: var(--input);
+  }
+  .process {
+    fill: var(--process);
+  }
+  .storage {
+    fill: var(--storage);
+  }
+  .external {
+    fill: var(--external);
+  }
+  .risk {
+    fill: var(--risk);
+  }
+  .edge {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .edge-dashed {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 6 5;
+  }
+  .arrow-head {
+    fill: var(--line);
+  }
+  .zone {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+    stroke-dasharray: 6 5;
+    opacity: 0.8;
+  }
+</style>
+<main>
+  <svg viewBox="0 0 1080 720" role="img" aria-label="Notification Domain ERD">
+    <defs>
+      <marker id="one-s" viewBox="0 0 12 12" refX="0" refY="6" markerWidth="10" markerHeight="10" orient="auto">
+        <path d="M 6 1 L 6 11" fill="none" stroke="var(--line)" stroke-width="1.5" />
+      </marker>
+      <marker id="many" viewBox="0 0 12 12" refX="12" refY="6" markerWidth="10" markerHeight="10" orient="auto">
+        <path d="M 0 6 L 12 0 M 0 6 L 12 6 M 0 6 L 12 12" fill="none" stroke="var(--line)" stroke-width="1.5" />
+      </marker>
+    </defs>
+
+    <text class="title" x="24" y="34">Notification Domain ERD</text>
+    <text class="small" x="24" y="56">The tables that hold recipients, notifications and delivery attempts</text>
+
+    <!-- 연결선을 먼저 그려 화살표가 상자 뒤로 가게 한다 -->
+    <path class="edge" d="M 280 173 L 400 173" marker-start="url(#one-s)" marker-end="url(#many)" />
+    <path class="edge" d="M 170 220 L 170 390" marker-start="url(#one-s)" marker-end="url(#many)" />
+    <path class="edge" d="M 530 240 L 530 390" marker-start="url(#one-s)" marker-end="url(#many)" />
+
+    <rect class="node storage" x="60" y="110" width="220" height="110" rx="8" />
+    <path class="edge" d="M 60 144 L 280 144" stroke-width="1" />
+    <rect class="node process" x="400" y="110" width="260" height="130" rx="8" />
+    <path class="edge" d="M 400 144 L 660 144" stroke-width="1" />
+    <rect class="node process" x="60" y="390" width="220" height="110" rx="8" />
+    <path class="edge" d="M 60 424 L 280 424" stroke-width="1" />
+    <rect class="node process" x="400" y="390" width="260" height="130" rx="8" />
+    <path class="edge" d="M 400 424 L 660 424" stroke-width="1" />
+
+    <text class="label" x="170" y="133" text-anchor="middle">recipient</text>
+    <text class="small" x="76" y="168">PK  recipient_id</text>
+    <text class="small" x="76" y="188">user_id</text>
+    <text class="small" x="76" y="208">locale</text>
+    <text class="label" x="530" y="133" text-anchor="middle">notification</text>
+    <text class="small" x="416" y="168">PK  notification_id</text>
+    <text class="small" x="416" y="188">FK  recipient_id</text>
+    <text class="small" x="416" y="208">idempotency_key  UNIQUE</text>
+    <text class="small" x="416" y="228">status</text>
+    <text class="label" x="170" y="413" text-anchor="middle">channel_preference</text>
+    <text class="small" x="76" y="448">PK  pref_id</text>
+    <text class="small" x="76" y="468">FK  recipient_id</text>
+    <text class="small" x="76" y="488">channel · enabled</text>
+    <text class="label" x="530" y="413" text-anchor="middle">delivery_attempt</text>
+    <text class="small" x="416" y="448">PK  attempt_id</text>
+    <text class="small" x="416" y="468">FK  notification_id</text>
+    <text class="small" x="416" y="488">attempt_no</text>
+    <text class="small" x="416" y="508">result</text>
+    <text class="small" x="340" y="146" text-anchor="middle">N per recipient</text>
+    <text class="small" x="190" y="310">Channel preference</text>
+    <text class="small" x="550" y="320">Delivery attempt</text>
+    <text class="small" x="24" y="664">Note: the crow’s foot marks the N side and the short bar the 1 side.</text>
+    <text class="small" x="24" y="686">idempotency_key is enforced by a unique constraint on notification, with no separate store (ADR 0003).</text>
+  </svg>
+</main>

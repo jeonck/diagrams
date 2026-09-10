@@ -1,7 +1,7 @@
 # diagrams
 
 제품 하나를 설계하며 만드는 다이어그램들을 **프로젝트 단위로** 모아 두는 저장소입니다.
-공개 주소: **https://jeonck.github.io/diagrams/**
+공개 주소: **https://diagrams.metacog.co.kr/**
 
 ```
 categories.json                그림 종류 분류 (전역)
@@ -118,7 +118,7 @@ build-index: 알림 허브 에 아직 없는 산출물 10개 — 구조/클래�
 
 <!-- diagrams:start -->
 
-프로젝트 3개 · 다이어그램 45개입니다.
+프로젝트 4개 · 다이어그램 60개입니다.
 이 표는 `node tools/build-index.mjs` 가 만들므로 직접 고치지 마세요.
 
 ### 온라인 상점
@@ -129,21 +129,21 @@ build-index: 알림 허브 에 아직 없는 산출물 10개 — 구조/클래�
 
 | 단계 | 종류 | 다이어그램 | 요약 |
 | --- | --- | --- | --- |
-| 요구 | 유스케이스 | [쇼핑몰 유스케이스](https://jeonck.github.io/diagrams/#shop-usecase/html) | 누가 이 시스템으로 무엇을 할 수 있는가 |
-| 요구 | BPMN | [주문 이행 프로세스 (BPMN)](https://jeonck.github.io/diagrams/#fulfillment-bpmn/html) | 주문 한 건이 부서를 넘나들며 처리되는 순서 |
-| 분석 | 클래스 | [주문 도메인 클래스](https://jeonck.github.io/diagrams/#order-class/html) | 같은 도메인을 데이터가 아니라 책임과 관계로 본 그림 |
-| 분석 | ERD | [주문 도메인 ERD](https://jeonck.github.io/diagrams/#order-erd/html) | 고객이 주문을 내고, 주문이 항목과 결제로 갈라지는 관계 |
-| 분석 | 상태 머신 | [주문 상태 전이](https://jeonck.github.io/diagrams/#order-state/html) | 주문 한 건이 가질 수 있는 상태와, 상태를 바꾸는 사건 |
-| 분석 | 데이터 흐름(DFD) | [주문 데이터 흐름 (레벨 1)](https://jeonck.github.io/diagrams/#order-dfd/html) | 주문 데이터가 어떤 처리를 거쳐 어디에 쌓이는가 |
-| 설계 | C4 컨텍스트·컨테이너 | [C4 컨텍스트·컨테이너](https://jeonck.github.io/diagrams/#c4-container/html) | 시스템 경계 안의 컨테이너와, 경계 밖의 사람·외부 시스템 |
-| 설계 | 패키지 | [패키지 의존 구조](https://jeonck.github.io/diagrams/#package-deps/html) | 어느 패키지가 어느 패키지를 알아도 되는가 |
-| 설계 | 컴포넌트 | [MVC 구조](https://jeonck.github.io/diagrams/#mvc-structure/html) | Model·View·Controller 세 역할과 그 사이의 의존 방향 |
-| 설계 | 시퀀스 | [MVC 요청 시퀀스](https://jeonck.github.io/diagrams/#mvc-sequence/html) | 주문 생성 요청 한 건이 각 역할을 거쳐 응답으로 돌아오기까지 |
-| 설계 | 액티비티 | [결제 처리 액티비티](https://jeonck.github.io/diagrams/#checkout-activity/html) | 장바구니에서 확인 메일까지, 분기와 병렬이 있는 처리 흐름 |
-| 구현·운영 | 배포 | [웹 서비스 배포 구성](https://jeonck.github.io/diagrams/#deployment-topology/html) | 요청이 엣지를 지나 앱 계층에 닿고, 읽기와 쓰기가 갈라지는 지점 |
-| 구현·운영 | 네트워크 토폴로지 | [네트워크 토폴로지](https://jeonck.github.io/diagrams/#network-topology/html) | 어떤 서브넷에 무엇이 있고, 어느 포트로 통하는가 |
-| 구현·운영 | CI/CD 파이프라인 | [CI/CD 파이프라인](https://jeonck.github.io/diagrams/#cicd-pipeline/html) | 커밋 한 번이 프로덕션에 닿기까지 거치는 관문 |
-| 구현·운영 | 값 흐름 | [주문 기능 값 흐름](https://jeonck.github.io/diagrams/#value-stream/html) | 요구 하나가 배포되기까지, 일한 시간과 기다린 시간 |
+| 요구 | 유스케이스 | [쇼핑몰 유스케이스](https://diagrams.metacog.co.kr/#shop-usecase/html) | 누가 이 시스템으로 무엇을 할 수 있는가 |
+| 요구 | BPMN | [주문 이행 프로세스 (BPMN)](https://diagrams.metacog.co.kr/#fulfillment-bpmn/html) | 주문 한 건이 부서를 넘나들며 처리되는 순서 |
+| 분석 | 클래스 | [주문 도메인 클래스](https://diagrams.metacog.co.kr/#order-class/html) | 같은 도메인을 데이터가 아니라 책임과 관계로 본 그림 |
+| 분석 | ERD | [주문 도메인 ERD](https://diagrams.metacog.co.kr/#order-erd/html) | 고객이 주문을 내고, 주문이 항목과 결제로 갈라지는 관계 |
+| 분석 | 상태 머신 | [주문 상태 전이](https://diagrams.metacog.co.kr/#order-state/html) | 주문 한 건이 가질 수 있는 상태와, 상태를 바꾸는 사건 |
+| 분석 | 데이터 흐름(DFD) | [주문 데이터 흐름 (레벨 1)](https://diagrams.metacog.co.kr/#order-dfd/html) | 주문 데이터가 어떤 처리를 거쳐 어디에 쌓이는가 |
+| 설계 | C4 컨텍스트·컨테이너 | [C4 컨텍스트·컨테이너](https://diagrams.metacog.co.kr/#c4-container/html) | 시스템 경계 안의 컨테이너와, 경계 밖의 사람·외부 시스템 |
+| 설계 | 패키지 | [패키지 의존 구조](https://diagrams.metacog.co.kr/#package-deps/html) | 어느 패키지가 어느 패키지를 알아도 되는가 |
+| 설계 | 컴포넌트 | [MVC 구조](https://diagrams.metacog.co.kr/#mvc-structure/html) | Model·View·Controller 세 역할과 그 사이의 의존 방향 |
+| 설계 | 시퀀스 | [MVC 요청 시퀀스](https://diagrams.metacog.co.kr/#mvc-sequence/html) | 주문 생성 요청 한 건이 각 역할을 거쳐 응답으로 돌아오기까지 |
+| 설계 | 액티비티 | [결제 처리 액티비티](https://diagrams.metacog.co.kr/#checkout-activity/html) | 장바구니에서 확인 메일까지, 분기와 병렬이 있는 처리 흐름 |
+| 구현·운영 | 배포 | [웹 서비스 배포 구성](https://diagrams.metacog.co.kr/#deployment-topology/html) | 요청이 엣지를 지나 앱 계층에 닿고, 읽기와 쓰기가 갈라지는 지점 |
+| 구현·운영 | 네트워크 토폴로지 | [네트워크 토폴로지](https://diagrams.metacog.co.kr/#network-topology/html) | 어떤 서브넷에 무엇이 있고, 어느 포트로 통하는가 |
+| 구현·운영 | CI/CD 파이프라인 | [CI/CD 파이프라인](https://diagrams.metacog.co.kr/#cicd-pipeline/html) | 커밋 한 번이 프로덕션에 닿기까지 거치는 관문 |
+| 구현·운영 | 값 흐름 | [주문 기능 값 흐름](https://diagrams.metacog.co.kr/#value-stream/html) | 요구 하나가 배포되기까지, 일한 시간과 기다린 시간 |
 
 ### Online Store
 
@@ -153,21 +153,21 @@ A commerce backend where a customer places an order, pays for it, and the system
 
 | 단계 | 종류 | 다이어그램 | 요약 |
 | --- | --- | --- | --- |
-| 요구 | 유스케이스 | [Online Store Use Cases](https://jeonck.github.io/diagrams/#shop-usecase-en/html) | Who can do what with this system |
-| 요구 | BPMN | [Order Fulfillment Process (BPMN)](https://jeonck.github.io/diagrams/#fulfillment-bpmn-en/html) | How a single order moves from team to team |
-| 분석 | 클래스 | [Order Domain Classes](https://jeonck.github.io/diagrams/#order-class-en/html) | The same domain seen through responsibilities and relationships, not data |
-| 분석 | ERD | [Order Domain ERD](https://jeonck.github.io/diagrams/#order-erd-en/html) | How a customer places an order, and the order branches into items and a payment |
-| 분석 | 상태 머신 | [Order State Transitions](https://jeonck.github.io/diagrams/#order-state-en/html) | The states a single order can be in, and the events that change them |
-| 분석 | 데이터 흐름(DFD) | [Order Data Flow (Level 1)](https://jeonck.github.io/diagrams/#order-dfd-en/html) | Which processes order data passes through, and where it comes to rest |
-| 설계 | C4 컨텍스트·컨테이너 | [C4 Context · Container](https://jeonck.github.io/diagrams/#c4-container-en/html) | The containers inside the system boundary, and the people and systems outside it |
-| 설계 | 패키지 | [Package Dependencies](https://jeonck.github.io/diagrams/#package-deps-en/html) | Which package is allowed to know about which |
-| 설계 | 컴포넌트 | [MVC Structure](https://jeonck.github.io/diagrams/#mvc-structure-en/html) | The three Model·View·Controller roles and which way they depend on each other |
-| 설계 | 시퀀스 | [MVC Request Sequence](https://jeonck.github.io/diagrams/#mvc-sequence-en/html) | One create-order request through each role and back as a response |
-| 설계 | 액티비티 | [Checkout Activity](https://jeonck.github.io/diagrams/#checkout-activity-en/html) | From cart to confirmation email — a flow with a branch and a parallel split |
-| 구현·운영 | 배포 | [Web Service Deployment](https://jeonck.github.io/diagrams/#deployment-topology-en/html) | How a request crosses the edge into the app tier, and where reads split from writes |
-| 구현·운영 | 네트워크 토폴로지 | [Network Topology](https://jeonck.github.io/diagrams/#network-topology-en/html) | Which subnet holds what, and over which ports they talk |
-| 구현·운영 | CI/CD 파이프라인 | [CI/CD Pipeline](https://jeonck.github.io/diagrams/#cicd-pipeline-en/html) | The gates one commit passes through on its way to production |
-| 구현·운영 | 값 흐름 | [Order Feature Value Stream](https://jeonck.github.io/diagrams/#value-stream-en/html) | From one request to a deployment: time spent working, time spent waiting |
+| 요구 | 유스케이스 | [Online Store Use Cases](https://diagrams.metacog.co.kr/#shop-usecase-en/html) | Who can do what with this system |
+| 요구 | BPMN | [Order Fulfillment Process (BPMN)](https://diagrams.metacog.co.kr/#fulfillment-bpmn-en/html) | How a single order moves from team to team |
+| 분석 | 클래스 | [Order Domain Classes](https://diagrams.metacog.co.kr/#order-class-en/html) | The same domain seen through responsibilities and relationships, not data |
+| 분석 | ERD | [Order Domain ERD](https://diagrams.metacog.co.kr/#order-erd-en/html) | How a customer places an order, and the order branches into items and a payment |
+| 분석 | 상태 머신 | [Order State Transitions](https://diagrams.metacog.co.kr/#order-state-en/html) | The states a single order can be in, and the events that change them |
+| 분석 | 데이터 흐름(DFD) | [Order Data Flow (Level 1)](https://diagrams.metacog.co.kr/#order-dfd-en/html) | Which processes order data passes through, and where it comes to rest |
+| 설계 | C4 컨텍스트·컨테이너 | [C4 Context · Container](https://diagrams.metacog.co.kr/#c4-container-en/html) | The containers inside the system boundary, and the people and systems outside it |
+| 설계 | 패키지 | [Package Dependencies](https://diagrams.metacog.co.kr/#package-deps-en/html) | Which package is allowed to know about which |
+| 설계 | 컴포넌트 | [MVC Structure](https://diagrams.metacog.co.kr/#mvc-structure-en/html) | The three Model·View·Controller roles and which way they depend on each other |
+| 설계 | 시퀀스 | [MVC Request Sequence](https://diagrams.metacog.co.kr/#mvc-sequence-en/html) | One create-order request through each role and back as a response |
+| 설계 | 액티비티 | [Checkout Activity](https://diagrams.metacog.co.kr/#checkout-activity-en/html) | From cart to confirmation email — a flow with a branch and a parallel split |
+| 구현·운영 | 배포 | [Web Service Deployment](https://diagrams.metacog.co.kr/#deployment-topology-en/html) | How a request crosses the edge into the app tier, and where reads split from writes |
+| 구현·운영 | 네트워크 토폴로지 | [Network Topology](https://diagrams.metacog.co.kr/#network-topology-en/html) | Which subnet holds what, and over which ports they talk |
+| 구현·운영 | CI/CD 파이프라인 | [CI/CD Pipeline](https://diagrams.metacog.co.kr/#cicd-pipeline-en/html) | The gates one commit passes through on its way to production |
+| 구현·운영 | 값 흐름 | [Order Feature Value Stream](https://diagrams.metacog.co.kr/#value-stream-en/html) | From one request to a deployment: time spent working, time spent waiting |
 
 ### 알림 허브
 
@@ -177,21 +177,45 @@ A commerce backend where a customer places an order, pays for it, and the system
 
 | 단계 | 종류 | 다이어그램 | 요약 |
 | --- | --- | --- | --- |
-| 요구 | 유스케이스 | [알림 허브 유스케이스](https://jeonck.github.io/diagrams/#notify-usecase/html) | 누가 이 서비스로 무엇을 하는가 |
-| 요구 | BPMN | [실패 알림 처리 프로세스 (BPMN)](https://jeonck.github.io/diagrams/#notify-bpmn/html) | DLQ 로 넘어간 알림을 사람이 판단해 되살리거나 접는 과정 |
-| 분석 | 클래스 | [알림 도메인 클래스](https://jeonck.github.io/diagrams/#notify-class/html) | 알림 한 건과 그것을 보내는 채널, 시도 기록의 관계 |
-| 분석 | 상태 머신 | [알림 발송 상태 전이](https://jeonck.github.io/diagrams/#notify-state/html) | 알림 한 건이 접수되어 성공하거나 포기될 때까지 |
-| 분석 | ERD | [알림 도메인 ERD](https://jeonck.github.io/diagrams/#notify-erd/html) | 수신자와 알림, 그리고 시도 기록이 놓이는 표 |
-| 분석 | 데이터 흐름(DFD) | [알림 데이터 흐름 (레벨 1)](https://jeonck.github.io/diagrams/#notify-dfd/html) | 알림 데이터가 어떤 처리를 거쳐 어디에 쌓이는가 |
-| 설계 | C4 컨텍스트·컨테이너 | [알림 허브 C4 컨텍스트·컨테이너](https://jeonck.github.io/diagrams/#notify-c4/html) | 시스템 경계 안의 컨테이너와, 경계 밖의 발신자·공급자 |
-| 설계 | 컴포넌트 | [수신 API 컴포넌트](https://jeonck.github.io/diagrams/#notify-components/html) | 요청 하나가 수신 API 안에서 거치는 부품들 |
-| 설계 | 시퀀스 | [알림 발송 시퀀스](https://jeonck.github.io/diagrams/#notify-sequence/html) | 요청 한 건이 접수되어 공급자에게 나가기까지, 그리고 중복이 걸러지는 지점 |
-| 설계 | 액티비티 | [알림 발송 재시도 액티비티](https://jeonck.github.io/diagrams/#notify-activity/html) | 발송 워커 한 사이클 — 성공하거나, 백오프 뒤 다시 돌거나, 포기하거나 |
-| 설계 | 패키지 | [모듈 의존 구조](https://jeonck.github.io/diagrams/#notify-packages/html) | 따로 배포되는 두 모듈이 하나의 도메인을 공유하는 방식 |
-| 구현·운영 | 배포 | [알림 허브 배포 구성](https://jeonck.github.io/diagrams/#notify-deployment/html) | 큐를 사이에 두고 수신과 발송이 따로 확장되는 배치 |
-| 구현·운영 | 네트워크 토폴로지 | [알림 허브 네트워크 토폴로지](https://jeonck.github.io/diagrams/#notify-network/html) | 어떤 서브넷에 무엇이 있고, 어디로 나가는가 |
-| 구현·운영 | CI/CD 파이프라인 | [알림 허브 CI/CD 파이프라인](https://jeonck.github.io/diagrams/#notify-cicd/html) | 한 커밋에서 두 개의 배포 단위가 함께 나가는 경로 |
-| 구현·운영 | 값 흐름 | [알림 한 건의 지연 분해](https://jeonck.github.io/diagrams/#notify-value-stream/html) | 요청이 접수되어 단말에 뜨기까지, 일한 시간과 기다린 시간 |
+| 요구 | 유스케이스 | [알림 허브 유스케이스](https://diagrams.metacog.co.kr/#notify-usecase/html) | 누가 이 서비스로 무엇을 하는가 |
+| 요구 | BPMN | [실패 알림 처리 프로세스 (BPMN)](https://diagrams.metacog.co.kr/#notify-bpmn/html) | DLQ 로 넘어간 알림을 사람이 판단해 되살리거나 접는 과정 |
+| 분석 | 클래스 | [알림 도메인 클래스](https://diagrams.metacog.co.kr/#notify-class/html) | 알림 한 건과 그것을 보내는 채널, 시도 기록의 관계 |
+| 분석 | 상태 머신 | [알림 발송 상태 전이](https://diagrams.metacog.co.kr/#notify-state/html) | 알림 한 건이 접수되어 성공하거나 포기될 때까지 |
+| 분석 | ERD | [알림 도메인 ERD](https://diagrams.metacog.co.kr/#notify-erd/html) | 수신자와 알림, 그리고 시도 기록이 놓이는 표 |
+| 분석 | 데이터 흐름(DFD) | [알림 데이터 흐름 (레벨 1)](https://diagrams.metacog.co.kr/#notify-dfd/html) | 알림 데이터가 어떤 처리를 거쳐 어디에 쌓이는가 |
+| 설계 | C4 컨텍스트·컨테이너 | [알림 허브 C4 컨텍스트·컨테이너](https://diagrams.metacog.co.kr/#notify-c4/html) | 시스템 경계 안의 컨테이너와, 경계 밖의 발신자·공급자 |
+| 설계 | 컴포넌트 | [수신 API 컴포넌트](https://diagrams.metacog.co.kr/#notify-components/html) | 요청 하나가 수신 API 안에서 거치는 부품들 |
+| 설계 | 시퀀스 | [알림 발송 시퀀스](https://diagrams.metacog.co.kr/#notify-sequence/html) | 요청 한 건이 접수되어 공급자에게 나가기까지, 그리고 중복이 걸러지는 지점 |
+| 설계 | 액티비티 | [알림 발송 재시도 액티비티](https://diagrams.metacog.co.kr/#notify-activity/html) | 발송 워커 한 사이클 — 성공하거나, 백오프 뒤 다시 돌거나, 포기하거나 |
+| 설계 | 패키지 | [모듈 의존 구조](https://diagrams.metacog.co.kr/#notify-packages/html) | 따로 배포되는 두 모듈이 하나의 도메인을 공유하는 방식 |
+| 구현·운영 | 배포 | [알림 허브 배포 구성](https://diagrams.metacog.co.kr/#notify-deployment/html) | 큐를 사이에 두고 수신과 발송이 따로 확장되는 배치 |
+| 구현·운영 | 네트워크 토폴로지 | [알림 허브 네트워크 토폴로지](https://diagrams.metacog.co.kr/#notify-network/html) | 어떤 서브넷에 무엇이 있고, 어디로 나가는가 |
+| 구현·운영 | CI/CD 파이프라인 | [알림 허브 CI/CD 파이프라인](https://diagrams.metacog.co.kr/#notify-cicd/html) | 한 커밋에서 두 개의 배포 단위가 함께 나가는 경로 |
+| 구현·운영 | 값 흐름 | [알림 한 건의 지연 분해](https://diagrams.metacog.co.kr/#notify-value-stream/html) | 요청이 접수되어 단말에 뜨기까지, 일한 시간과 기다린 시간 |
+
+### Notification Hub
+
+A shared internal platform that takes events from other services and sends them out as push, email and SMS
+
+`projects/notify-hub-en/` · Design complete · 다이어그램 15개 · 설계 결정 3개
+
+| 단계 | 종류 | 다이어그램 | 요약 |
+| --- | --- | --- | --- |
+| 요구 | 유스케이스 | [Notification Hub Use Cases](https://diagrams.metacog.co.kr/#notify-usecase-en/html) | Who does what with this service |
+| 요구 | BPMN | [Failed Notification Handling (BPMN)](https://diagrams.metacog.co.kr/#notify-bpmn-en/html) | How a person decides to requeue or give up on a notification that fell into the DLQ |
+| 분석 | 클래스 | [Notification Domain Classes](https://diagrams.metacog.co.kr/#notify-class-en/html) | How one notification relates to the channel that sends it and to its delivery attempts |
+| 분석 | 상태 머신 | [Notification Send State Transitions](https://diagrams.metacog.co.kr/#notify-state-en/html) | One notification from intake until it either succeeds or is given up |
+| 분석 | ERD | [Notification Domain ERD](https://diagrams.metacog.co.kr/#notify-erd-en/html) | The tables that hold recipients, notifications and delivery attempts |
+| 분석 | 데이터 흐름(DFD) | [Notification Data Flow (Level 1)](https://diagrams.metacog.co.kr/#notify-dfd-en/html) | Which processes notification data passes through, and where it comes to rest |
+| 설계 | C4 컨텍스트·컨테이너 | [Notification Hub C4 Context · Container](https://diagrams.metacog.co.kr/#notify-c4-en/html) | The containers inside the system boundary, and the senders and providers outside it |
+| 설계 | 컴포넌트 | [Intake API Components](https://diagrams.metacog.co.kr/#notify-components-en/html) | The parts a single request passes through inside the Intake API |
+| 설계 | 시퀀스 | [Notification Send Sequence](https://diagrams.metacog.co.kr/#notify-sequence-en/html) | One request from intake out to the provider, and where duplicates are filtered out |
+| 설계 | 액티비티 | [Notification Send Retry Activity](https://diagrams.metacog.co.kr/#notify-activity-en/html) | One send-worker cycle — succeed, loop after backoff, or give up |
+| 설계 | 패키지 | [Module Dependencies](https://diagrams.metacog.co.kr/#notify-packages-en/html) | How two separately deployed modules share a single domain |
+| 구현·운영 | 배포 | [Notification Hub Deployment](https://diagrams.metacog.co.kr/#notify-deployment-en/html) | Intake and sending scale separately, with the queue between them |
+| 구현·운영 | 네트워크 토폴로지 | [Notification Hub Network Topology](https://diagrams.metacog.co.kr/#notify-network-en/html) | What sits in which subnet, and where traffic leaves |
+| 구현·운영 | CI/CD 파이프라인 | [Notification Hub CI/CD Pipeline](https://diagrams.metacog.co.kr/#notify-cicd-en/html) | How one commit ships two deployment units together |
+| 구현·운영 | 값 흐름 | [Latency Breakdown of One Notification](https://diagrams.metacog.co.kr/#notify-value-stream-en/html) | From intake to the screen: time spent working, time spent waiting |
 
 <!-- diagrams:end -->
 

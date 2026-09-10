@@ -1,0 +1,13 @@
+{
+  "title": "Latency Breakdown of One Notification",
+  "phase": "operations",
+  "category": "process",
+  "kind": "Value stream",
+  "tags": [
+    "Value stream",
+    "Latency"
+  ],
+  "summary": "From intake to the screen: time spent working, time spent waiting",
+  "updated": "2026-09-10",
+  "order": 40
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Notification Hub C4 Context · Container",
+  "phase": "design",
+  "category": "structure",
+  "kind": "C4 Context & Container",
+  "tags": [
+    "C4",
+    "architecture"
+  ],
+  "summary": "The containers inside the system boundary, and the senders and providers outside it",
+  "updated": "2026-09-10",
+  "order": 10
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Notification Send State Transitions",
+  "phase": "analysis",
+  "category": "behavior",
+  "kind": "State machine",
+  "tags": [
+    "state machine",
+    "retry"
+  ],
+  "summary": "One notification from intake until it either succeeds or is given up",
+  "updated": "2026-09-10",
+  "order": 10
+}

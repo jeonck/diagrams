@@ -1,0 +1,13 @@
+{
+  "title": "Notification Hub CI/CD Pipeline",
+  "phase": "operations",
+  "category": "process",
+  "kind": "CI/CD pipeline",
+  "tags": [
+    "Pipeline",
+    "CI/CD"
+  ],
+  "summary": "How one commit ships two deployment units together",
+  "updated": "2026-09-10",
+  "order": 30
+}

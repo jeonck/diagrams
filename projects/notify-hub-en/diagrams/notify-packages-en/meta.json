@@ -1,0 +1,13 @@
+{
+  "title": "Module Dependencies",
+  "phase": "design",
+  "category": "structure",
+  "kind": "Package",
+  "tags": [
+    "package",
+    "dependencies"
+  ],
+  "summary": "How two separately deployed modules share a single domain",
+  "updated": "2026-09-10",
+  "order": 50
+}

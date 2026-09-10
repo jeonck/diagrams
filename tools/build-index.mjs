@@ -12,7 +12,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PROJECTS = join(ROOT, 'projects');
 const OUT = join(ROOT, 'diagrams.json');
 const DOC = join(ROOT, 'README.md');
-const SITE = 'https://jeonck.github.io/diagrams/';
+const SITE = 'https://diagrams.metacog.co.kr/';
 const START = '<!-- diagrams:start -->';
 const END = '<!-- diagrams:end -->';
 

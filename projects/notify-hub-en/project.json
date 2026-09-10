@@ -1,0 +1,8 @@
+{
+  "name": "Notification Hub",
+  "summary": "A shared internal platform that takes events from other services and sends them out as push, email and SMS",
+  "status": "Design complete",
+  "started": "2026-09",
+  "order": 25,
+  "lang": "en"
+}

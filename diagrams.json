@@ -6,7 +6,7 @@
       "name_en": "Requirements",
       "summary": "무엇을, 왜 만드는가",
       "summary_en": "What are we building, and why",
-      "count": 6
+      "count": 8
     },
     {
       "id": "analysis",
@@ -14,7 +14,7 @@
       "name_en": "Analysis",
       "summary": "문제 영역을 어떻게 이해했는가",
       "summary_en": "How we understood the problem domain",
-      "count": 12
+      "count": 16
     },
     {
       "id": "design",
@@ -22,7 +22,7 @@
       "name_en": "Design",
       "summary": "어떻게 만들 것인가",
       "summary_en": "How we are going to build it",
-      "count": 15
+      "count": 20
     },
     {
       "id": "operations",
@@ -30,7 +30,7 @@
       "name_en": "Build & Run",
       "summary": "어디서 돌리고, 어떻게 내보내는가",
       "summary_en": "Where it runs and how it ships",
-      "count": 12
+      "count": 16
     }
   ],
   "categories": [
@@ -62,7 +62,7 @@
           "covered": true
         }
       ],
-      "count": 12
+      "count": 16
     },
     {
       "id": "behavior",
@@ -92,7 +92,7 @@
           "covered": true
         }
       ],
-      "count": 12
+      "count": 16
     },
     {
       "id": "data",
@@ -112,7 +112,7 @@
           "covered": true
         }
       ],
-      "count": 6
+      "count": 8
     },
     {
       "id": "deployment",
@@ -132,7 +132,7 @@
           "covered": true
         }
       ],
-      "count": 6
+      "count": 8
     },
     {
       "id": "process",
@@ -157,7 +157,7 @@
           "covered": true
         }
       ],
-      "count": 9
+      "count": 12
     }
   ],
   "tags": [
@@ -192,20 +192,31 @@
     "C4",
     "CI/CD",
     "Class",
+    "component",
     "Component",
     "data flow",
+    "dependencies",
     "Dependencies",
     "Deployment",
     "DFD",
     "domain model",
     "Domain Model",
     "ERD",
+    "idempotency",
+    "Idempotency",
+    "Latency",
     "Lead time",
     "Network",
+    "Operations",
+    "package",
     "Package",
     "Pattern",
     "Pipeline",
     "Process",
+    "Queue",
+    "Requirements",
+    "retry",
+    "Retry",
     "Scope",
     "Sequence",
     "state machine",
@@ -247,6 +258,18 @@
       "started": "2026-09",
       "order": 20,
       "lang": "ko",
+      "count": 15,
+      "decisions": 3,
+      "missing": []
+    },
+    {
+      "id": "notify-hub-en",
+      "name": "Notification Hub",
+      "summary": "A shared internal platform that takes events from other services and sends them out as push, email and SMS",
+      "status": "Design complete",
+      "started": "2026-09",
+      "order": 25,
+      "lang": "en",
       "count": 15,
       "decisions": 3,
       "missing": []
@@ -1205,6 +1228,325 @@
         "excalidraw": "projects/notify-hub/diagrams/notify-value-stream/diagram.excalidraw"
       },
       "decisions": []
+    },
+    {
+      "id": "notify-usecase-en",
+      "project": "notify-hub-en",
+      "title": "Notification Hub Use Cases",
+      "phase": "requirements",
+      "category": "behavior",
+      "kind": "유스케이스",
+      "tags": [
+        "Use case",
+        "Requirements"
+      ],
+      "summary": "Who does what with this service",
+      "order": 10,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/notify-hub-en/diagrams/notify-usecase-en/diagram.html",
+        "excalidraw": "projects/notify-hub-en/diagrams/notify-usecase-en/diagram.excalidraw"
+      },
+      "decisions": []
+    },
+    {
+      "id": "notify-bpmn-en",
+      "project": "notify-hub-en",
+      "title": "Failed Notification Handling (BPMN)",
+      "phase": "requirements",
+      "category": "process",
+      "kind": "BPMN",
+      "tags": [
+        "BPMN",
+        "Operations"
+      ],
+      "summary": "How a person decides to requeue or give up on a notification that fell into the DLQ",
+      "order": 20,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/notify-hub-en/diagrams/notify-bpmn-en/diagram.html",
+        "excalidraw": "projects/notify-hub-en/diagrams/notify-bpmn-en/diagram.excalidraw"
+      },
+      "decisions": [
+        "0002-retry-with-backoff-then-dlq"
+      ]
+    },
+    {
+      "id": "notify-class-en",
+      "project": "notify-hub-en",
+      "title": "Notification Domain Classes",
+      "phase": "analysis",
+      "category": "structure",
+      "kind": "클래스",
+      "tags": [
+        "Class",
+        "Domain Model"
+      ],
+      "summary": "How one notification relates to the channel that sends it and to its delivery attempts",
+      "order": 10,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/notify-hub-en/diagrams/notify-class-en/diagram.html",
+        "excalidraw": "projects/notify-hub-en/diagrams/notify-class-en/diagram.excalidraw"
+      },
+      "decisions": []
+    },
+    {
+      "id": "notify-state-en",
+      "project": "notify-hub-en",
+      "title": "Notification Send State Transitions",
+      "phase": "analysis",
+      "category": "behavior",
+      "kind": "상태 머신",
+      "tags": [
+        "state machine",
+        "retry"
+      ],
+      "summary": "One notification from intake until it either succeeds or is given up",
+      "order": 10,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/notify-hub-en/diagrams/notify-state-en/diagram.html",
+        "excalidraw": "projects/notify-hub-en/diagrams/notify-state-en/diagram.excalidraw"
+      },
+      "decisions": [
+        "0002-retry-with-backoff-then-dlq"
+      ]
+    },
+    {
+      "id": "notify-erd-en",
+      "project": "notify-hub-en",
+      "title": "Notification Domain ERD",
+      "phase": "analysis",
+      "category": "data",
+      "kind": "ERD",
+      "tags": [
+        "ERD",
+        "domain model"
+      ],
+      "summary": "The tables that hold recipients, notifications and delivery attempts",
+      "order": 20,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/notify-hub-en/diagrams/notify-erd-en/diagram.html",
+        "excalidraw": "projects/notify-hub-en/diagrams/notify-erd-en/diagram.excalidraw"
+      },
+      "decisions": [
+        "0003-idempotency-key"
+      ]
+    },
+    {
+      "id": "notify-dfd-en",
+      "project": "notify-hub-en",
+      "title": "Notification Data Flow (Level 1)",
+      "phase": "analysis",
+      "category": "data",
+      "kind": "데이터 흐름(DFD)",
+      "tags": [
+        "DFD",
+        "data flow"
+      ],
+      "summary": "Which processes notification data passes through, and where it comes to rest",
+      "order": 40,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/notify-hub-en/diagrams/notify-dfd-en/diagram.html",
+        "excalidraw": "projects/notify-hub-en/diagrams/notify-dfd-en/diagram.excalidraw"
+      },
+      "decisions": []
+    },
+    {
+      "id": "notify-c4-en",
+      "project": "notify-hub-en",
+      "title": "Notification Hub C4 Context · Container",
+      "phase": "design",
+      "category": "structure",
+      "kind": "C4 컨텍스트·컨테이너",
+      "tags": [
+        "C4",
+        "architecture"
+      ],
+      "summary": "The containers inside the system boundary, and the senders and providers outside it",
+      "order": 10,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/notify-hub-en/diagrams/notify-c4-en/diagram.html",
+        "excalidraw": "projects/notify-hub-en/diagrams/notify-c4-en/diagram.excalidraw"
+      },
+      "decisions": [
+        "0001-queue-between-receive-and-send"
+      ]
+    },
+    {
+      "id": "notify-components-en",
+      "project": "notify-hub-en",
+      "title": "Intake API Components",
+      "phase": "design",
+      "category": "structure",
+      "kind": "컴포넌트",
+      "tags": [
+        "component",
+        "idempotency"
+      ],
+      "summary": "The parts a single request passes through inside the Intake API",
+      "order": 20,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/notify-hub-en/diagrams/notify-components-en/diagram.html",
+        "excalidraw": "projects/notify-hub-en/diagrams/notify-components-en/diagram.excalidraw"
+      },
+      "decisions": [
+        "0003-idempotency-key"
+      ]
+    },
+    {
+      "id": "notify-sequence-en",
+      "project": "notify-hub-en",
+      "title": "Notification Send Sequence",
+      "phase": "design",
+      "category": "behavior",
+      "kind": "시퀀스",
+      "tags": [
+        "Sequence",
+        "Idempotency"
+      ],
+      "summary": "One request from intake out to the provider, and where duplicates are filtered out",
+      "order": 30,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/notify-hub-en/diagrams/notify-sequence-en/diagram.html",
+        "excalidraw": "projects/notify-hub-en/diagrams/notify-sequence-en/diagram.excalidraw"
+      },
+      "decisions": [
+        "0003-idempotency-key"
+      ]
+    },
+    {
+      "id": "notify-activity-en",
+      "project": "notify-hub-en",
+      "title": "Notification Send Retry Activity",
+      "phase": "design",
+      "category": "behavior",
+      "kind": "액티비티",
+      "tags": [
+        "Activity",
+        "Retry"
+      ],
+      "summary": "One send-worker cycle — succeed, loop after backoff, or give up",
+      "order": 40,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/notify-hub-en/diagrams/notify-activity-en/diagram.html",
+        "excalidraw": "projects/notify-hub-en/diagrams/notify-activity-en/diagram.excalidraw"
+      },
+      "decisions": [
+        "0002-retry-with-backoff-then-dlq",
+        "0003-idempotency-key"
+      ]
+    },
+    {
+      "id": "notify-packages-en",
+      "project": "notify-hub-en",
+      "title": "Module Dependencies",
+      "phase": "design",
+      "category": "structure",
+      "kind": "패키지",
+      "tags": [
+        "package",
+        "dependencies"
+      ],
+      "summary": "How two separately deployed modules share a single domain",
+      "order": 50,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/notify-hub-en/diagrams/notify-packages-en/diagram.html",
+        "excalidraw": "projects/notify-hub-en/diagrams/notify-packages-en/diagram.excalidraw"
+      },
+      "decisions": [
+        "0001-queue-between-receive-and-send"
+      ]
+    },
+    {
+      "id": "notify-deployment-en",
+      "project": "notify-hub-en",
+      "title": "Notification Hub Deployment",
+      "phase": "operations",
+      "category": "deployment",
+      "kind": "배포",
+      "tags": [
+        "Deployment",
+        "Queue"
+      ],
+      "summary": "Intake and sending scale separately, with the queue between them",
+      "order": 10,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/notify-hub-en/diagrams/notify-deployment-en/diagram.html",
+        "excalidraw": "projects/notify-hub-en/diagrams/notify-deployment-en/diagram.excalidraw"
+      },
+      "decisions": [
+        "0001-queue-between-receive-and-send"
+      ]
+    },
+    {
+      "id": "notify-network-en",
+      "project": "notify-hub-en",
+      "title": "Notification Hub Network Topology",
+      "phase": "operations",
+      "category": "deployment",
+      "kind": "네트워크 토폴로지",
+      "tags": [
+        "Network",
+        "VPC"
+      ],
+      "summary": "What sits in which subnet, and where traffic leaves",
+      "order": 20,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/notify-hub-en/diagrams/notify-network-en/diagram.html",
+        "excalidraw": "projects/notify-hub-en/diagrams/notify-network-en/diagram.excalidraw"
+      },
+      "decisions": []
+    },
+    {
+      "id": "notify-cicd-en",
+      "project": "notify-hub-en",
+      "title": "Notification Hub CI/CD Pipeline",
+      "phase": "operations",
+      "category": "process",
+      "kind": "CI/CD 파이프라인",
+      "tags": [
+        "Pipeline",
+        "CI/CD"
+      ],
+      "summary": "How one commit ships two deployment units together",
+      "order": 30,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/notify-hub-en/diagrams/notify-cicd-en/diagram.html",
+        "excalidraw": "projects/notify-hub-en/diagrams/notify-cicd-en/diagram.excalidraw"
+      },
+      "decisions": []
+    },
+    {
+      "id": "notify-value-stream-en",
+      "project": "notify-hub-en",
+      "title": "Latency Breakdown of One Notification",
+      "phase": "operations",
+      "category": "process",
+      "kind": "값 흐름",
+      "tags": [
+        "Value stream",
+        "Latency"
+      ],
+      "summary": "From intake to the screen: time spent working, time spent waiting",
+      "order": 40,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/notify-hub-en/diagrams/notify-value-stream-en/diagram.html",
+        "excalidraw": "projects/notify-hub-en/diagrams/notify-value-stream-en/diagram.excalidraw"
+      },
+      "decisions": []
     }
   ],
   "decisions": [
@@ -1462,6 +1804,61 @@
       "supersedes": null,
       "supersededBy": null,
       "path": "projects/notify-hub/decisions/0003-idempotency-key.md"
+    },
+    {
+      "id": "0001-queue-between-receive-and-send",
+      "number": "0001",
+      "project": "notify-hub-en",
+      "title": "Put a queue between intake and sending",
+      "status": "채택됨",
+      "status_en": "Accepted",
+      "date": "2026-09-07",
+      "phase": "design",
+      "diagrams": [
+        "notify-c4-en",
+        "notify-deployment-en",
+        "notify-packages-en"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "path": "projects/notify-hub-en/decisions/0001-queue-between-receive-and-send.md"
+    },
+    {
+      "id": "0002-retry-with-backoff-then-dlq",
+      "number": "0002",
+      "project": "notify-hub-en",
+      "title": "Retry with exponential backoff five times, then DLQ",
+      "status": "채택됨",
+      "status_en": "Accepted",
+      "date": "2026-09-08",
+      "phase": "design",
+      "diagrams": [
+        "notify-state-en",
+        "notify-activity-en",
+        "notify-bpmn-en"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "path": "projects/notify-hub-en/decisions/0002-retry-with-backoff-then-dlq.md"
+    },
+    {
+      "id": "0003-idempotency-key",
+      "number": "0003",
+      "project": "notify-hub-en",
+      "title": "Stop duplicate sends with an idempotency key",
+      "status": "채택됨",
+      "status_en": "Accepted",
+      "date": "2026-09-09",
+      "phase": "design",
+      "diagrams": [
+        "notify-sequence-en",
+        "notify-components-en",
+        "notify-erd-en",
+        "notify-activity-en"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "path": "projects/notify-hub-en/decisions/0003-idempotency-key.md"
     }
   ]
 }

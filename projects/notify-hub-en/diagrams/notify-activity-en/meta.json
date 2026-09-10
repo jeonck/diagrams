@@ -1,0 +1,13 @@
+{
+  "title": "Notification Send Retry Activity",
+  "phase": "design",
+  "category": "behavior",
+  "kind": "Activity",
+  "tags": [
+    "Activity",
+    "Retry"
+  ],
+  "summary": "One send-worker cycle — succeed, loop after backoff, or give up",
+  "updated": "2026-09-10",
+  "order": 40
+}

@@ -1,0 +1,163 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Notification Hub C4 Context · Container</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f8fafc;
+    --fg: #172033;
+    --muted: #5b6475;
+    --line: #64748b;
+    --neutral: #e2e8f0;
+    --input: #bfdbfe;
+    --process: #c7d2fe;
+    --storage: #99f6e4;
+    --external: #fde68a;
+    --risk: #fecaca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #a3adbd;
+      --line: #94a3b8;
+      --neutral: #334155;
+      --input: #1d4ed8;
+      --process: #4338ca;
+      --storage: #0f766e;
+      --external: #92400e;
+      --risk: #991b1b;
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font:
+      14px/1.4 ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+  }
+  main {
+    max-width: 980px;
+    margin: 32px auto;
+    padding: 0 20px;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 650;
+    fill: var(--fg);
+  }
+  .label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: var(--fg);
+  }
+  .small {
+    font-size: 12px;
+    fill: var(--muted);
+  }
+  .node {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .neutral {
+    fill: var(--neutral);
+  }
+  .input {
+    fill: var(--input);
+  }
+  .process {
+    fill: var(--process);
+  }
+  .storage {
+    fill: var(--storage);
+  }
+  .external {
+    fill: var(--external);
+  }
+  .risk {
+    fill: var(--risk);
+  }
+  .edge {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .edge-dashed {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 6 5;
+  }
+  .arrow-head {
+    fill: var(--line);
+  }
+  .zone {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+    stroke-dasharray: 6 5;
+    opacity: 0.8;
+  }
+</style>
+<main>
+  <svg viewBox="0 0 1200 780" role="img" aria-label="Notification Hub C4 Context · Container">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--line)" />
+      </marker>
+    </defs>
+
+    <text class="title" x="24" y="34">Notification Hub — C4 Context · Container</text>
+    <text class="small" x="24" y="56">The containers inside the system boundary, and the senders and providers outside it</text>
+
+    <!-- 연결선을 먼저 그려 화살표가 상자 뒤로 가게 한다 -->
+    <path class="edge" d="M 280 270 L 370 250" marker-end="url(#arrow)" />
+    <path class="edge" d="M 490 300 L 490 360" marker-end="url(#arrow)" />
+    <path class="edge" d="M 490 450 L 490 500" marker-end="url(#arrow)" />
+    <path class="edge" d="M 610 250 L 700 360" marker-end="url(#arrow)" />
+    <path class="edge" d="M 560 500 L 700 450" marker-end="url(#arrow)" />
+    <path class="edge" d="M 610 540 L 900 540" marker-end="url(#arrow)" />
+
+    <rect class="zone" x="320" y="150" width="560" height="470" rx="10" />
+    <rect class="node external" x="60" y="220" width="220" height="100" rx="8" />
+    <rect class="node input" x="370" y="200" width="240" height="100" rx="8" />
+    <rect class="node storage" x="370" y="360" width="240" height="90" rx="8" />
+    <rect class="node process" x="370" y="500" width="240" height="100" rx="8" />
+    <rect class="node storage" x="650" y="360" width="200" height="90" rx="8" />
+    <rect class="node neutral" x="900" y="500" width="270" height="100" rx="8" />
+
+    <text class="small" x="322" y="140">Notification Hub — the system we build</text>
+    <text class="label" x="170" y="255" text-anchor="middle">Sending Service</text>
+    <text class="small" x="170" y="277" text-anchor="middle">[External System]</text>
+    <text class="small" x="170" y="297" text-anchor="middle">e.g. order platform</text>
+    <text class="label" x="490" y="245" text-anchor="middle">Intake API</text>
+    <text class="small" x="490" y="267" text-anchor="middle">[Container: Spring]</text>
+    <text class="label" x="490" y="400" text-anchor="middle">Event Queue</text>
+    <text class="small" x="490" y="422" text-anchor="middle">[Container: SQS]</text>
+    <text class="label" x="490" y="545" text-anchor="middle">Send Worker</text>
+    <text class="small" x="490" y="567" text-anchor="middle">[Container: Spring]</text>
+    <text class="label" x="750" y="400" text-anchor="middle">History DB</text>
+    <text class="small" x="750" y="422" text-anchor="middle">[Container: PostgreSQL]</text>
+    <text class="label" x="1035" y="545" text-anchor="middle">Push · Email Providers</text>
+    <text class="small" x="1035" y="567" text-anchor="middle">[External System]</text>
+    <text class="small" x="250" y="212" text-anchor="middle">Notification request</text>
+    <text class="small" x="545" y="334" text-anchor="middle">Enqueue</text>
+    <text class="small" x="540" y="478" text-anchor="middle">Claim</text>
+    <text class="small" x="725" y="296" text-anchor="middle">Record intake</text>
+    <text class="small" x="660" y="506" text-anchor="middle">Record result</text>
+    <text class="small" x="755" y="522" text-anchor="middle">Send [HTTPS]</text>
+    <text class="small" x="24" y="724">Note: the Intake API only puts the event on the queue and returns 202 right away. The worker does the sending separately.</text>
+    <text class="small" x="24" y="746">The sending service never waits for a slow provider — the queue keeps the two apart.</text>
+  </svg>
+</main>

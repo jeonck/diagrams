@@ -1,0 +1,167 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Latency breakdown of one notification</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f8fafc;
+    --fg: #172033;
+    --muted: #5b6475;
+    --line: #64748b;
+    --neutral: #e2e8f0;
+    --input: #bfdbfe;
+    --process: #c7d2fe;
+    --storage: #99f6e4;
+    --external: #fde68a;
+    --risk: #fecaca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #a3adbd;
+      --line: #94a3b8;
+      --neutral: #334155;
+      --input: #1d4ed8;
+      --process: #4338ca;
+      --storage: #0f766e;
+      --external: #92400e;
+      --risk: #991b1b;
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font:
+      14px/1.4 ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+  }
+  main {
+    max-width: 980px;
+    margin: 32px auto;
+    padding: 0 20px;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 650;
+    fill: var(--fg);
+  }
+  .label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: var(--fg);
+  }
+  .small {
+    font-size: 12px;
+    fill: var(--muted);
+  }
+  .node {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .neutral {
+    fill: var(--neutral);
+  }
+  .input {
+    fill: var(--input);
+  }
+  .process {
+    fill: var(--process);
+  }
+  .storage {
+    fill: var(--storage);
+  }
+  .external {
+    fill: var(--external);
+  }
+  .risk {
+    fill: var(--risk);
+  }
+  .edge {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .edge-dashed {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 6 5;
+  }
+  .arrow-head {
+    fill: var(--line);
+  }
+  .zone {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+    stroke-dasharray: 6 5;
+    opacity: 0.8;
+  }
+</style>
+<main>
+  <svg viewBox="0 0 1260 680" role="img" aria-label="Latency breakdown of one notification">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--line)" />
+      </marker>
+    </defs>
+
+    <text class="title" x="24" y="34">Latency Breakdown of One Notification</text>
+    <text class="small" x="24" y="56">From intake to the screen: time spent working, time spent waiting</text>
+
+    <!-- 연결선을 먼저 그려 화살표가 상자 뒤로 가게 한다 -->
+    <path class="edge" d="M 260 225 L 300 225" marker-end="url(#arrow)" />
+    <path class="edge" d="M 500 225 L 540 225" marker-end="url(#arrow)" />
+    <path class="edge" d="M 740 225 L 780 225" marker-end="url(#arrow)" />
+    <path class="edge" d="M 980 225 L 1020 225" marker-end="url(#arrow)" />
+
+    <rect class="node process" x="60" y="170" width="200" height="110" rx="8" />
+    <rect class="node process" x="300" y="170" width="200" height="110" rx="8" />
+    <rect class="node process" x="540" y="170" width="200" height="110" rx="8" />
+    <rect class="node process" x="780" y="170" width="200" height="110" rx="8" />
+    <rect class="node process" x="1020" y="170" width="200" height="110" rx="8" />
+    <rect class="node storage" x="60" y="430" width="260" height="100" rx="8" />
+    <rect class="node risk" x="350" y="430" width="260" height="100" rx="8" />
+    <rect class="node neutral" x="640" y="430" width="260" height="100" rx="8" />
+    <rect class="node external" x="930" y="430" width="260" height="100" rx="8" />
+
+    <text class="label" x="160" y="210" text-anchor="middle">Intake</text>
+    <text class="small" x="160" y="232" text-anchor="middle">Work 20ms</text>
+    <text class="small" x="160" y="252" text-anchor="middle">Wait —</text>
+    <text class="label" x="400" y="210" text-anchor="middle">Queue wait</text>
+    <text class="small" x="400" y="232" text-anchor="middle">Work —</text>
+    <text class="small" x="400" y="252" text-anchor="middle">Wait 1.5s</text>
+    <text class="label" x="640" y="210" text-anchor="middle">Worker run</text>
+    <text class="small" x="640" y="232" text-anchor="middle">Work 80ms</text>
+    <text class="small" x="640" y="252" text-anchor="middle">Wait —</text>
+    <text class="label" x="880" y="210" text-anchor="middle">Provider handoff</text>
+    <text class="small" x="880" y="232" text-anchor="middle">Work 300ms</text>
+    <text class="small" x="880" y="252" text-anchor="middle">Wait —</text>
+    <text class="label" x="1120" y="210" text-anchor="middle">Device arrival</text>
+    <text class="small" x="1120" y="232" text-anchor="middle">Work —</text>
+    <text class="small" x="1120" y="252" text-anchor="middle">Wait 2s</text>
+    <text class="label" x="190" y="475" text-anchor="middle">Total work time</text>
+    <text class="small" x="190" y="497" text-anchor="middle">0.4s</text>
+    <text class="label" x="480" y="475" text-anchor="middle">Total wait time</text>
+    <text class="small" x="480" y="497" text-anchor="middle">3.5s</text>
+    <text class="label" x="770" y="475" text-anchor="middle">End-to-end latency</text>
+    <text class="small" x="770" y="497" text-anchor="middle">3.9s</text>
+    <text class="label" x="1060" y="475" text-anchor="middle">Flow efficiency</text>
+    <text class="small" x="1060" y="497" text-anchor="middle">0.4 ÷ 3.9 = 10%</text>
+    <text class="small" x="24" y="602">Note: the numbers are illustrative. Replace them with real measurements.</text>
+    <text class="small" x="24" y="624">The value stream of the online shop is the lead time of one feature; this one is the real-time latency of one notification.</text>
+    <text class="small" x="24" y="646">90% of the latency is waiting, and most of that is arrival on the device — the part we can shorten is the 1.5s queue wait.</text>
+  </svg>
+</main>

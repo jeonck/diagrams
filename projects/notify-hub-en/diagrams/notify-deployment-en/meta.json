@@ -1,0 +1,13 @@
+{
+  "title": "Notification Hub Deployment",
+  "phase": "operations",
+  "category": "deployment",
+  "kind": "Deployment",
+  "tags": [
+    "Deployment",
+    "Queue"
+  ],
+  "summary": "Intake and sending scale separately, with the queue between them",
+  "updated": "2026-09-10",
+  "order": 10
+}
