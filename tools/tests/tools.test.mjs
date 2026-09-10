@@ -85,7 +85,7 @@ test('kind 가 카테고리에 없으면 멈춘다', (t) => {
   writeMeta(p, { ...readMeta(p), kind: '없는종류' });
   const r = index(dir, '--check');
   assert.notEqual(r.code, 0);
-  assert.match(r.out, /structure 카테고리에 없습니다|data 카테고리에 없습니다/);
+  assert.match(r.out, /카테고리에 없습니다 — 쓸 수 있는 값: .*\(/);
 });
 
 test('슬러그가 프로젝트를 넘나들어 겹치면 멈춘다', (t) => {
@@ -209,5 +209,5 @@ test('kind 를 틀리면 쓸 수 있는 값을 알려준다', (t) => {
     '--title', 'x', '--phase', 'design', '--category', 'structure',
     '--kind', '없는것', '--summary', 'y');
   assert.notEqual(r.code, 0);
-  assert.match(r.out, /쓸 수 있는 값: 클래스, 컴포넌트/);
+  assert.match(r.out, /쓸 수 있는 값: 클래스 \(Class\), 컴포넌트 \(Component\)/);
 });

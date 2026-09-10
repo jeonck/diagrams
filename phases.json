@@ -1,6 +1,10 @@
 [
-  { "id": "requirements", "name": "요구", "summary": "무엇을, 왜 만드는가" },
-  { "id": "analysis",     "name": "분석", "summary": "문제 영역을 어떻게 이해했는가" },
-  { "id": "design",       "name": "설계", "summary": "어떻게 만들 것인가" },
-  { "id": "operations",   "name": "구현·운영", "summary": "어디서 돌리고, 어떻게 내보내는가" }
+  { "id": "requirements", "name": "요구", "name_en": "Requirements",
+    "summary": "무엇을, 왜 만드는가", "summary_en": "What are we building, and why" },
+  { "id": "analysis", "name": "분석", "name_en": "Analysis",
+    "summary": "문제 영역을 어떻게 이해했는가", "summary_en": "How we understood the problem domain" },
+  { "id": "design", "name": "설계", "name_en": "Design",
+    "summary": "어떻게 만들 것인가", "summary_en": "How we are going to build it" },
+  { "id": "operations", "name": "구현·운영", "name_en": "Build & Run",
+    "summary": "어디서 돌리고, 어떻게 내보내는가", "summary_en": "Where it runs and how it ships" }
 ]

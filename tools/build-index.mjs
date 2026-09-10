@@ -19,7 +19,11 @@ const END = '<!-- diagrams:end -->';
 const FORMATS = { html: 'diagram.html', excalidraw: 'diagram.excalidraw' };
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const ADR = /^(\d{4})-[a-z0-9]+(-[a-z0-9]+)*\.md$/;
+// 상태의 표준값은 한국어지만 영문으로 적어도 받는다
 const STATUSES = ['제안됨', '채택됨', '대체됨', '폐기됨'];
+const STATUS_EN = { 제안됨: 'Proposed', 채택됨: 'Accepted', 대체됨: 'Superseded', 폐기됨: 'Deprecated' };
+const toStatus = (v) =>
+  STATUSES.includes(v) ? v : Object.keys(STATUS_EN).find((k) => STATUS_EN[k] === v) ?? null;
 
 const fail = (msg) => {
   console.error('build-index: ' + msg);
@@ -71,9 +75,15 @@ function readDiagram(project, id, categories, phaseIds) {
   if (!categories.has(meta.category)) {
     fail(`${where} 의 category "${meta.category}" 가 categories.json 에 없습니다 — 쓸 수 있는 값: ${[...categories.keys()].join(', ')}`);
   }
+  // kind 의 표준값은 한국어 이름이다. 영문 이름으로 적어도 받아 표준값으로 바꾼다 —
+  // 영어로 쓰는 사람이 한국어를 옮겨 적을 이유는 없다.
   const kinds = categories.get(meta.category).kinds;
-  if (!kinds.includes(meta.kind)) {
-    fail(`${where} 의 kind "${meta.kind}" 는 ${meta.category} 카테고리에 없습니다 — 쓸 수 있는 값: ${kinds.join(', ')}`);
+  const kind = kinds.find((k) => k.name === meta.kind || k.name_en === meta.kind);
+  if (!kind) {
+    fail(
+      `${where} 의 kind "${meta.kind}" 는 ${meta.category} 카테고리에 없습니다 — 쓸 수 있는 값: ` +
+        kinds.map((k) => `${k.name} (${k.name_en})`).join(', ')
+    );
   }
   if (!Array.isArray(meta.tags) || meta.tags.some((t) => typeof t !== 'string')) {
     fail(`${where} 의 tags 는 문자열 배열이어야 합니다`);
@@ -107,7 +117,7 @@ function readDiagram(project, id, categories, phaseIds) {
     title: meta.title,
     phase: meta.phase,
     category: meta.category,
-    kind: meta.kind,
+    kind: kind.name,
     tags: meta.tags,
     summary: meta.summary,
     order: Number.isFinite(meta.order) ? meta.order : 999,
@@ -137,8 +147,12 @@ function readDecision(project, file, phaseIds) {
   if (!phaseIds.has(head.phase)) {
     fail(`${where} 의 phase "${head.phase}" 는 phases.json 에 없습니다`);
   }
-  if (!STATUSES.includes(head.status)) {
-    fail(`${where} 의 status "${head.status}" 는 쓸 수 없습니다 — ${STATUSES.join(', ')} 중 하나여야 합니다`);
+  const status = toStatus(head.status);
+  if (!status) {
+    fail(
+      `${where} 의 status "${head.status}" 는 쓸 수 없습니다 — ` +
+        STATUSES.map((k) => `${k} (${STATUS_EN[k]})`).join(', ') + ' 중 하나여야 합니다'
+    );
   }
   if (!/^\d{4}-\d{2}-\d{2}$/.test(head.date)) fail(`${where} 의 date 는 YYYY-MM-DD 형식이어야 합니다`);
   // diagrams 는 이 결정이 만든 그림, basis 는 이 결정을 내릴 때 근거로 본 그림이다.
@@ -172,7 +186,8 @@ function readDecision(project, file, phaseIds) {
     number: file.slice(0, 4),
     project,
     title: head.title,
-    status: head.status,
+    status,
+    status_en: STATUS_EN[status],
     date: head.date,
     phase: head.phase,
     diagrams,
@@ -187,8 +202,8 @@ const dirsIn = (path) => readdirSync(path).filter((n) => statSync(join(path, n))
 
 function build() {
   const catList = readTaxonomy('categories.json', '카테고리', (c) => {
-    if (!Array.isArray(c.kinds) || c.kinds.some((k) => typeof k !== 'string')) {
-      fail(`categories.json 의 ${c.id}.kinds 는 문자열 배열이어야 합니다`);
+    if (!Array.isArray(c.kinds) || c.kinds.some((k) => !k || typeof k.name !== 'string' || typeof k.name_en !== 'string')) {
+      fail(`categories.json 의 ${c.id}.kinds 는 {name, name_en} 객체 배열이어야 합니다`);
     }
   });
   const phaseList = readTaxonomy('phases.json', '설계 단계');
@@ -245,10 +260,14 @@ function build() {
       id: pid,
       ...meta,
       order: Number.isFinite(meta.order) ? meta.order : 999,
+      // 이 프로젝트가 쓰인 언어. 뷰어는 화면 언어에 맞는 프로젝트만 보여준다.
+      lang: meta.lang === 'en' ? 'en' : 'ko',
       count: mine.length,
       decisions: myAdrs.length,
       // 이 프로젝트에 아직 없는 대표 종류 = 남은 설계 산출물
-      missing: catList.flatMap((c) => c.kinds.filter((k) => !covered.has(k)).map((k) => `${c.name}/${k}`)),
+      missing: catList.flatMap((c) =>
+        c.kinds.filter((k) => !covered.has(k.name)).map((k) => `${c.name}/${k.name}`)
+      ),
     });
     diagrams.push(...mine);
   }
@@ -285,7 +304,7 @@ function build() {
   const coveredAll = new Set(diagrams.map((d) => d.kind));
   const categories = catList.map((c) => ({
     ...c,
-    kinds: c.kinds.map((k) => ({ name: k, covered: coveredAll.has(k) })),
+    kinds: c.kinds.map((k) => ({ ...k, covered: coveredAll.has(k.name) })),
     count: diagrams.filter((d) => d.category === c.id).length,
   }));
   const tags = [...new Set(diagrams.flatMap((d) => d.tags))].sort((a, b) => a.localeCompare(b, 'ko'));

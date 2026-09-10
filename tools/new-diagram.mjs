@@ -82,10 +82,16 @@ const cat = categories.find((c) => c.id === category);
 if (!cat) {
   die(`category "${category}" 가 categories.json 에 없습니다 — 쓸 수 있는 값: ${categories.map((c) => c.id).join(', ')}`);
 }
-const kind = need('kind', '대표 종류');
-if (!cat.kinds.includes(kind)) {
-  die(`kind "${kind}" 는 ${category} 카테고리에 없습니다 — 쓸 수 있는 값: ${cat.kinds.join(', ')}`);
+// kind 의 표준값은 한국어 이름이지만 영문 이름으로 적어도 받는다
+const wanted = need('kind', '대표 종류');
+const found = cat.kinds.find((k) => k.name === wanted || k.name_en === wanted);
+if (!found) {
+  die(
+    `kind "${wanted}" 는 ${category} 카테고리에 없습니다 — 쓸 수 있는 값: ` +
+      cat.kinds.map((k) => `${k.name} (${k.name_en})`).join(', ')
+  );
 }
+const kind = found.name;
 
 const tags = (opts.tags ?? '').split(',').map((t) => t.trim()).filter(Boolean);
 const template = opts.template ?? 'box';

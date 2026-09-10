@@ -339,14 +339,15 @@
       <path class="ic-open" d="M4 7h16M4 12h16M4 17h16"></path>
       <path class="ic-close" d="M6 6l12 12M18 6L6 18"></path>
     </svg>
-    <span class="sr">목록 열기</span>
+    <span class="sr"></span>
   </button>
   <div class="brand">
-    <button class="home" id="home" title="처음 화면으로">Diagrams</button>
+    <button class="home" id="home">Diagrams</button>
     <span class="count" id="count"></span>
   </div>
   <div class="spacer"></div>
-  <div class="seg" id="viewseg" role="group" aria-label="보기 방식"></div>
+  <div class="seg" id="langseg" role="group"></div>
+  <div class="seg" id="viewseg" role="group"></div>
 </header>
 
 <div class="body">
@@ -359,15 +360,15 @@
              stroke-width="2" stroke-linecap="round" style="flex-shrink:0;color:var(--muted)">
           <circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path>
         </svg>
-        <input id="q" type="search" placeholder="제목·태그 검색" aria-label="다이어그램 검색" />
+        <input id="q" type="search" />
       </div>
     </div>
-    <div class="tags" id="tags" role="group" aria-label="태그 필터"></div>
+    <div class="tags" id="tags" role="group"></div>
     <div class="axiswrap">
-      <div class="seg" id="axisseg" role="group" aria-label="묶는 기준"></div>
+      <div class="seg" id="axisseg" role="group"></div>
     </div>
-    <nav class="list" id="list" aria-label="다이어그램 목록"></nav>
-    <nav class="decisions" id="decisions" aria-label="설계 결정"></nav>
+    <nav class="list" id="list"></nav>
+    <nav class="decisions" id="decisions"></nav>
   </aside>
 
   <main class="pane">
@@ -378,13 +379,13 @@
         <div class="meta" id="d-meta"></div>
       </div>
       <div class="toolbar">
-        <div class="seg" id="fmtseg" role="group" aria-label="형식"></div>
+        <div class="seg" id="fmtseg" role="group"></div>
         <div class="spacer"></div>
         <div style="display:flex;flex-wrap:wrap;gap:8px" id="actions"></div>
       </div>
       <div class="stage">
         <div class="frame">
-          <iframe id="html-view" title="다이어그램 미리보기" hidden></iframe>
+          <iframe id="html-view" hidden></iframe>
           <div id="excalidraw-stage" hidden></div>
           <div id="adr-stage" class="adr" hidden></div>
       <div id="fallback" class="fallback" hidden></div>
@@ -633,7 +634,7 @@
   // 스타일을 svg 안으로 옮기면 그 자체로 열리는 .svg 파일이 된다.
   function toStandaloneSvg(source) {
     const svg = (source.match(/<svg[\s\S]*?<\/svg>/) || [])[0];
-    if (!svg) throw new Error('이 문서에서 <svg> 를 찾지 못했습니다');
+    if (!svg) throw new Error(t('이 문서에서 <svg> 를 찾지 못했습니다'));
     const style = (source.match(/<style>([\s\S]*?)<\/style>/) || [, ''])[1]
       // 페이지 레이아웃용 규칙은 단독 SVG 에서 방해만 된다
       .replace(/\b(main|svg)\s*\{[^}]*\}/g, '')
@@ -814,7 +815,87 @@
     '<rect x="24" y="37" width="28" height="14" rx="3" fill="var(--card)"></rect>' +
     '<path d="M31 15L20 19M45 15L56 19M20 33L31 37M56 33L45 37"></path></svg>';
 
-  const state = { q: '', tag: null, sel: null, fmt: 'html', view: 'list', allTags: false, axis: 'phase', adr: null, adrOpen: false, project: null, nav: false, zoom: false };
+  /* ---------- 화면 언어 ---------- */
+
+  // 한국어 문장을 열쇠로 쓴다. 사전에 없으면 한국어가 그대로 나오므로,
+  // 새 문구를 넣을 때 사전을 빠뜨려도 화면이 깨지지 않는다.
+  const EN = {
+    '목록': 'List',
+    '갤러리': 'Gallery',
+    'SDLC 단계': 'SDLC phase',
+    '그림 종류': 'Diagram type',
+    '설계 결정': 'Decisions',
+    '만든 결정': 'Decided by',
+    '근거로 쓰인 결정': 'Cited by',
+    '근거': 'Basis',
+    '결과': 'Outcome',
+    '결정': 'Decision',
+    '수정': 'updated',
+    '대체': 'supersedes',
+    '이후 갱신 안 됨': 'not updated since',
+    '걸린 결정보다 오래된 그림입니다': 'Older than the decision it carries',
+    '새 탭': 'New tab',
+    '원본 JSON': 'Raw JSON',
+    '원본 .md': 'Raw .md',
+    '확대': 'Zoom',
+    '맞춤': 'Fit',
+    '화면 너비에 맞춰 전체를 봅니다': 'Fit the whole diagram to the screen',
+    '원래 크기로 봅니다 — 좌우로 밀어서 읽으세요': 'Show it at full size — swipe sideways to read',
+    '접기': 'Less',
+    '아직 없음': 'Nothing yet',
+    '아직 그리지 않았습니다': 'Not drawn yet',
+    '조건에 맞는 다이어그램이 없습니다.': 'No diagram matches.',
+    'Excalidraw 없음': 'No Excalidraw',
+    '이 다이어그램에는 편집용 .excalidraw 파일이 없습니다. SVG/HTML 만 있습니다.':
+      'This diagram has no editable .excalidraw file — only SVG/HTML.',
+    '개': '',
+    '카테고리': 'categories',
+    '남은 대표 종류': 'kinds left to draw',
+    '프로젝트 선택': 'Choose a project',
+    '보기 방식': 'View',
+    '묶는 기준': 'Group by',
+    '태그 필터': 'Tag filter',
+    '다이어그램 목록': 'Diagrams',
+    '다이어그램 검색': 'Search diagrams',
+    '제목·태그 검색': 'Search title or tag',
+    '다이어그램 미리보기': 'Diagram preview',
+    '형식': 'Format',
+    '목록 열기': 'Open the list',
+    '목록 닫기': 'Close the list',
+    '처음 화면으로': 'Back to the start',
+    '화면 언어': 'Language',
+    'SVG 를 만들지 못했습니다': 'Could not build the SVG',
+    '이 문서에서 <svg> 를 찾지 못했습니다': 'No <svg> found in this document',
+    '목록(diagrams.json)을 불러오지 못했습니다.': 'Could not load the index (diagrams.json).',
+    'Excalidraw 파일을 불러오지 못했습니다.': 'Could not load the Excalidraw file.',
+    '결정 문서를 불러오지 못했습니다.': 'Could not load the decision.',
+    '로 직접 열면 브라우저가 파일을 읽지 못합니다.': ' opens the page without a server, so the browser cannot read the files.',
+    '로 직접 열면 브라우저 보안 정책 때문에 파일을 읽을 수 없습니다.': ' opens the page without a server, so the browser refuses to read the files.',
+    '저장소 폴더에서': 'Run',
+    '를 실행해': 'in the repository folder and open',
+    '으로 열거나, GitHub Pages 로 보세요.': ', or view it on GitHub Pages.',
+  };
+
+  const t = (s) => (state.lang === 'en' && EN[s] !== undefined ? EN[s] : s);
+
+  // file:// 로 열었을 때의 안내 — 두 군데에서 같은 말을 한다
+  const servingHint = () =>
+    '<p><code>file://</code>' + t('로 직접 열면 브라우저가 파일을 읽지 못합니다.') + ' ' +
+    t('저장소 폴더에서') + ' <code>python3 -m http.server</code> ' + t('를 실행해') + ' ' +
+    '<code>http://localhost:8000</code>' + t('으로 열거나, GitHub Pages 로 보세요.') + '</p>';
+
+  // 첫 화면 언어: 저장된 선택 → 브라우저 언어 → 한국어
+  const initialLang = () => {
+    try {
+      const saved = localStorage.getItem('diagrams-lang');
+      if (saved === 'ko' || saved === 'en') return saved;
+    } catch (err) {
+      /* 저장소를 못 쓰는 환경이면 브라우저 언어로 정한다 */
+    }
+    return (navigator.language || 'ko').toLowerCase().startsWith('ko') ? 'ko' : 'en';
+  };
+
+  const state = { lang: initialLang(), q: '', tag: null, sel: null, fmt: 'html', view: 'list', allTags: false, axis: 'phase', adr: null, adrOpen: false, project: null, nav: false, zoom: false };
   let INDEX = { categories: [], tags: [], diagrams: [] };
   const byId = new Map();
   const adrById = new Map();
@@ -822,6 +903,11 @@
   const current = () => byId.get(state.sel) || INDEX.diagrams.filter(inProject)[0];
 
   // 같은 다이어그램을 설계 단계로도, 그림 종류로도 묶어 볼 수 있게 한다
+  // 분류축 이름과 요약은 매니페스트가 두 언어로 들고 있다
+  const nm = (x) => (state.lang === 'en' && x.name_en ? x.name_en : x.name);
+  const sm = (x) => (state.lang === 'en' && x.summary_en ? x.summary_en : x.summary);
+  const st = (a) => (state.lang === 'en' && a.status_en ? a.status_en : a.status);
+
   const groups = () =>
     state.axis === 'phase'
       ? INDEX.phases.map((p) => ({
@@ -833,6 +919,28 @@
       : INDEX.categories.map((c) => ({ ...c, of: (d) => d.category === c.id }));
 
   const inProject = (x) => !state.project || x.project === state.project;
+
+  // 화면 언어로 쓰인 프로젝트만 보여준다. 그 언어로 쓰인 게 하나도 없으면
+  // 아무것도 안 보이는 편보다 전부 보이는 편이 낫다.
+  function visibleProjects() {
+    const mine = INDEX.projects.filter((p) => p.lang === state.lang);
+    return mine.length ? mine : INDEX.projects;
+  }
+
+  function switchLang(lang) {
+    if (lang === state.lang) return;
+    state.lang = lang;
+    try {
+      localStorage.setItem('diagrams-lang', lang);
+    } catch (err) {
+      /* 저장을 못 해도 이번 화면에서는 바뀐다 */
+    }
+    // 프로젝트 전환기는 언어에 따라 목록이 달라지므로 다시 만든다
+    el('projectpick').replaceChildren();
+    const list = visibleProjects();
+    if (!list.some((p) => p.id === state.project)) switchProject(list[0].id);
+    else render();
+  }
 
   function hits() {
     const needle = state.q.trim().toLowerCase();
@@ -860,25 +968,53 @@
   }
 
   function renderChrome() {
+    // 화면 언어가 바뀌면 정적인 곳(자리표시자·읽기 도우미 라벨)도 함께 바뀐다
+    document.documentElement.lang = state.lang;
+    el('q').placeholder = t('제목·태그 검색');
+    el('q').setAttribute('aria-label', t('다이어그램 검색'));
+    el('home').title = t('처음 화면으로');
+    el('langseg').setAttribute('aria-label', t('화면 언어'));
+    el('viewseg').setAttribute('aria-label', t('보기 방식'));
+    el('axisseg').setAttribute('aria-label', t('묶는 기준'));
+    el('tags').setAttribute('aria-label', t('태그 필터'));
+    el('list').setAttribute('aria-label', t('다이어그램 목록'));
+    el('decisions').setAttribute('aria-label', t('설계 결정'));
+    el('fmtseg').setAttribute('aria-label', t('형식'));
+    el('html-view').title = t('다이어그램 미리보기');
+
+    segment(
+      el('langseg'),
+      [
+        { label: '한국어', value: 'ko', on: state.lang === 'ko' },
+        { label: 'English', value: 'en', on: state.lang === 'en' },
+      ],
+      (v) => switchLang(v)
+    );
+
     const mine = INDEX.diagrams.filter(inProject).length;
+    const axisCount = state.axis === 'phase'
+      ? t('SDLC 단계') + ' ' + INDEX.phases.length
+      : t('카테고리') + ' ' + INDEX.categories.length;
     el('count').textContent =
-      mine + '개 · ' +
-      (state.axis === 'phase' ? 'SDLC 단계 ' + INDEX.phases.length : '카테고리 ' + INDEX.categories.length) + '개';
-    const p = INDEX.projects.find((x) => x.id === state.project) || INDEX.projects[0];
+      state.lang === 'en'
+        ? mine + ' diagrams · ' + axisCount
+        : mine + '개 · ' + axisCount + '개';
+    const projects = visibleProjects();
+    const p = projects.find((x) => x.id === state.project) || projects[0];
     el('project').innerHTML = p
       ? '<strong>' + esc(p.name) + '</strong><span>' + esc(p.summary) +
         (p.missing && p.missing.length
-          ? ' · <em>남은 대표 종류 ' + p.missing.length + '개</em>'
+          ? ' · <em>' + t('남은 대표 종류') + ' ' + p.missing.length + (state.lang === 'en' ? '' : '개') + '</em>'
           : '') +
         '</span>'
       : '';
     // 프로젝트가 둘 이상일 때만 전환기를 보인다
     const pick = el('projectpick');
-    pick.hidden = INDEX.projects.length < 2;
+    pick.hidden = projects.length < 2;
     if (!pick.hidden && !pick.firstChild) {
       const sel = document.createElement('select');
-      sel.setAttribute('aria-label', '프로젝트 선택');
-      for (const x of INDEX.projects) {
+      sel.setAttribute('aria-label', t('프로젝트 선택'));
+      for (const x of projects) {
         const o = document.createElement('option');
         o.value = x.id;
         o.textContent = x.name + ' · ' + x.status;
@@ -887,12 +1023,12 @@
       sel.addEventListener('change', () => switchProject(sel.value));
       pick.appendChild(sel);
     }
-    if (!pick.hidden) pick.firstChild.value = state.project || INDEX.projects[0].id;
+    if (!pick.hidden) pick.firstChild.value = state.project || projects[0].id;
     segment(
       el('axisseg'),
       [
-        { label: 'SDLC 단계', value: 'phase', on: state.axis === 'phase' },
-        { label: '그림 종류', value: 'category', on: state.axis === 'category' },
+        { label: t('SDLC 단계'), value: 'phase', on: state.axis === 'phase' },
+        { label: t('그림 종류'), value: 'category', on: state.axis === 'category' },
       ],
       (v) => {
         state.axis = v;
@@ -902,8 +1038,8 @@
     segment(
       el('viewseg'),
       [
-        { label: '목록', value: 'list', on: state.view === 'list' },
-        { label: '갤러리', value: 'grid', on: state.view === 'grid' },
+        { label: t('목록'), value: 'list', on: state.view === 'list' },
+        { label: t('갤러리'), value: 'grid', on: state.view === 'grid' },
       ],
       (v) => {
         state.view = v;
@@ -934,7 +1070,7 @@
     if (shown.length < all.length || state.allTags) {
       const more = document.createElement('button');
       more.className = 'tag more';
-      more.textContent = state.allTags ? '접기' : '+' + (all.length - shown.length);
+      more.textContent = state.allTags ? t('접기') : '+' + (all.length - shown.length);
       more.addEventListener('click', () => {
         state.allTags = !state.allTags;
         render();
@@ -950,7 +1086,7 @@
     if (filtering && list.length === 0) {
       const p = document.createElement('div');
       p.className = 'note';
-      p.textContent = '조건에 맞는 다이어그램이 없습니다.';
+      p.textContent = t('조건에 맞는 다이어그램이 없습니다.');
       host.appendChild(p);
       return;
     }
@@ -962,19 +1098,19 @@
       if (items.length === 0 && adrs.length === 0 && filtering) continue;
       const h = document.createElement('div');
       h.className = 'grouphead';
-      h.title = cat.summary;
+      h.title = sm(cat);
       h.innerHTML =
-        '<span>' + esc(cat.name) + '</span>' +
+        '<span>' + esc(nm(cat)) + '</span>' +
         '<span class="cnt">' +
-        (adrs.length ? '결정 ' + adrs.length + ' · ' : '') +
+        (adrs.length ? t('결정') + ' ' + adrs.length + ' · ' : '') +
         (items.length || '—') + '</span>';
       host.appendChild(h);
       if (items.length === 0 && adrs.length === 0) {
         const e = document.createElement('div');
         e.className = 'emptycat';
         e.textContent = cat.kinds
-          ? '아직 없음 · ' + cat.kinds.slice(0, 2).map((k) => k.name).join(' · ')
-          : '아직 없음';
+          ? t('아직 없음') + ' · ' + cat.kinds.slice(0, 2).map((k) => nm(k)).join(' · ')
+          : t('아직 없음');
         host.appendChild(e);
         continue;
       }
@@ -989,7 +1125,7 @@
         b.innerHTML =
           '<span class="adrnum">' + esc(a.number) + '</span>' +
           '<span class="adrtitle' + (dead ? ' struck' : '') + '">' + esc(a.title) + '</span>';
-        b.title = a.status + ' · ' + a.date;
+        b.title = st(a) + ' · ' + a.date;
         b.addEventListener('click', () => selectDecision(a.id));
         box.appendChild(b);
       }
@@ -1001,7 +1137,7 @@
         b.innerHTML =
           '<span class="rowmain"><span class="dot"></span>' +
           '<span class="rowtitle">' + esc(d.title) + '</span></span>' +
-          (d.staleBy?.length ? '<span class="stale" title="걸린 결정보다 오래된 그림입니다">!</span>' : '');
+          (d.staleBy?.length ? '<span class="stale" title="' + t('걸린 결정보다 오래된 그림입니다') + '">!</span>' : '');
         b.addEventListener('click', () => select(d.id));
         box.appendChild(b);
       }
@@ -1028,7 +1164,7 @@
     head.innerHTML =
       '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
       'stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg>' +
-      '<span>설계 결정</span><span class="cnt">' + all.length + '</span>';
+      '<span>' + t('설계 결정') + '</span><span class="cnt">' + all.length + '</span>';
     head.addEventListener('click', () => {
       state.adrOpen = !open;
       // 접으면서 보고 있던 결정도 닫아, 다이어그램 화면으로 돌아간다
@@ -1049,7 +1185,7 @@
       b.innerHTML =
         '<span class="adrnum">' + esc(a.number) + '</span>' +
         '<span class="adrtitle' + (dead ? ' struck' : '') + '">' + esc(a.title) + '</span>';
-      b.title = a.status + ' · ' + a.date;
+      b.title = st(a) + ' · ' + a.date;
       b.addEventListener('click', () => selectDecision(a.id));
       box.appendChild(b);
     }
@@ -1063,7 +1199,7 @@
     if (filtering && list.length === 0) {
       const p = document.createElement('div');
       p.className = 'note';
-      p.textContent = '조건에 맞는 다이어그램이 없습니다.';
+      p.textContent = t('조건에 맞는 다이어그램이 없습니다.');
       host.appendChild(p);
       return;
     }
@@ -1074,12 +1210,12 @@
       const head = document.createElement('div');
       head.className = 'sectionhead';
       head.innerHTML =
-        '<h2>' + esc(cat.name) + '</h2>' +
-        '<p>' + esc(cat.summary) + '</p>' +
+        '<h2>' + esc(nm(cat)) + '</h2>' +
+        '<p>' + esc(sm(cat)) + '</p>' +
         (cat.kinds
           ? '<div class="kinds">' +
             cat.kinds
-              .map((k) => '<span class="pill' + (k.covered ? '' : ' ghost') + '">' + esc(k.name) + '</span>')
+              .map((k) => '<span class="pill' + (k.covered ? '' : ' ghost') + '">' + esc(nm(k)) + '</span>')
               .join('') +
             '</div>'
           : '');
@@ -1090,7 +1226,7 @@
       if (items.length === 0) {
         const e = document.createElement('div');
         e.className = 'emptycard';
-        e.textContent = '아직 그리지 않았습니다';
+        e.textContent = t('아직 그리지 않았습니다');
         row.appendChild(e);
       }
       for (const d of items) {
@@ -1120,13 +1256,13 @@
     el('d-title').textContent = a.number + '. ' + a.title;
     el('d-summary').textContent = '';
     el('d-meta').innerHTML =
-      '<span class="pill">' + esc(a.status) + '</span>' +
+      '<span class="pill">' + esc(st(a)) + '</span>' +
       (a.supersedes
-        ? '<span class="pill">' + esc(adrById.get(a.supersedes).number) + ' 대체</span>'
+        ? '<span class="pill">' + esc(adrById.get(a.supersedes).number) + ' ' + t('대체') + '</span>'
         : '') +
       // 결정을 내릴 때 본 그림과, 그 결정이 만든 그림
-      diagramGroup('근거', a.basis, 'basis') +
-      diagramGroup('결과', a.diagrams, 'link') +
+      diagramGroup(t('근거'), a.basis, 'basis') +
+      diagramGroup(t('결과'), a.diagrams, 'link') +
       '<span class="stamp">· ' + esc(a.date) + '</span>';
     el('d-meta')
       .querySelectorAll('[data-go]')
@@ -1141,7 +1277,7 @@
     src.href = a.path;
     src.target = '_blank';
     src.rel = 'noopener';
-    src.innerHTML = icon(ICON_OPEN) + '<span>원본 .md</span>';
+    src.innerHTML = icon(ICON_OPEN) + '<span>' + t('원본 .md') + '</span>';
     actions.appendChild(src);
 
     try {
@@ -1151,7 +1287,7 @@
       el('adr-stage').innerHTML = renderMarkdown(body, a.path.replace(/[^/]+$/, ''));
       show('adr');
     } catch (err) {
-      showError('<p><strong>결정 문서를 불러오지 못했습니다.</strong> (' + esc(err.message) + ')</p>');
+      showError('<p><strong>' + t('결정 문서를 불러오지 못했습니다.') + '</strong> (' + esc(err.message) + ')</p>');
     }
   }
 
@@ -1190,17 +1326,17 @@
       .map((id) => adrById.get(id))
       .filter(Boolean);
     el('d-meta').innerHTML =
-      (ph ? '<span class="pill">' + esc(ph.name) + '</span>' : '') +
+      (ph ? '<span class="pill">' + esc(nm(ph)) + '</span>' : '') +
       d.tags.map((t) => '<span class="pill">' + esc(t) + '</span>').join('') +
       (behind.length
         ? '<button class="pill warn" data-adr="' + esc(behind[0].id) + '" title="' +
           esc(behind.map((a) => a.number + ' ' + a.title).join(' · ')) +
-          '">결정 ' + behind.map((a) => esc(a.number)).join('·') + ' 이후 갱신 안 됨</button>'
+          '">' + t('결정') + ' ' + behind.map((a) => esc(a.number)).join('·') + ' ' + t('이후 갱신 안 됨') + '</button>'
         : '') +
       // 이 그림을 만든 결정과, 이 그림을 근거로 삼은 결정은 방향이 반대다
-      adrGroup('만든 결정', d.decisions, 'link') +
-      adrGroup('근거로 쓰인 결정', d.basisFor, 'basis') +
-      (d.updated ? '<span class="stamp">· 수정 ' + esc(d.updated) + '</span>' : '');
+      adrGroup(t('만든 결정'), d.decisions, 'link') +
+      adrGroup(t('근거로 쓰인 결정'), d.basisFor, 'basis') +
+      (d.updated ? '<span class="stamp">· ' + t('수정') + ' ' + esc(d.updated) + '</span>' : '');
     el('d-meta')
       .querySelectorAll('[data-adr]')
       .forEach((b) => b.addEventListener('click', () => selectDecision(b.dataset.adr)));
@@ -1211,13 +1347,13 @@
       [
         { label: 'SVG / HTML', value: 'html', on: state.fmt === 'html' },
         {
-          label: d.formats.excalidraw ? 'Excalidraw' : 'Excalidraw 없음',
+          label: d.formats.excalidraw ? 'Excalidraw' : t('Excalidraw 없음'),
           value: 'excalidraw',
           on: state.fmt === 'excalidraw',
           disabled: !d.formats.excalidraw,
           title: d.formats.excalidraw
             ? null
-            : '이 다이어그램에는 편집용 .excalidraw 파일이 없습니다. SVG/HTML 만 있습니다.',
+            : t('이 다이어그램에는 편집용 .excalidraw 파일이 없습니다. SVG/HTML 만 있습니다.'),
         },
       ],
       (v) => {
@@ -1235,10 +1371,10 @@
     zb.setAttribute('aria-pressed', String(state.zoom));
     zb.innerHTML =
       icon(state.zoom ? ICON_FIT : ICON_ZOOM) +
-      '<span>' + (state.zoom ? '맞춤' : '확대') + '</span>';
-    zb.title = state.zoom
+      '<span>' + t(state.zoom ? '맞춤' : '확대') + '</span>';
+    zb.title = t(state.zoom
       ? '화면 너비에 맞춰 전체를 봅니다'
-      : '원래 크기로 봅니다 — 좌우로 밀어서 읽으세요';
+      : '원래 크기로 봅니다 — 좌우로 밀어서 읽으세요');
     zb.addEventListener('click', () => {
       state.zoom = !state.zoom;
       applyZoom();
@@ -1260,7 +1396,7 @@
     };
 
     if (state.fmt === 'html') {
-      link('새 탭', d.formats.html);
+      link(t('새 탭'), d.formats.html);
       link('.html', d.formats.html, d.id + '.html');
       const b = document.createElement('button');
       b.className = 'btn primary';
@@ -1270,14 +1406,14 @@
         try {
           await downloadSvg(d.formats.html, d.id + '.svg');
         } catch (err) {
-          showError('SVG 를 만들지 못했습니다 (' + err.message + ').');
+          showError(t('SVG 를 만들지 못했습니다') + ' (' + err.message + ').');
         } finally {
           b.disabled = false;
         }
       });
       actions.appendChild(b);
     } else {
-      link('원본 JSON', d.formats.excalidraw);
+      link(t('원본 JSON'), d.formats.excalidraw);
       link('.excalidraw', d.formats.excalidraw, d.id + '.excalidraw');
     }
   }
@@ -1308,10 +1444,8 @@
         applyZoom();
       } catch (err) {
         showError(
-          '<p><strong>Excalidraw 파일을 불러오지 못했습니다.</strong> (' + esc(err.message) + ')</p>' +
-          '<p><code>file://</code> 로 직접 열면 브라우저 보안 정책 때문에 파일을 읽을 수 없습니다. ' +
-          '저장소 폴더에서 <code>python3 -m http.server</code> 를 실행해 ' +
-          '<code>http://localhost:8000</code> 으로 열거나, GitHub Pages 로 보세요.</p>'
+          '<p><strong>' + t('Excalidraw 파일을 불러오지 못했습니다.') + '</strong> (' + esc(err.message) + ')</p>' +
+          servingHint()
         );
       }
       return;
@@ -1360,7 +1494,7 @@
     const list = hits();
     document.body.dataset.nav = String(state.nav);
     el('navtoggle').setAttribute('aria-expanded', String(state.nav));
-    el('navtoggle').querySelector('.sr').textContent = state.nav ? '목록 닫기' : '목록 열기';
+    el('navtoggle').querySelector('.sr').textContent = t(state.nav ? '목록 닫기' : '목록 열기');
     renderChrome();
     renderList(list);
     el('detail').hidden = state.view !== 'list';
@@ -1395,7 +1529,7 @@
     state.axis = 'phase';
     state.fmt = 'html';
     el('q').value = '';
-    const first = INDEX.projects[0];
+    const first = visibleProjects()[0];
     state.project = first ? first.id : null;
     const d = INDEX.diagrams.find((x) => x.project === state.project);
     state.sel = d ? d.id : null;
@@ -1501,16 +1635,16 @@
     } catch (err) {
       document.querySelector('.body').innerHTML =
         '<div class="note" style="padding:32px">' +
-        '<p><strong>목록(diagrams.json)을 불러오지 못했습니다.</strong> (' + esc(err.message) + ')</p>' +
-        '<p><code>file://</code> 로 직접 열면 브라우저가 파일을 읽지 못합니다. ' +
-        '저장소 폴더에서 <code>python3 -m http.server</code> 를 실행해 ' +
-        '<code>http://localhost:8000</code> 으로 열거나, GitHub Pages 로 보세요.</p></div>';
+        '<p><strong>' + t('목록(diagrams.json)을 불러오지 못했습니다.') + '</strong> (' + esc(err.message) + ')</p>' +
+        servingHint() + '</div>';
       return;
     }
     for (const d of INDEX.diagrams) byId.set(d.id, d);
     for (const a of INDEX.decisions || []) adrById.set(a.id, a);
-    state.project = INDEX.projects[0] && INDEX.projects[0].id;
-    state.sel = INDEX.diagrams[0] && INDEX.diagrams[0].id;
+    const first = visibleProjects()[0];
+    state.project = first && first.id;
+    const firstDiagram = INDEX.diagrams.find((d) => d.project === state.project);
+    state.sel = firstDiagram && firstDiagram.id;
     applyHash();
     render();
   })();
