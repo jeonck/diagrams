@@ -16,6 +16,7 @@ projects/
 diagrams.json                  생성물 — 손으로 고치지 않습니다
 index.html                     뷰어
 tools/
+  new-diagram.mjs              새 다이어그램의 뼈대를 만든다
   build-index.mjs              diagrams.json 과 README 표를 만든다
   check-freshness.mjs          낡았을 수 있는 그림을 찾는다
   generators/                  스펙 → diagram.html · diagram.excalidraw
@@ -33,6 +34,7 @@ python3 -m http.server        # http://localhost:8000 에서 뷰어가 열립니
 HTML 이고, 도구는 표준 라이브러리만 씁니다.
 
 ```sh
+node tools/new-diagram.mjs --help    # 새 다이어그램 뼈대 만들기
 node tools/build-index.mjs           # 목록·README 표 다시 만들기
 python3 tools/generators/build.py    # 그림 30장 다시 찍기
 node tools/check-freshness.mjs       # 낡았을 수 있는 그림 찾기
@@ -221,6 +223,26 @@ build-index: 알림 허브 에 아직 없는 산출물 10개 — 구조/클래�
 - 여기 없는 표기(각주 · 중첩 목록 · HTML 직접 삽입 등)는 그대로 글자로 나옵니다.
 
 ## 다이어그램 추가하기
+
+명령 하나로 뼈대가 섭니다.
+
+```sh
+node tools/new-diagram.mjs order-platform/order-timeline \
+  --title "주문 타임라인" --phase design --category behavior --kind 시퀀스 \
+  --summary "주문 한 건이 시간 축에서 어떻게 흐르는가" \
+  --tags 시퀀스,주문 --template sequence
+```
+
+`meta.json` 과 스펙을 만들고, 그림을 한 번 찍고, 목록까지 갱신합니다. 그래서 이 명령
+하나로 **뷰어에 바로 보입니다** — 그 다음에 `tools/generators/specs/<슬러그>.py` 의
+좌표와 문구를 고치고 `python3 tools/generators/build.py <슬러그>` 로 다시 찍으면 됩니다.
+
+- `--template` 은 `box`(기본)와 `sequence` 중 하나입니다.
+- 잘못 적으면 쓸 수 있는 값을 알려주고 멈춥니다 (`phase "설계" 가 phases.json 에
+  없습니다 — 쓸 수 있는 값: requirements, analysis, design, operations`).
+- `--order` 를 안 주면 같은 단계의 맨 뒤에 놓습니다.
+
+아래는 이 명령이 무엇을 만드는지, 손으로 만들 때는 무엇을 채워야 하는지입니다.
 
 다이어그램 하나가 폴더 하나입니다. 폴더 이름이 곧 slug이고, 뷰어 URL의 해시이기도 하며,
 프로젝트를 넘나들어 고유해야 합니다.
