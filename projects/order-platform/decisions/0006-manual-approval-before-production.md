@@ -3,7 +3,8 @@
   "title": "프로덕션 배포 직전에만 사람이 승인한다",
   "status": "채택됨",
   "date": "2026-09-08",
-  "diagrams": ["cicd-pipeline", "value-stream"]
+  "diagrams": ["cicd-pipeline"],
+  "basis": ["value-stream"]
 }
 ---
 

@@ -497,7 +497,8 @@
         "html": "projects/order-platform/diagrams/value-stream/diagram.html",
         "excalidraw": "projects/order-platform/diagrams/value-stream/diagram.excalidraw"
       },
-      "decisions": [
+      "decisions": [],
+      "basisFor": [
         "0006-manual-approval-before-production"
       ]
     },
@@ -901,7 +902,9 @@
       "status": "채택됨",
       "date": "2026-09-08",
       "diagrams": [
-        "cicd-pipeline",
+        "cicd-pipeline"
+      ],
+      "basis": [
         "value-stream"
       ],
       "supersedes": null,

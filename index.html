@@ -219,6 +219,10 @@
   .pill.link { border: 0; cursor: pointer; font: inherit; font-size: 11px; color: var(--accent); background: var(--sel); }
   .pill.ghost { background: transparent; border: 1px dashed var(--line); opacity: 0.7; }
   .pill.warn { color: var(--warn); background: var(--warnbg); border: 0; cursor: pointer; font: inherit; font-size: 11px; }
+  /* 결정 ↔ 그림 링크의 방향을 밝히는 꼬리표 */
+  .metalabel { font-size: 11px; color: var(--muted); margin-left: 4px; }
+  .metalabel:first-child { margin-left: 0; }
+  .pill.basis { background: transparent; border: 1px solid var(--line); color: var(--accent); }
   /* 목록에서도 눈에 띄게 — 점 하나로 */
   .row .stale { flex-shrink: 0; color: var(--warn); font-size: 12px; font-weight: 700; }
   .stamp { font-size: 11px; color: var(--muted); }
@@ -1095,12 +1099,9 @@
       (a.supersedes
         ? '<span class="pill">' + esc(adrById.get(a.supersedes).number) + ' 대체</span>'
         : '') +
-      a.diagrams
-        .map((id) => {
-          const d = byId.get(id);
-          return d ? '<button class="pill link" data-go="' + esc(id) + '">' + esc(d.title) + '</button>' : '';
-        })
-        .join('') +
+      // 결정을 내릴 때 본 그림과, 그 결정이 만든 그림
+      diagramGroup('근거', a.basis, 'basis') +
+      diagramGroup('결과', a.diagrams, 'link') +
       '<span class="stamp">· ' + esc(a.date) + '</span>';
     el('d-meta')
       .querySelectorAll('[data-go]')
@@ -1129,6 +1130,30 @@
     }
   }
 
+  // 방향이 있는 링크 묶음 — 꼬리표 하나 + 알약 여러 개
+  function adrGroup(label, ids, cls) {
+    const list = (ids || []).map((id) => adrById.get(id)).filter(Boolean);
+    if (!list.length) return '';
+    return (
+      '<span class="metalabel">' + label + '</span>' +
+      list
+        .map((a) => '<button class="pill ' + cls + '" data-adr="' + esc(a.id) + '" title="' +
+          esc(a.title) + '">ADR ' + esc(a.number) + '</button>')
+        .join('')
+    );
+  }
+
+  function diagramGroup(label, ids, cls) {
+    const list = (ids || []).map((id) => byId.get(id)).filter(Boolean);
+    if (!list.length) return '';
+    return (
+      '<span class="metalabel">' + label + '</span>' +
+      list
+        .map((d) => '<button class="pill ' + cls + '" data-go="' + esc(d.id) + '">' + esc(d.title) + '</button>')
+        .join('')
+    );
+  }
+
   function renderDetail() {
     const d = current();
     if (!d) return;
@@ -1147,12 +1172,9 @@
           esc(behind.map((a) => a.number + ' ' + a.title).join(' · ')) +
           '">결정 ' + behind.map((a) => esc(a.number)).join('·') + ' 이후 갱신 안 됨</button>'
         : '') +
-      (d.decisions || [])
-        .map((id) => {
-          const a = adrById.get(id);
-          return a ? '<button class="pill link" data-adr="' + esc(id) + '">ADR ' + esc(a.number) + '</button>' : '';
-        })
-        .join('') +
+      // 이 그림을 만든 결정과, 이 그림을 근거로 삼은 결정은 방향이 반대다
+      adrGroup('만든 결정', d.decisions, 'link') +
+      adrGroup('근거로 쓰인 결정', d.basisFor, 'basis') +
       (d.updated ? '<span class="stamp">· 수정 ' + esc(d.updated) + '</span>' : '');
     el('d-meta')
       .querySelectorAll('[data-adr]')

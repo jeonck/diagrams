@@ -5,7 +5,8 @@
 //
 // 두 가지를 본다.
 //
-//   1. 결정보다 뒤처진 그림 — 걸려 있는 ADR 이 그림의 updated 보다 나중 날짜다.
+//   1. 결정보다 뒤처진 그림 — 그 결정이 만든(diagrams) 그림이 결정보다 오래됐다.
+//      결정의 근거로 본(basis) 그림은 세지 않는다 — 결정이 바뀌어도 근거는 그대로다.
 //      커밋된 날짜만 쓰므로 git 없이도 돌아간다.
 //   2. 코드보다 뒤처진 그림 — meta.json 의 sources 에 적힌 경로가 updated 이후에
 //      바뀌었다. git 로그를 보므로 전체 이력이 있어야 한다 (fetch-depth: 0).
@@ -83,7 +84,11 @@ for (const d of index.diagrams) {
 }
 
 const lines = [];
-lines.push(`다이어그램 ${index.diagrams.length}개 · sources 를 적은 그림 ${withSources.length}개`);
+const basisLinks = index.decisions.reduce((n, a) => n + (a.basis?.length ?? 0), 0);
+lines.push(
+  `다이어그램 ${index.diagrams.length}개 · sources 를 적은 그림 ${withSources.length}개` +
+  ` · 근거로만 걸린 링크 ${basisLinks}건 (낡음 판정에서 제외)`
+);
 if (withSources.length && !full) {
   lines.push('※ 얕은 클론이라 코드 변경일을 볼 수 없습니다 — 결정 기준으로만 검사했습니다.');
 }

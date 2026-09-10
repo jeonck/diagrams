@@ -137,9 +137,20 @@ function readDecision(project, file) {
     fail(`${where} 의 status "${head.status}" 는 쓸 수 없습니다 — ${STATUSES.join(', ')} 중 하나여야 합니다`);
   }
   if (!/^\d{4}-\d{2}-\d{2}$/.test(head.date)) fail(`${where} 의 date 는 YYYY-MM-DD 형식이어야 합니다`);
+  // diagrams 는 이 결정이 만든 그림, basis 는 이 결정을 내릴 때 근거로 본 그림이다.
+  // 방향이 다르므로 낡음 판정도 다르다 — 결정이 바뀌면 결과는 따라 바뀌어야 하지만
+  // 근거는 그대로다.
   const diagrams = head.diagrams ?? [];
   if (!Array.isArray(diagrams) || diagrams.some((d) => typeof d !== 'string')) {
     fail(`${where} 의 diagrams 는 문자열 배열이어야 합니다`);
+  }
+  const basis = head.basis ?? [];
+  if (!Array.isArray(basis) || basis.some((d) => typeof d !== 'string')) {
+    fail(`${where} 의 basis 는 문자열 배열이어야 합니다`);
+  }
+  const both = basis.filter((d) => diagrams.includes(d));
+  if (both.length) {
+    fail(`${where}: "${both[0]}" 이 basis 와 diagrams 양쪽에 있습니다 — 근거인지 결과인지 하나만 고르세요`);
   }
   if (!m[2].trim()) fail(`${where}: 머리말 뒤에 본문이 없습니다`);
 
@@ -160,6 +171,7 @@ function readDecision(project, file) {
     status: head.status,
     date: head.date,
     diagrams,
+    ...(basis.length ? { basis } : {}),
     supersedes: head.supersedes ?? null,
     supersededBy: head.supersededBy ?? null,
     path: `projects/${project}/decisions/${file}`,
@@ -211,7 +223,7 @@ function build() {
     const slugs = new Set(mine.map((d) => d.id));
     const adrIds = new Set(myAdrs.map((a) => a.id));
     for (const a of myAdrs) {
-      for (const d of a.diagrams) {
+      for (const d of [...a.diagrams, ...(a.basis ?? [])]) {
         if (!slugs.has(d)) fail(`${a.path} 가 없는 다이어그램 "${d}" 를 가리킵니다`);
       }
       for (const [key, ref] of [['supersedes', a.supersedes], ['supersededBy', a.supersededBy]]) {
@@ -253,6 +265,11 @@ function build() {
   for (const d of diagrams) {
     const linked = decisions.filter((a) => a.project === d.project && a.diagrams.includes(d.id));
     d.decisions = linked.map((a) => a.id);
+    // 이 그림을 근거로 삼은 결정들 — 결정이 바뀌어도 이 그림이 낡는 것은 아니다
+    const asBasis = decisions
+      .filter((a) => a.project === d.project && (a.basis ?? []).includes(d.id))
+      .map((a) => a.id);
+    if (asBasis.length) d.basisFor = asBasis;
     // 결정이 그림보다 나중에 정해졌다면 그림이 그 결정을 아직 안 담았을 수 있다.
     // git 을 보지 않고 커밋된 날짜만 쓰므로 어디서 돌려도 같은 값이 나온다.
     const behind = linked.filter((a) => d.updated && a.date > d.updated).map((a) => a.id);
