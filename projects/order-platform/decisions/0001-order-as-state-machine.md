@@ -3,6 +3,7 @@
   "title": "주문을 상태 기계로 다룬다",
   "status": "채택됨",
   "date": "2026-09-02",
+  "phase": "analysis",
   "diagrams": ["order-state", "order-class"]
 }
 ---

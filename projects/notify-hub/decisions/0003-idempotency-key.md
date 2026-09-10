@@ -3,6 +3,7 @@
   "title": "멱등키로 중복 발송을 막는다",
   "status": "채택됨",
   "date": "2026-09-09",
+  "phase": "design",
   "diagrams": ["notify-sequence", "notify-components", "notify-erd", "notify-activity"]
 }
 ---

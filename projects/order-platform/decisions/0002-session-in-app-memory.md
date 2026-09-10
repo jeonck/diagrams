@@ -3,6 +3,7 @@
   "title": "세션을 앱 서버 메모리에 둔다",
   "status": "대체됨",
   "date": "2026-09-03",
+  "phase": "operations",
   "supersededBy": "0005-session-in-redis",
   "diagrams": []
 }

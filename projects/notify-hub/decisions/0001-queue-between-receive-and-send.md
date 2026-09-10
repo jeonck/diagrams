@@ -3,6 +3,7 @@
   "title": "수신과 발송 사이에 큐를 둔다",
   "status": "채택됨",
   "date": "2026-09-07",
+  "phase": "design",
   "diagrams": ["notify-c4", "notify-deployment", "notify-packages"]
 }
 ---

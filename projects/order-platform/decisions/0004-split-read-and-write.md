@@ -3,6 +3,7 @@
   "title": "읽기와 쓰기를 나눈다",
   "status": "채택됨",
   "date": "2026-09-05",
+  "phase": "operations",
   "diagrams": ["deployment-topology", "network-topology"]
 }
 ---

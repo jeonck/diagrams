@@ -3,6 +3,7 @@
   "title": "도메인은 아무것도 의존하지 않는다",
   "status": "채택됨",
   "date": "2026-09-04",
+  "phase": "design",
   "diagrams": ["package-deps", "order-class"]
 }
 ---

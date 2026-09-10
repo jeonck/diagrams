@@ -3,6 +3,7 @@
   "title": "세션을 Redis로 옮긴다",
   "status": "채택됨",
   "date": "2026-09-06",
+  "phase": "operations",
   "supersedes": "0002-session-in-app-memory",
   "diagrams": ["deployment-topology"]
 }

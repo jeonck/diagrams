@@ -119,7 +119,7 @@ function readDiagram(project, id, categories, phaseIds) {
 
 // ADR 은 파일 맨 앞의 JSON 머리말로 기계가 읽는다.
 // YAML 파서를 들이지 않으려고 JSON 을 쓴다 — node 에 내장 파서가 없다.
-function readDecision(project, file) {
+function readDecision(project, file, phaseIds) {
   const where = `${project}/decisions/${file}`;
   if (!ADR.test(file)) fail(`${where}: 파일 이름은 0001-소문자-하이픈.md 형식이어야 합니다`);
 
@@ -132,7 +132,11 @@ function readDecision(project, file) {
   } catch (err) {
     fail(`${where}: 머리말 JSON 을 읽지 못했습니다 — ${err.message}`);
   }
-  requireStrings(head, ['title', 'status', 'date'], where);
+  requireStrings(head, ['title', 'status', 'date', 'phase'], where);
+  // 결정도 SDLC 단계에 놓인다 — 언제 정했는가가 보여야 "결정하고 나서 그린다" 가 읽힌다
+  if (!phaseIds.has(head.phase)) {
+    fail(`${where} 의 phase "${head.phase}" 는 phases.json 에 없습니다`);
+  }
   if (!STATUSES.includes(head.status)) {
     fail(`${where} 의 status "${head.status}" 는 쓸 수 없습니다 — ${STATUSES.join(', ')} 중 하나여야 합니다`);
   }
@@ -170,6 +174,7 @@ function readDecision(project, file) {
     title: head.title,
     status: head.status,
     date: head.date,
+    phase: head.phase,
     diagrams,
     ...(basis.length ? { basis } : {}),
     supersedes: head.supersedes ?? null,
@@ -218,7 +223,7 @@ function build() {
     // ADR 은 선택 사항이다. 없는 프로젝트도 있을 수 있다.
     const adrDir = join(PROJECTS, pid, 'decisions');
     const myAdrs = existsSync(adrDir)
-      ? readdirSync(adrDir).filter((f) => f.endsWith('.md')).sort().map((f) => readDecision(pid, f))
+      ? readdirSync(adrDir).filter((f) => f.endsWith('.md')).sort().map((f) => readDecision(pid, f, phaseRank))
       : [];
     const slugs = new Set(mine.map((d) => d.id));
     const adrIds = new Set(myAdrs.map((a) => a.id));
