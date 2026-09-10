@@ -1,7 +1,7 @@
 <!doctype html>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>웹 서비스 배포 구성</title>
+<title>웹 서비스 배포 구성도</title>
 <style>
   :root {
     color-scheme: light dark;
@@ -121,47 +121,42 @@
     <text class="title" x="24" y="34">웹 서비스 배포 구성</text>
     <text class="small" x="24" y="56">요청이 엣지를 지나 앱 계층에 닿고, 읽기와 쓰기가 갈라지는 지점</text>
 
-    <!-- 연결선 먼저 -->
+    <!-- 연결선을 먼저 그려 화살표가 상자 뒤로 가게 한다 -->
     <path class="edge" d="M 420 148 L 250 200" marker-end="url(#arrow)" />
     <path class="edge" d="M 520 148 L 690 200" marker-end="url(#arrow)" />
     <path class="edge" d="M 700 268 L 670 356" marker-end="url(#arrow)" />
     <path class="edge" d="M 560 396 L 370 396" marker-end="url(#arrow)" />
     <path class="edge" d="M 640 436 L 430 526" marker-end="url(#arrow)" />
     <path class="edge" d="M 680 436 L 665 526" marker-end="url(#arrow)" />
-    <path class="edge" d="M 500 562 L 560 562" marker-end="url(#arrow)" stroke-dasharray="6 5" />
+    <path class="edge" d="M 500 562 L 560 562" stroke-dasharray="6 5" marker-end="url(#arrow)" />
 
-    <!-- 신뢰 경계 -->
     <rect class="zone" x="60" y="176" width="820" height="112" rx="10" />
     <rect class="zone" x="60" y="316" width="820" height="330" rx="10" />
-
-    <!-- 노드 -->
     <rect class="node external" x="380" y="88" width="180" height="60" rx="8" />
     <rect class="node external" x="150" y="200" width="200" height="68" rx="8" />
-    <rect class="node process"  x="600" y="200" width="200" height="68" rx="8" />
-    <rect class="node process"  x="570" y="368" width="220" height="68" rx="8" />
-    <rect class="node process"  x="562" y="360" width="220" height="68" rx="8" />
-    <rect class="node storage"  x="170" y="362" width="200" height="68" rx="8" />
-    <rect class="node storage"  x="300" y="526" width="200" height="72" rx="8" />
-    <rect class="node storage"  x="560" y="526" width="200" height="72" rx="8" />
+    <rect class="node process" x="600" y="200" width="200" height="68" rx="8" />
+    <rect class="node process" x="570" y="368" width="220" height="68" rx="8" />
+    <rect class="node process" x="562" y="360" width="220" height="68" rx="8" />
+    <rect class="node storage" x="170" y="362" width="200" height="68" rx="8" />
+    <rect class="node storage" x="300" y="526" width="200" height="72" rx="8" />
+    <rect class="node storage" x="560" y="526" width="200" height="72" rx="8" />
 
-    <text class="small" x="62" y="168">퍼블릭 구간</text>
-    <text class="small" x="62" y="308">프라이빗 서브넷</text>
-
-    <text class="label" x="470" y="116" text-anchor="middle">브라우저</text>
-    <text class="small" x="470" y="136" text-anchor="middle">사용자 단말</text>
-    <text class="label" x="250" y="230" text-anchor="middle">CDN</text>
-    <text class="small" x="250" y="250" text-anchor="middle">정적 자산 · 캐시</text>
-    <text class="label" x="700" y="230" text-anchor="middle">로드 밸런서</text>
-    <text class="small" x="700" y="250" text-anchor="middle">TLS 종료 · 헬스체크</text>
-    <text class="label" x="672" y="392" text-anchor="middle">앱 서버 ×3</text>
-    <text class="small" x="672" y="412" text-anchor="middle">무상태 · 오토스케일</text>
-    <text class="label" x="270" y="392" text-anchor="middle">캐시 (Redis)</text>
-    <text class="small" x="270" y="412" text-anchor="middle">세션 · 조회 결과</text>
-    <text class="label" x="400" y="556" text-anchor="middle">DB Primary</text>
-    <text class="small" x="400" y="578" text-anchor="middle">단일 쓰기 지점</text>
-    <text class="label" x="660" y="556" text-anchor="middle">DB Replica</text>
-    <text class="small" x="660" y="578" text-anchor="middle">읽기 전용 사본</text>
-
+    <text class="small" x="62" y="166">퍼블릭 구간</text>
+    <text class="small" x="62" y="306">프라이빗 서브넷</text>
+    <text class="label" x="470" y="113" text-anchor="middle">브라우저</text>
+    <text class="small" x="470" y="135" text-anchor="middle">사용자 단말</text>
+    <text class="label" x="250" y="229" text-anchor="middle">CDN</text>
+    <text class="small" x="250" y="251" text-anchor="middle">정적 자산 · 캐시</text>
+    <text class="label" x="700" y="229" text-anchor="middle">로드 밸런서</text>
+    <text class="small" x="700" y="251" text-anchor="middle">TLS 종료 · 헬스체크</text>
+    <text class="label" x="672" y="389" text-anchor="middle">앱 서버 ×3</text>
+    <text class="small" x="672" y="411" text-anchor="middle">무상태 · 오토스케일</text>
+    <text class="label" x="270" y="391" text-anchor="middle">캐시 (Redis)</text>
+    <text class="small" x="270" y="413" text-anchor="middle">세션 · 조회 결과</text>
+    <text class="label" x="400" y="557" text-anchor="middle">DB Primary</text>
+    <text class="small" x="400" y="579" text-anchor="middle">단일 쓰기 지점</text>
+    <text class="label" x="660" y="557" text-anchor="middle">DB Replica</text>
+    <text class="small" x="660" y="579" text-anchor="middle">읽기 전용 사본</text>
     <text class="small" x="300" y="142" text-anchor="middle">정적 자산</text>
     <text class="small" x="640" y="142" text-anchor="middle">API 요청</text>
     <text class="small" x="700" y="330" text-anchor="middle">분배</text>
@@ -169,8 +164,7 @@
     <text class="small" x="470" y="480" text-anchor="middle">쓰기</text>
     <text class="small" x="700" y="480" text-anchor="middle">읽기</text>
     <text class="small" x="530" y="552" text-anchor="middle">복제</text>
-
-    <text class="small" x="24" y="700">※ 점선 사각형은 신뢰 경계입니다. 퍼블릭 구간만 인터넷에서 직접 닿고, 프라이빗 서브넷은 닿지 않습니다.</text>
-    <text class="small" x="24" y="722">앱 서버는 상태를 갖지 않으므로 대수만 늘리면 확장되고, 세션과 데이터는 각각 캐시와 DB가 맡습니다.</text>
+    <text class="small" x="24" y="724">※ 점선 사각형은 신뢰 경계입니다. 퍼블릭 구간만 인터넷에서 직접 닿고, 프라이빗 서브넷은 닿지 않습니다.</text>
+    <text class="small" x="24" y="746">앱 서버는 상태를 갖지 않으므로 대수만 늘리면 확장되고, 세션과 데이터는 각각 캐시와 DB가 맡습니다.</text>
   </svg>
 </main>

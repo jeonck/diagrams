@@ -1,89 +1,79 @@
-# 다이어그램 생성기 (있는 그대로 보관)
+# 다이어그램 생성기
 
-`projects/*/diagrams/*/diagram.html` 과 `diagram.excalidraw` 는 손으로 쓴 것이 아니라
-여기 있는 스크립트가 스펙(노드·엣지 목록)에서 찍어낸 것입니다.
-
-> **주의 — 아직 "원본"이 아닙니다.**
-> 이 스크립트들은 작업할 때 쓰던 임시 배치 코드를 사라지기 전에 그대로 옮겨둔 것입니다.
-> 지금은 **기록물**이지, 빌드에 물려 있는 파이프라인이 아닙니다.
-> 아래 "알려진 문제"를 정리하고 CI 검증을 붙여야 비로소 원본이 됩니다.
-> 그전까지 다이어그램을 고칠 때는 **산출물(diagram.html)과 여기 스펙을 함께** 고쳐야 합니다.
-
-## 구성
-
-**라이브러리** — 그리는 도구. 직접 실행하지 않습니다.
-
-| 파일 | 하는 일 |
-|---|---|
-| `spec.py` | 스펙(`N` 노드 / `E` 엣지 / `Z` 영역) → SVG·HTML + Excalidraw. 화살표 마커, 클래스·엔터티 칸 구분선 포함 |
-| `ex.py` | Excalidraw JSON 빌더 (`Doc`) — 도형·바인딩 텍스트·화살표 |
-| `seq.py` | 시퀀스 다이어그램 전용 방출기 (생명선·활성 막대·자기 메시지) |
-| `dg.py` | 초기 방출기. `spec.py` 의 전신 |
-
-**배치 스크립트** — 실제로 그림을 찍는 쪽. 한 파일이 그림 2~4장을 담당합니다.
-
-| 스크립트 | 만드는 다이어그램 |
-|---|---|
-| `b1.py` | order-class · package-deps · c4-container |
-| `b2.py` | shop-usecase · order-state · checkout-activity |
-| `b3.py` | order-dfd · fulfillment-bpmn · network-topology · value-stream |
-| `ex3.py` | order-erd · deployment-topology · cicd-pipeline (**Excalidraw 만**) |
-| `n1.py` | notify-usecase · notify-state · notify-c4 · notify-deployment |
-| `n2.py` | notify-sequence |
-| `n3.py` | notify-activity |
-| `nA.py` | notify-class · notify-components · notify-packages |
-| `nB.py` | notify-erd · notify-dfd · notify-network |
-| `nC.py` | notify-bpmn · notify-cicd · notify-value-stream |
-
-## 재현 확인 (2026-09-10 측정)
-
-전부 다시 돌려 커밋본과 바이트 단위로 비교한 결과입니다.
-
-| 형식 | 그대로 재현 | 생성기 없음 | 다르게 나옴 |
-|---|---|---|---|
-| `diagram.html` | 25 / 30 | 5 | **0** |
-| `diagram.excalidraw` | 28 / 30 | 2 | **0** |
-
-생성기가 있는 파일은 **하나도 빠짐없이 원본과 같습니다.**
-
-생성기가 없는 그림 — 스펙 방식을 만들기 전에 그린 초기 그림들입니다.
-
-- `mvc-structure` (html, excalidraw)
-- `mvc-sequence` (html, excalidraw)
-- `order-erd` (html)
-- `deployment-topology` (html)
-- `cicd-pipeline` (html)
-
-## 지금 돌리는 법
-
-경로가 `projects/` 재구조화 이전 기준이라, **저장소에서 그냥 돌리면 엉뚱한 곳에 씁니다.**
-반드시 빈 미러 폴더에서 돌린 뒤 결과를 비교하세요.
+`projects/*/diagrams/*/diagram.html` 과 `diagram.excalidraw` 는 **손으로 쓰지 않습니다.**
+`specs/` 의 스펙 한 장이 두 포맷을 함께 찍어냅니다.
 
 ```sh
-# 1) 미러 폴더에 출력 자리를 만든다
-rm -rf /tmp/regen && mkdir -p /tmp/regen
-node -e "const j=require('./diagrams.json');for(const d of j.diagrams)console.log(d.project,d.id)" \
-  | while read p s; do mkdir -p /tmp/regen/diagrams/$s /tmp/regen/projects/$p/diagrams/$s; done
-
-# 2) 미러 폴더를 작업 폴더로 삼아 돌린다
-cd /tmp/regen
-for f in b1 b2 b3 ex3 n1 n2 n3 nA nB nC; do
-  python3 /경로/tools/generators/$f.py
-done
-
-# 3) 커밋본과 비교한다 (다르면 스펙과 산출물이 어긋난 것)
-diff /tmp/regen/diagrams/order-class/diagram.html \
-     projects/order-platform/diagrams/order-class/diagram.html
+python3 tools/generators/build.py                # 30장 전부 다시 생성
+python3 tools/generators/build.py order-class    # 한 장만
+python3 tools/generators/build.py --check        # 커밋본과 같은지 확인 (파일을 건드리지 않음)
 ```
 
-`spec.py` · `seq.py` · `dg.py` 는 CSS 를 가져오려고
-`/home/user/diagrams/projects/order-platform/diagrams/mvc-structure/diagram.html` 을
-**절대 경로로 읽습니다.** 다른 곳에 두고 쓰려면 이 경로부터 고쳐야 합니다.
+`--check` 는 배포 워크플로에서 돌아갑니다. **`diagram.html` 을 손으로 고치면 배포가 실패합니다** —
+고칠 곳은 스펙입니다.
 
-## 알려진 문제 (원본이 되기 전에 정리할 것)
+## 폴더
 
-1. **경로가 옛 구조** — 상대 경로 `diagrams/<슬러그>/` 를 씁니다. `projects/<프로젝트>/diagrams/<슬러그>/` 로 바꿔야 합니다.
-2. **배치 묶음** — `b1.py`, `nA.py` 같은 이름에 그림 2~4장이 섞여 있어, 한 장을 고치려 할 때 어느 파일을 열지 알 수 없습니다. 슬러그별로 나눠야 합니다.
-3. **순환 의존** — 생성기가 산출물(`mvc-structure/diagram.html`)을 CSS 원본으로 읽습니다. 템플릿을 별도 파일로 빼야 합니다.
-4. **빠진 5장** — 위 목록의 그림들은 스펙을 새로 써야 합니다.
-5. **CI 검증 없음** — 누군가 `diagram.html` 을 직접 고치면 스펙과 조용히 어긋납니다. `build-index.mjs --check` 처럼 "재생성본과 커밋본이 같은가" 를 배포 전에 확인해야 합니다.
+```
+tools/generators/
+  build.py              러너 — 스펙을 돌리고, --check 로 커밋본과 비교한다
+  specs/<슬러그>.py      다이어그램 한 장 = 파일 한 개 (30개)
+  specs/_bootstrap.py   스펙이 도구를 가져오는 진입점
+  lib/spec.py           스펙(N·E·Z) → SVG/HTML + Excalidraw
+  lib/seq.py            시퀀스 전용 방출기 (생명선 · 활성 막대 · 자기 메시지)
+  lib/ex.py             Excalidraw JSON 빌더
+  lib/emit.py           출력 경로 결정 + emit() · emit_seq()
+  lib/template.html     문서 머리말과 스타일 — 모든 그림이 여기서 온다
+```
+
+## 스펙 쓰는 법
+
+좌표계는 SVG 픽셀이고, 원점은 왼쪽 위입니다. 같은 좌표가 Excalidraw 에도 그대로 쓰입니다.
+
+```python
+"""주문 도메인 클래스 — order-platform"""
+from _bootstrap import N, E, Z, emit
+
+nodes = [
+ N(60, 120, 240, 134, 'storage', 'Customer', kind='class',
+   attrs=['- id: Long'], ops=['+ placeOrder(): Order']),
+]
+edges = [E([(300, 187), (400, 187)], head=None)]
+
+emit('order-platform', 'order-class', '주문 도메인 클래스', 1080, 700,
+     '주문 도메인 클래스', '같은 도메인을 데이터가 아니라 책임과 관계로 본 그림',
+     nodes, edges, zones, notes, labels, seed=101)
+```
+
+- `N(x, y, w, h, 색, 제목, [부제…])` — 색은 `input · process · storage · external · neutral · risk`
+  여섯 가지 의미색만 씁니다. `kind` 로 `box`(기본) · `class` · `entity` · `diamond` · `ellipse`.
+  제목을 `None` 으로 두면 글자 없는 상자가 됩니다 (겹쳐 그리는 그림자 등).
+- `E([(x,y), …], 라벨, dashed=, head=, start=, lx=, ly=)` — `head`/`start` 는
+  `arrow · open · tri · diamond · one · one-s · many · many-s`. 라벨 위치는 `lx`/`ly` 로 밀 수 있습니다.
+- `Z(x, y, w, h, 라벨)` — 점선 영역(신뢰 경계 · 시스템 경계 · 레인).
+- `labels` 는 정렬을 직접 지정해야 하는 글자용 `(x, y, 글자, 정렬)` 목록입니다.
+- `notes` 는 그림 아래 각주로, 캔버스 바닥에서부터 자동으로 쌓입니다.
+- `seed` 는 Excalidraw 의 손그림 흔들림을 고정합니다. **바꾸지 마세요** — 바꾸면 그림이 달라집니다.
+
+시퀀스는 좌표계가 달라 `emit_seq(project, slug, …, actors, msgs, selfs, bars, notes)` 를 씁니다.
+`specs/notify-sequence.py` 가 견본입니다.
+
+**Excalidraw 규칙**: 글자가 들어가는 도형은 120×60 이상이어야 합니다 (스킬 규칙, `lib/ex.py` 가 강제).
+작게 그리고 싶으면 도형에서 글자를 빼고 `labels` 로 따로 놓으세요.
+
+## 그림을 고치는 순서
+
+1. `specs/<슬러그>.py` 를 고친다
+2. `python3 tools/generators/build.py <슬러그>` 로 다시 찍는다
+3. 브라우저로 `diagram.html` 을 열어 눈으로 본다
+4. 스펙과 산출물을 **함께** 커밋한다
+
+새 그림이라면 `projects/<프로젝트>/diagrams/<슬러그>/meta.json` 도 만들고
+`node tools/build-index.mjs` 로 목록을 갱신하세요.
+
+## 알아둘 것
+
+- 스펙은 **레이아웃을 계산해 주지 않습니다.** 좌표는 사람이 정합니다. 그래서 상자를 옮기면
+  거기 붙은 선의 좌표도 같이 옮겨야 합니다.
+- 글자 겹침은 자동으로 풀리지 않습니다. 촘촘한 그림은 찍은 뒤 눈으로 확인해야 합니다.
+- Excalidraw 앱에서 손으로 고친 내용은 다음 생성 때 덮어씁니다. 편집은 스펙에서 하세요.

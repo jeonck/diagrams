@@ -1,6 +1,5 @@
-import sys; sys.path.insert(0, '/tmp/dg')
-from spec import N, E, Z, emit_svg, emit_ex
-P = 'projects/notify-hub/diagrams/notify-activity/diagram'
+"""알림 발송 재시도 액티비티 — notify-hub"""
+from _bootstrap import N, E, Z, emit
 
 nodes = [
  N(480,70,120,60,'neutral','시작'),
@@ -33,9 +32,8 @@ edges = [
 notes = ['※ 마름모는 분기입니다. 첫 분기가 ADR 0003 의 워커 단계 방어입니다 —',
  '조건부 UPDATE 로 상태를 선점해, 큐가 같은 메시지를 두 번 줘도 한 워커만 발송합니다.',
  '재시도는 같은 사이클을 다시 도는 것으로 그렸습니다.']
-emit_svg(P + '.html','알림 발송 재시도 액티비티',1080,1290,'알림 발송 재시도 액티비티',
- '발송 워커 한 사이클 — 선점하고, 성공하거나, 백오프 뒤 다시 돌거나, 포기하거나',
- nodes, edges, (), notes)
-print('excalidraw:', emit_ex(P + '.excalidraw','알림 발송 재시도 액티비티',
- '발송 워커 한 사이클 — 선점하고, 성공하거나, 백오프 뒤 다시 돌거나, 포기하거나',
- nodes, edges, (), notes, (), 601))
+
+emit('notify-hub', 'notify-activity', '알림 발송 재시도 액티비티', 1080, 1290,
+     '알림 발송 재시도 액티비티',
+     '발송 워커 한 사이클 — 선점하고, 성공하거나, 백오프 뒤 다시 돌거나, 포기하거나',
+     nodes, edges, (), notes, (), seed=601)

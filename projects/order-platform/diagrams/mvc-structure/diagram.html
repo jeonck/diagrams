@@ -111,67 +111,45 @@
   }
 </style>
 <main>
-  <svg viewBox="0 0 900 710" role="img" aria-label="MVC 패턴 다이어그램">
+  <svg viewBox="0 0 900 710" role="img" aria-label="MVC 다이어그램">
     <defs>
-      <marker
-        id="arrow"
-        viewBox="0 0 10 10"
-        refX="9"
-        refY="5"
-        markerWidth="7"
-        markerHeight="7"
-        orient="auto-start-reverse"
-      >
-        <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head" />
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--line)" />
       </marker>
     </defs>
 
-    <text class="title" x="24" y="38">MVC (Model–View–Controller) 패턴</text>
-    <text class="small" x="24" y="60">
-      사용자 입력 → 제어 → 상태 변경 → 화면 갱신으로 이어지는 순환 구조
-    </text>
+    <text class="title" x="24" y="34">MVC (Model–View–Controller) 패턴</text>
+    <text class="small" x="24" y="56">사용자 입력 → 제어 → 상태 변경 → 화면 갱신으로 이어지는 순환 구조</text>
 
-    <!-- connectors first so arrows sit behind boxes -->
-    <line class="edge" x1="390" y1="182" x2="190" y2="306" marker-end="url(#arrow)" />
-    <line class="edge" x1="710" y1="306" x2="510" y2="182" marker-end="url(#arrow)" />
-    <line class="edge" x1="190" y1="410" x2="390" y2="522" marker-end="url(#arrow)" />
-    <line class="edge" x1="510" y1="522" x2="710" y2="410" marker-end="url(#arrow)" />
-    <line class="edge-dashed" x1="310" y1="358" x2="590" y2="358" marker-end="url(#arrow)" />
+    <!-- 연결선을 먼저 그려 화살표가 상자 뒤로 가게 한다 -->
+    <path class="edge" d="M 390 182 L 190 306" marker-end="url(#arrow)" />
+    <path class="edge" d="M 710 306 L 510 182" marker-end="url(#arrow)" />
+    <path class="edge" d="M 190 410 L 390 522" marker-end="url(#arrow)" />
+    <path class="edge" d="M 510 522 L 710 410" marker-end="url(#arrow)" />
+    <path class="edge" d="M 310 358 L 590 358" stroke-dasharray="6 5" marker-end="url(#arrow)" />
 
-    <!-- nodes -->
-    <rect class="node input" x="340" y="98" width="220" height="84" rx="10" />
-    <rect class="node process" x="70" y="306" width="240" height="104" rx="10" />
-    <rect class="node external" x="590" y="306" width="240" height="104" rx="10" />
-    <rect class="node storage" x="330" y="522" width="240" height="104" rx="10" />
+    <rect class="node input" x="340" y="98" width="220" height="84" rx="8" />
+    <rect class="node process" x="70" y="306" width="240" height="104" rx="8" />
+    <rect class="node external" x="590" y="306" width="240" height="104" rx="8" />
+    <rect class="node storage" x="330" y="522" width="240" height="104" rx="8" />
 
-    <!-- node text -->
-    <text class="label" x="450" y="134" text-anchor="middle">사용자 (User)</text>
-    <text class="small" x="450" y="158" text-anchor="middle">브라우저 · 클라이언트</text>
-
-    <text class="label" x="190" y="342" text-anchor="middle">Controller</text>
-    <text class="small" x="190" y="366" text-anchor="middle">입력 해석 · 흐름 제어</text>
-    <text class="small" x="190" y="386" text-anchor="middle">요청 라우팅 · 유효성 검증</text>
-
-    <text class="label" x="710" y="342" text-anchor="middle">View</text>
-    <text class="small" x="710" y="366" text-anchor="middle">표현 · 렌더링</text>
-    <text class="small" x="710" y="386" text-anchor="middle">템플릿 · 화면 구성</text>
-
-    <text class="label" x="450" y="558" text-anchor="middle">Model</text>
-    <text class="small" x="450" y="582" text-anchor="middle">도메인 데이터 · 상태</text>
-    <text class="small" x="450" y="602" text-anchor="middle">비즈니스 규칙 · 영속성</text>
-
-    <!-- edge labels -->
+    <text class="label" x="450" y="135" text-anchor="middle">사용자 (User)</text>
+    <text class="small" x="450" y="157" text-anchor="middle">브라우저 · 클라이언트</text>
+    <text class="label" x="190" y="343" text-anchor="middle">Controller</text>
+    <text class="small" x="190" y="365" text-anchor="middle">입력 해석 · 흐름 제어</text>
+    <text class="small" x="190" y="385" text-anchor="middle">요청 라우팅 · 유효성 검증</text>
+    <text class="label" x="710" y="343" text-anchor="middle">View</text>
+    <text class="small" x="710" y="365" text-anchor="middle">표현 · 렌더링</text>
+    <text class="small" x="710" y="385" text-anchor="middle">템플릿 · 화면 구성</text>
+    <text class="label" x="450" y="559" text-anchor="middle">Model</text>
+    <text class="small" x="450" y="581" text-anchor="middle">도메인 데이터 · 상태</text>
+    <text class="small" x="450" y="601" text-anchor="middle">비즈니스 규칙 · 영속성</text>
     <text class="small" x="250" y="246" text-anchor="end">① 사용자 입력 · 요청</text>
     <text class="small" x="650" y="246">④ 화면 응답</text>
     <text class="small" x="270" y="490" text-anchor="end">② 상태 변경 요청</text>
     <text class="small" x="630" y="490">③ 변경 통지 · 데이터 조회</text>
     <text class="small" x="450" y="348" text-anchor="middle">뷰 선택 · 갱신 지시</text>
-
-    <text class="small" x="24" y="662">
-      ※ 점선은 변형에 따라 달라지는 경로입니다. Observer 변형에서는 Model이 View에
-    </text>
-    <text class="small" x="24" y="682">
-      직접 변경을 통지하고, Passive View 변형에서는 Controller가 View를 갱신합니다.
-    </text>
+    <text class="small" x="24" y="654">※ 점선은 변형에 따라 달라지는 경로입니다. Observer 변형에서는 Model이 View에</text>
+    <text class="small" x="24" y="676">직접 변경을 통지하고, Passive View 변형에서는 Controller가 View를 갱신합니다.</text>
   </svg>
 </main>

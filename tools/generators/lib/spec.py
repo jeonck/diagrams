@@ -1,10 +1,13 @@
 """하나의 좌표계에서 SVG/HTML 과 .excalidraw 를 함께 뽑는다."""
-import io, re, sys, json
-sys.path.insert(0, '/tmp/dg')
+import io, os, re, sys, json
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from ex import Doc
 
-_SRC = io.open('/home/user/diagrams/projects/order-platform/diagrams/mvc-structure/diagram.html', encoding='utf-8').read()
-HEAD = _SRC[:_SRC.index('<main>')]
+# 문서 머리말(스타일 포함)은 템플릿 파일 하나에서 온다.
+# 예전에는 산출물인 mvc-structure/diagram.html 을 읽었는데, 산출물이 생성기의
+# 입력이 되는 순환 구조였다.
+HEAD = io.open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'template.html'),
+               encoding='utf-8').read()
 
 EX_FILL = {'input': '#a5d8ff', 'process': '#d0bfff', 'storage': '#c3fae8',
            'external': '#ffd8a8', 'neutral': '#e9ecef', 'risk': '#ffc9c9'}
