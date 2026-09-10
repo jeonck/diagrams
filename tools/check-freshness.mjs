@@ -14,7 +14,7 @@
 // 낡음은 "틀렸다" 가 아니라 "확인해 보라" 는 신호다. 그래서 기본은 보고만 한다.
 
 import { execFileSync } from 'node:child_process';
-import { readFileSync, existsSync } from 'node:fs';
+import { appendFileSync, readFileSync, existsSync } from 'node:fs';
 
 const STRICT = process.argv.includes('--strict');
 const INDEX = 'diagrams.json';
@@ -113,7 +113,6 @@ console.log('check-freshness: ' + text);
 
 // GitHub Actions 에서는 잡 요약에도 남긴다
 if (process.env.GITHUB_STEP_SUMMARY) {
-  const { appendFileSync } = await import('node:fs');
   const body = stale.length
     ? ['## 낡았을 수 있는 다이어그램', '', '| 다이어그램 | 수정 | 이유 |', '|---|---|---|',
        ...stale.map((s) => `| \`${s.id}\` | ${s.updated} | ${s.why} |`)].join('\n')

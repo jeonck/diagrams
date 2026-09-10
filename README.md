@@ -21,6 +21,29 @@ tools/
   generators/                  스펙 → diagram.html · diagram.excalidraw
 ```
 
+## 시작하기
+
+```sh
+git clone https://github.com/jeonck/diagrams && cd diagrams
+python3 -m http.server        # http://localhost:8000 에서 뷰어가 열립니다
+```
+
+필요한 것은 **Node 16 이상**(`tools/*.mjs`)과 **Python 3.8 이상**(`tools/generators/`)
+뿐입니다. 설치할 패키지도, 빌드 단계도 없습니다 — 뷰어는 브라우저가 그대로 여는 한 장짜리
+HTML 이고, 도구는 표준 라이브러리만 씁니다.
+
+```sh
+node tools/build-index.mjs           # 목록·README 표 다시 만들기
+python3 tools/generators/build.py    # 그림 30장 다시 찍기
+node tools/check-freshness.mjs       # 낡았을 수 있는 그림 찾기
+```
+
+**포크해서 쓰신다면** GitHub Pages 를 한 번 켜야 합니다 — 저장소
+**Settings → Pages → Build and deployment → Source 를 `GitHub Actions`** 로.
+워크플로가 자동으로 켜 보지만(`enablement: true`), 권한이 없으면
+`Resource not accessible by integration` 으로 실패합니다. 그때 이 설정을 켜고 워크플로를
+다시 돌리면 됩니다.
+
 다이어그램은 두 축으로 분류됩니다 — **언제 그리는가**(SDLC 단계)와 **무엇을 그리는가**(그림 종류).
 뷰어에서 두 축을 토글할 수 있고, 목록 기본값은 SDLC 단계순입니다.
 다이어그램과 ADR 은 나란히 있는 두 가지가 아니라 **번갈아 갑니다.**
@@ -310,10 +333,14 @@ cp -r .claude/skills/diagram-maker ~/.claude/skills/
 
 ## 배포
 
-`main` 에 푸시하면 [`.github/workflows/pages.yml`](.github/workflows/pages.yml) 이 세 가지를
-검사한 뒤 GitHub Pages 로 배포합니다. `.claude/` 와 `tools/` 는 사이트에 포함되지 않습니다.
+검사는 두 곳에서 돕니다.
 
-| 검사 | 잡는 것 | 배포를 막나 |
+- [`check.yml`](.github/workflows/check.yml) — **PR 과 main 이 아닌 브랜치 푸시**에서 돕니다.
+  남이 올린 변경이 머지된 뒤에야 잘못이 드러나는 일을 막습니다.
+- [`pages.yml`](.github/workflows/pages.yml) — `main` 에 푸시하면 같은 검사를 다시 돌리고
+  GitHub Pages 로 배포합니다. `.claude/` 와 `tools/` 는 사이트에 포함되지 않습니다.
+
+| 검사 | 잡는 것 | 막나 |
 |---|---|---|
 | `node tools/build-index.mjs --check` | `meta.json` ↔ `diagrams.json` ↔ README 표가 어긋남 | 예 |
 | `python3 tools/generators/build.py --check` | 스펙 ↔ 그림 파일이 어긋남 | 예 |
