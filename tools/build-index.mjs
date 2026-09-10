@@ -132,6 +132,15 @@ function readDecision(project, file) {
   }
   if (!m[2].trim()) fail(`${where}: 머리말 뒤에 본문이 없습니다`);
 
+  // 본문이 가리키는 그림 파일이 실제로 있는지 본다. 깨진 이미지는 배포 뒤에야 보인다.
+  const dir = join(PROJECTS, project, 'decisions');
+  for (const [, alt, src] of m[2].matchAll(/!\[([^\]]*)\]\(([^)\s]+)\)/g)) {
+    if (/^[a-z]+:/i.test(src) || src.startsWith('/')) continue;
+    if (!existsSync(join(dir, src))) {
+      fail(`${where}: 이미지 "${src}" (${alt || '설명 없음'}) 를 찾을 수 없습니다`);
+    }
+  }
+
   return {
     id: file.replace(/\.md$/, ''),
     number: file.slice(0, 4),
