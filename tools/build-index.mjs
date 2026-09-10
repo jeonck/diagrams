@@ -85,6 +85,16 @@ function readDiagram(project, id, categories, phaseIds) {
     fail(`${where} 의 updated 는 YYYY-MM-DD 형식이어야 합니다`);
   }
 
+  // sources 는 이 그림이 설명하는 코드의 경로다. 적어 두면 tools/check-freshness.mjs 가
+  // 그 코드가 updated 이후에 바뀌었는지 본다. 선택 사항이다.
+  const sources = meta.sources ?? [];
+  if (!Array.isArray(sources) || sources.some((x) => typeof x !== 'string' || !x.trim())) {
+    fail(`${where} 의 sources 는 비어 있지 않은 문자열 배열이어야 합니다`);
+  }
+  if (sources.length && !updated) {
+    fail(`${where}: sources 를 적었다면 updated 도 있어야 합니다 — 무엇과 비교할지 알 수 없습니다`);
+  }
+
   const formats = {};
   for (const [name, file] of Object.entries(FORMATS)) {
     if (existsSync(join(dir, file))) formats[name] = `projects/${project}/diagrams/${id}/${file}`;
@@ -102,6 +112,7 @@ function readDiagram(project, id, categories, phaseIds) {
     summary: meta.summary,
     order: Number.isFinite(meta.order) ? meta.order : 999,
     ...(updated ? { updated } : {}),
+    ...(sources.length ? { sources } : {}),
     formats,
   };
 }
@@ -240,7 +251,12 @@ function build() {
   // 다이어그램에서 결정으로 거꾸로 갈 수 있게 한다
   decisions.sort((a, b) => projectRank.get(a.project) - projectRank.get(b.project) || a.id.localeCompare(b.id));
   for (const d of diagrams) {
-    d.decisions = decisions.filter((a) => a.project === d.project && a.diagrams.includes(d.id)).map((a) => a.id);
+    const linked = decisions.filter((a) => a.project === d.project && a.diagrams.includes(d.id));
+    d.decisions = linked.map((a) => a.id);
+    // 결정이 그림보다 나중에 정해졌다면 그림이 그 결정을 아직 안 담았을 수 있다.
+    // git 을 보지 않고 커밋된 날짜만 쓰므로 어디서 돌려도 같은 값이 나온다.
+    const behind = linked.filter((a) => d.updated && a.date > d.updated).map((a) => a.id);
+    if (behind.length) d.staleBy = behind;
   }
 
   const phases = phaseList.map((p) => ({ ...p, count: diagrams.filter((d) => d.phase === p.id).length }));

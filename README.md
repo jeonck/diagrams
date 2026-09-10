@@ -206,9 +206,39 @@ projects/<프로젝트>/diagrams/<slug>/
 }
 ```
 
-`title` · `phase` · `category` · `kind` · `tags` · `summary` 는 필수, `updated`(YYYY-MM-DD)와 `order` 는 선택입니다.
-`order` 는 같은 단계 안에서의 정렬에만 쓰이고, 단계와 카테고리 사이의 순서는
-`phases.json` · `categories.json` 이 정합니다.
+`title` · `phase` · `category` · `kind` · `tags` · `summary` 는 필수, `updated`(YYYY-MM-DD)와
+`order` · `sources` 는 선택입니다. `order` 는 같은 단계 안에서의 정렬에만 쓰이고, 단계와
+카테고리 사이의 순서는 `phases.json` · `categories.json` 이 정합니다.
+
+## 낡은 그림 찾기
+
+문서 저장소의 진짜 비용은 그림을 그리는 일이 아니라, **그린 뒤에 세상이 바뀌었는데
+그림만 그대로인 것**입니다. 두 가지를 자동으로 봅니다.
+
+```sh
+node tools/check-freshness.mjs            # 보고만 한다
+node tools/check-freshness.mjs --strict   # 낡은 게 있으면 1 로 끝난다
+```
+
+- **결정보다 뒤처진 그림** — 그림에 걸린 ADR 이 그림의 `updated` 보다 나중 날짜면
+  알립니다. 커밋된 날짜만 쓰므로 어디서 돌려도 결과가 같습니다. 뷰어에서도
+  목록에 `!` 표시가 붙고, 상세 화면에 `결정 0003 이후 갱신 안 됨` 배지가 뜹니다.
+- **코드보다 뒤처진 그림** — `meta.json` 에 `sources` 를 적어 두면, 그 경로가
+  `updated` 이후에 바뀌었는지 git 로그로 봅니다.
+
+```json
+{
+  "updated": "2026-09-09",
+  "sources": ["src/order/**", "src/payment/PaymentGateway.java"]
+}
+```
+
+배포 워크플로는 이 검사를 **막지 않고 알리기만** 합니다 (잡 요약에 표로 남습니다).
+낡음은 "틀렸다" 가 아니라 "확인해 보라" 는 신호이기 때문입니다. 그림을 보고
+고쳤거나 고칠 게 없었다면 `updated` 를 오늘 날짜로 바꾸면 신호가 꺼집니다.
+
+이 저장소에는 애플리케이션 코드가 없어 `sources` 를 적은 그림이 아직 없습니다.
+실제 코드 옆에 이 구조를 둘 때 쓰라고 만든 자리입니다.
 
 폴더를 만든 뒤 목록을 다시 생성합니다:
 

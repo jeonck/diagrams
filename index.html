@@ -15,6 +15,8 @@
     --sunk: #f1f5f9;
     --sel: #eef2ff;
     --accent: #4338ca;
+    --warn: #92400e;
+    --warnbg: #fef3c7;
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -27,6 +29,8 @@
       --sunk: #172033;
       --sel: #1e1b4b;
       --accent: #a5b4fc;
+      --warn: #fcd34d;
+      --warnbg: #422006;
     }
   }
   * { box-sizing: border-box; }
@@ -214,6 +218,9 @@
   .pill { font-size: 11px; color: var(--muted); background: var(--sunk); border-radius: 999px; padding: 2px 8px; }
   .pill.link { border: 0; cursor: pointer; font: inherit; font-size: 11px; color: var(--accent); background: var(--sel); }
   .pill.ghost { background: transparent; border: 1px dashed var(--line); opacity: 0.7; }
+  .pill.warn { color: var(--warn); background: var(--warnbg); border: 0; cursor: pointer; font: inherit; font-size: 11px; }
+  /* 목록에서도 눈에 띄게 — 점 하나로 */
+  .row .stale { flex-shrink: 0; color: var(--warn); font-size: 12px; font-weight: 700; }
   .stamp { font-size: 11px; color: var(--muted); }
 
   .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px 28px; border-bottom: 1px solid var(--line); }
@@ -965,7 +972,8 @@
         b.setAttribute('aria-current', String(state.adr === null && d.id === state.sel));
         b.innerHTML =
           '<span class="rowmain"><span class="dot"></span>' +
-          '<span class="rowtitle">' + esc(d.title) + '</span></span>';
+          '<span class="rowtitle">' + esc(d.title) + '</span></span>' +
+          (d.staleBy?.length ? '<span class="stale" title="걸린 결정보다 오래된 그림입니다">!</span>' : '');
         b.addEventListener('click', () => select(d.id));
         box.appendChild(b);
       }
@@ -1127,9 +1135,18 @@
     el('d-title').textContent = d.title;
     el('d-summary').textContent = d.summary;
     const ph = INDEX.phases.find((x) => x.id === d.phase);
+    // 걸려 있는 결정이 그림보다 나중이면 알린다 — 틀렸다는 뜻이 아니라 확인하라는 뜻이다
+    const behind = (d.staleBy || [])
+      .map((id) => adrById.get(id))
+      .filter(Boolean);
     el('d-meta').innerHTML =
       (ph ? '<span class="pill">' + esc(ph.name) + '</span>' : '') +
       d.tags.map((t) => '<span class="pill">' + esc(t) + '</span>').join('') +
+      (behind.length
+        ? '<button class="pill warn" data-adr="' + esc(behind[0].id) + '" title="' +
+          esc(behind.map((a) => a.number + ' ' + a.title).join(' · ')) +
+          '">결정 ' + behind.map((a) => esc(a.number)).join('·') + ' 이후 갱신 안 됨</button>'
+        : '') +
       (d.decisions || [])
         .map((id) => {
           const a = adrById.get(id);
