@@ -1,0 +1,157 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Order Fulfillment Process (BPMN)</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f8fafc;
+    --fg: #172033;
+    --muted: #5b6475;
+    --line: #64748b;
+    --neutral: #e2e8f0;
+    --input: #bfdbfe;
+    --process: #c7d2fe;
+    --storage: #99f6e4;
+    --external: #fde68a;
+    --risk: #fecaca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #a3adbd;
+      --line: #94a3b8;
+      --neutral: #334155;
+      --input: #1d4ed8;
+      --process: #4338ca;
+      --storage: #0f766e;
+      --external: #92400e;
+      --risk: #991b1b;
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font:
+      14px/1.4 ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+  }
+  main {
+    max-width: 980px;
+    margin: 32px auto;
+    padding: 0 20px;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 650;
+    fill: var(--fg);
+  }
+  .label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: var(--fg);
+  }
+  .small {
+    font-size: 12px;
+    fill: var(--muted);
+  }
+  .node {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .neutral {
+    fill: var(--neutral);
+  }
+  .input {
+    fill: var(--input);
+  }
+  .process {
+    fill: var(--process);
+  }
+  .storage {
+    fill: var(--storage);
+  }
+  .external {
+    fill: var(--external);
+  }
+  .risk {
+    fill: var(--risk);
+  }
+  .edge {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .edge-dashed {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 6 5;
+  }
+  .arrow-head {
+    fill: var(--line);
+  }
+  .zone {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+    stroke-dasharray: 6 5;
+    opacity: 0.8;
+  }
+</style>
+<main>
+  <svg viewBox="0 0 1200 760" role="img" aria-label="Order Fulfillment Process (BPMN)">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--line)" />
+      </marker>
+    </defs>
+
+    <text class="title" x="24" y="34">Order Fulfillment Process (BPMN)</text>
+    <text class="small" x="24" y="56">How a single order moves from team to team</text>
+
+    <!-- 연결선을 먼저 그려 화살표가 상자 뒤로 가게 한다 -->
+    <path class="edge" d="M 330 255 L 360 260" marker-end="url(#arrow)" />
+    <path class="edge" d="M 560 260 L 610 260" marker-end="url(#arrow)" />
+    <path class="edge" d="M 820 260 L 880 260" marker-end="url(#arrow)" />
+    <path class="edge" d="M 715 325 L 715 420 L 460 420 L 460 490" marker-end="url(#arrow)" />
+    <path class="edge" d="M 560 535 L 620 535" marker-end="url(#arrow)" />
+    <path class="edge" d="M 820 535 L 890 535" marker-end="url(#arrow)" />
+    <path class="edge" d="M 1080 305 L 1120 305 L 1120 535 L 1020 535" marker-end="url(#arrow)" />
+
+    <rect class="zone" x="150" y="150" width="1010" height="250" rx="10" />
+    <rect class="zone" x="150" y="440" width="1010" height="230" rx="10" />
+    <ellipse class="node neutral" cx="255.0" cy="255.0" rx="75.0" ry="50.0" />
+    <rect class="node process" x="360" y="215" width="200" height="90" rx="8" />
+    <path class="node external" d="M 715.0 195 L 820 260.0 L 715.0 325 L 610 260.0 Z" />
+    <rect class="node risk" x="880" y="215" width="200" height="90" rx="8" />
+    <rect class="node process" x="360" y="490" width="200" height="90" rx="8" />
+    <rect class="node process" x="620" y="490" width="200" height="90" rx="8" />
+    <ellipse class="node neutral" cx="955.0" cy="535.0" rx="65.0" ry="45.0" />
+
+    <text class="small" x="152" y="140">Store — Order handling</text>
+    <text class="small" x="152" y="430">Store — Shipping</text>
+    <text class="label" x="255" y="260" text-anchor="middle">Order placed</text>
+    <text class="label" x="460" y="265" text-anchor="middle">Verify payment</text>
+    <text class="label" x="715" y="265" text-anchor="middle">Payment OK?</text>
+    <text class="label" x="980" y="265" text-anchor="middle">Send cancel notice</text>
+    <text class="label" x="460" y="540" text-anchor="middle">Pack items</text>
+    <text class="label" x="720" y="540" text-anchor="middle">Hand to carrier</text>
+    <text class="label" x="955" y="540" text-anchor="middle">Done</text>
+    <text class="small" x="850" y="242" text-anchor="middle">No</text>
+    <text class="small" x="742" y="370" text-anchor="middle">Yes</text>
+    <text class="small" x="24" y="704">Note: the horizontal bands are lanes (who does the work), circles are start and end events, and diamonds are gateways (branches).</text>
+    <text class="small" x="24" y="726">An arrow that crosses a lane is a handover, and handovers are where BPMN processes most often go wrong.</text>
+  </svg>
+</main>

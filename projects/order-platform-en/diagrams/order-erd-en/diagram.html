@@ -1,0 +1,182 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Order Domain ERD</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f8fafc;
+    --fg: #172033;
+    --muted: #5b6475;
+    --line: #64748b;
+    --neutral: #e2e8f0;
+    --input: #bfdbfe;
+    --process: #c7d2fe;
+    --storage: #99f6e4;
+    --external: #fde68a;
+    --risk: #fecaca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #a3adbd;
+      --line: #94a3b8;
+      --neutral: #334155;
+      --input: #1d4ed8;
+      --process: #4338ca;
+      --storage: #0f766e;
+      --external: #92400e;
+      --risk: #991b1b;
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font:
+      14px/1.4 ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+  }
+  main {
+    max-width: 980px;
+    margin: 32px auto;
+    padding: 0 20px;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 650;
+    fill: var(--fg);
+  }
+  .label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: var(--fg);
+  }
+  .small {
+    font-size: 12px;
+    fill: var(--muted);
+  }
+  .node {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .neutral {
+    fill: var(--neutral);
+  }
+  .input {
+    fill: var(--input);
+  }
+  .process {
+    fill: var(--process);
+  }
+  .storage {
+    fill: var(--storage);
+  }
+  .external {
+    fill: var(--external);
+  }
+  .risk {
+    fill: var(--risk);
+  }
+  .edge {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .edge-dashed {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 6 5;
+  }
+  .arrow-head {
+    fill: var(--line);
+  }
+  .zone {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+    stroke-dasharray: 6 5;
+    opacity: 0.8;
+  }
+</style>
+<main>
+  <svg viewBox="0 0 940 700" role="img" aria-label="Order Domain ERD">
+    <defs>
+      <marker id="one" viewBox="0 0 12 12" refX="12" refY="6" markerWidth="10" markerHeight="10" orient="auto">
+        <path d="M 6 1 L 6 11" fill="none" stroke="var(--line)" stroke-width="1.5" />
+      </marker>
+      <marker id="one-s" viewBox="0 0 12 12" refX="0" refY="6" markerWidth="10" markerHeight="10" orient="auto">
+        <path d="M 6 1 L 6 11" fill="none" stroke="var(--line)" stroke-width="1.5" />
+      </marker>
+      <marker id="many" viewBox="0 0 12 12" refX="12" refY="6" markerWidth="10" markerHeight="10" orient="auto">
+        <path d="M 0 6 L 12 0 M 0 6 L 12 6 M 0 6 L 12 12" fill="none" stroke="var(--line)" stroke-width="1.5" />
+      </marker>
+      <marker id="many-s" viewBox="0 0 12 12" refX="0" refY="6" markerWidth="10" markerHeight="10" orient="auto">
+        <path d="M 12 6 L 0 0 M 12 6 L 0 6 M 12 6 L 0 12" fill="none" stroke="var(--line)" stroke-width="1.5" />
+      </marker>
+    </defs>
+
+    <text class="title" x="24" y="34">Order Domain ERD</text>
+    <text class="small" x="24" y="56">How a customer places an order, and the order branches into items and a payment</text>
+
+    <!-- 연결선을 먼저 그려 화살표가 상자 뒤로 가게 한다 -->
+    <path class="edge" d="M 260 173 L 370 173" marker-start="url(#one-s)" marker-end="url(#many)" />
+    <path class="edge" d="M 570 173 L 680 173" marker-start="url(#one-s)" marker-end="url(#one)" />
+    <path class="edge" d="M 470 258 L 470 390" marker-start="url(#one-s)" marker-end="url(#many)" />
+    <path class="edge" d="M 570 460 L 680 460" marker-start="url(#many-s)" marker-end="url(#one)" />
+    <path class="edge" d="M 60 612 L 120 612" marker-end="url(#one)" />
+    <path class="edge" d="M 240 612 L 300 612" marker-end="url(#many)" />
+
+    <rect class="node storage" x="60" y="110" width="200" height="126" rx="8" />
+    <path class="edge" d="M 60 144 L 260 144" stroke-width="1" />
+    <rect class="node process" x="370" y="110" width="200" height="148" rx="8" />
+    <path class="edge" d="M 370 144 L 570 144" stroke-width="1" />
+    <rect class="node process" x="680" y="110" width="200" height="126" rx="8" />
+    <path class="edge" d="M 680 144 L 880 144" stroke-width="1" />
+    <rect class="node process" x="370" y="390" width="200" height="148" rx="8" />
+    <path class="edge" d="M 370 424 L 570 424" stroke-width="1" />
+    <rect class="node storage" x="680" y="390" width="200" height="126" rx="8" />
+    <path class="edge" d="M 680 424 L 880 424" stroke-width="1" />
+
+    <text class="label" x="160" y="133" text-anchor="middle">Customer</text>
+    <text class="small" x="76" y="168">PK  customer_id</text>
+    <text class="small" x="76" y="188">email</text>
+    <text class="small" x="76" y="208">name</text>
+    <text class="label" x="470" y="133" text-anchor="middle">Order</text>
+    <text class="small" x="386" y="168">PK  order_id</text>
+    <text class="small" x="386" y="188">FK  customer_id</text>
+    <text class="small" x="386" y="208">ordered_at</text>
+    <text class="small" x="386" y="228">status</text>
+    <text class="label" x="780" y="133" text-anchor="middle">Payment</text>
+    <text class="small" x="696" y="168">PK  payment_id</text>
+    <text class="small" x="696" y="188">FK  order_id</text>
+    <text class="small" x="696" y="208">amount</text>
+    <text class="label" x="470" y="413" text-anchor="middle">Order Item</text>
+    <text class="small" x="386" y="448">PK  order_item_id</text>
+    <text class="small" x="386" y="468">FK  order_id</text>
+    <text class="small" x="386" y="488">FK  product_id</text>
+    <text class="small" x="386" y="508">quantity</text>
+    <text class="label" x="780" y="413" text-anchor="middle">Product</text>
+    <text class="small" x="696" y="448">PK  product_id</text>
+    <text class="small" x="696" y="468">name</text>
+    <text class="small" x="696" y="488">unit_price</text>
+    <text class="small" x="315" y="166" text-anchor="middle">places</text>
+    <text class="small" x="625" y="166" text-anchor="middle">paid by</text>
+    <text class="small" x="482" y="330">contains</text>
+    <text class="small" x="625" y="453" text-anchor="middle">refers to</text>
+    <text class="small" x="130" y="616">1 (one)</text>
+    <text class="small" x="310" y="616">N (many) — crow’s foot notation</text>
+    <text class="small" x="24" y="666">Note: Teal is master data that stands on its own; indigo is data that only exists once a transaction happens.</text>
+  </svg>
+</main>

@@ -1,0 +1,8 @@
+{
+  "name": "Online Store",
+  "summary": "A commerce backend where a customer places an order, pays for it, and the system draws down inventory and ships it",
+  "status": "Design complete",
+  "started": "2026-09",
+  "order": 15,
+  "lang": "en"
+}

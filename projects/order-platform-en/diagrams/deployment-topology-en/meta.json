@@ -1,0 +1,13 @@
+{
+  "title": "Web Service Deployment",
+  "phase": "operations",
+  "category": "deployment",
+  "kind": "Deployment",
+  "tags": [
+    "Deployment",
+    "Network"
+  ],
+  "summary": "How a request crosses the edge into the app tier, and where reads split from writes",
+  "updated": "2026-09-10",
+  "order": 10
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Order Fulfillment Process (BPMN)",
+  "phase": "requirements",
+  "category": "process",
+  "kind": "BPMN",
+  "tags": [
+    "BPMN",
+    "Process"
+  ],
+  "summary": "How a single order moves from team to team",
+  "updated": "2026-09-10",
+  "order": 20
+}

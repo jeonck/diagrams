@@ -1,0 +1,13 @@
+{
+  "title": "Checkout Activity",
+  "phase": "design",
+  "category": "behavior",
+  "kind": "Activity",
+  "tags": [
+    "Activity",
+    "Workflow"
+  ],
+  "summary": "From cart to confirmation email — a flow with a branch and a parallel split",
+  "updated": "2026-09-10",
+  "order": 50
+}

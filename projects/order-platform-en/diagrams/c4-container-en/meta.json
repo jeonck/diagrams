@@ -1,0 +1,13 @@
+{
+  "title": "C4 Context · Container",
+  "phase": "design",
+  "category": "structure",
+  "kind": "C4 Context & Container",
+  "tags": [
+    "C4",
+    "architecture"
+  ],
+  "summary": "The containers inside the system boundary, and the people and systems outside it",
+  "updated": "2026-09-10",
+  "order": 10
+}

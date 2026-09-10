@@ -1,0 +1,13 @@
+{
+  "title": "MVC Request Sequence",
+  "phase": "design",
+  "category": "behavior",
+  "kind": "Sequence",
+  "tags": [
+    "Pattern",
+    "Sequence"
+  ],
+  "summary": "One create-order request through each role and back as a response",
+  "updated": "2026-09-10",
+  "order": 40
+}

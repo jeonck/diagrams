@@ -6,7 +6,7 @@
       "name_en": "Requirements",
       "summary": "무엇을, 왜 만드는가",
       "summary_en": "What are we building, and why",
-      "count": 4
+      "count": 6
     },
     {
       "id": "analysis",
@@ -14,7 +14,7 @@
       "name_en": "Analysis",
       "summary": "문제 영역을 어떻게 이해했는가",
       "summary_en": "How we understood the problem domain",
-      "count": 8
+      "count": 12
     },
     {
       "id": "design",
@@ -22,7 +22,7 @@
       "name_en": "Design",
       "summary": "어떻게 만들 것인가",
       "summary_en": "How we are going to build it",
-      "count": 10
+      "count": 15
     },
     {
       "id": "operations",
@@ -30,7 +30,7 @@
       "name_en": "Build & Run",
       "summary": "어디서 돌리고, 어떻게 내보내는가",
       "summary_en": "Where it runs and how it ships",
-      "count": 8
+      "count": 12
     }
   ],
   "categories": [
@@ -62,7 +62,7 @@
           "covered": true
         }
       ],
-      "count": 8
+      "count": 12
     },
     {
       "id": "behavior",
@@ -92,7 +92,7 @@
           "covered": true
         }
       ],
-      "count": 8
+      "count": 12
     },
     {
       "id": "data",
@@ -112,7 +112,7 @@
           "covered": true
         }
       ],
-      "count": 4
+      "count": 6
     },
     {
       "id": "deployment",
@@ -132,7 +132,7 @@
           "covered": true
         }
       ],
-      "count": 4
+      "count": 6
     },
     {
       "id": "process",
@@ -157,7 +157,7 @@
           "covered": true
         }
       ],
-      "count": 6
+      "count": 9
     }
   ],
   "tags": [
@@ -186,12 +186,33 @@
     "패키지",
     "패턴",
     "프로세스",
+    "Activity",
+    "architecture",
     "BPMN",
     "C4",
     "CI/CD",
+    "Class",
+    "Component",
+    "data flow",
+    "Dependencies",
+    "Deployment",
     "DFD",
+    "domain model",
+    "Domain Model",
     "ERD",
-    "VPC"
+    "Lead time",
+    "Network",
+    "Package",
+    "Pattern",
+    "Pipeline",
+    "Process",
+    "Scope",
+    "Sequence",
+    "state machine",
+    "Use case",
+    "Value stream",
+    "VPC",
+    "Workflow"
   ],
   "projects": [
     {
@@ -202,6 +223,18 @@
       "started": "2026-09",
       "order": 10,
       "lang": "ko",
+      "count": 15,
+      "decisions": 6,
+      "missing": []
+    },
+    {
+      "id": "order-platform-en",
+      "name": "Online Store",
+      "summary": "A commerce backend where a customer places an order, pays for it, and the system draws down inventory and ships it",
+      "status": "Design complete",
+      "started": "2026-09",
+      "order": 15,
+      "lang": "en",
       "count": 15,
       "decisions": 6,
       "missing": []
@@ -531,6 +564,323 @@
       "formats": {
         "html": "projects/order-platform/diagrams/value-stream/diagram.html",
         "excalidraw": "projects/order-platform/diagrams/value-stream/diagram.excalidraw"
+      },
+      "decisions": [],
+      "basisFor": [
+        "0006-manual-approval-before-production"
+      ]
+    },
+    {
+      "id": "shop-usecase-en",
+      "project": "order-platform-en",
+      "title": "Online Store Use Cases",
+      "phase": "requirements",
+      "category": "behavior",
+      "kind": "유스케이스",
+      "tags": [
+        "Use case",
+        "Scope"
+      ],
+      "summary": "Who can do what with this system",
+      "order": 10,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/order-platform-en/diagrams/shop-usecase-en/diagram.html",
+        "excalidraw": "projects/order-platform-en/diagrams/shop-usecase-en/diagram.excalidraw"
+      },
+      "decisions": []
+    },
+    {
+      "id": "fulfillment-bpmn-en",
+      "project": "order-platform-en",
+      "title": "Order Fulfillment Process (BPMN)",
+      "phase": "requirements",
+      "category": "process",
+      "kind": "BPMN",
+      "tags": [
+        "BPMN",
+        "Process"
+      ],
+      "summary": "How a single order moves from team to team",
+      "order": 20,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/order-platform-en/diagrams/fulfillment-bpmn-en/diagram.html",
+        "excalidraw": "projects/order-platform-en/diagrams/fulfillment-bpmn-en/diagram.excalidraw"
+      },
+      "decisions": []
+    },
+    {
+      "id": "order-class-en",
+      "project": "order-platform-en",
+      "title": "Order Domain Classes",
+      "phase": "analysis",
+      "category": "structure",
+      "kind": "클래스",
+      "tags": [
+        "Class",
+        "Domain Model"
+      ],
+      "summary": "The same domain seen through responsibilities and relationships, not data",
+      "order": 10,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/order-platform-en/diagrams/order-class-en/diagram.html",
+        "excalidraw": "projects/order-platform-en/diagrams/order-class-en/diagram.excalidraw"
+      },
+      "decisions": [
+        "0001-order-as-state-machine",
+        "0003-domain-depends-on-nothing"
+      ]
+    },
+    {
+      "id": "order-erd-en",
+      "project": "order-platform-en",
+      "title": "Order Domain ERD",
+      "phase": "analysis",
+      "category": "data",
+      "kind": "ERD",
+      "tags": [
+        "ERD",
+        "Domain Model"
+      ],
+      "summary": "How a customer places an order, and the order branches into items and a payment",
+      "order": 20,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/order-platform-en/diagrams/order-erd-en/diagram.html",
+        "excalidraw": "projects/order-platform-en/diagrams/order-erd-en/diagram.excalidraw"
+      },
+      "decisions": []
+    },
+    {
+      "id": "order-state-en",
+      "project": "order-platform-en",
+      "title": "Order State Transitions",
+      "phase": "analysis",
+      "category": "behavior",
+      "kind": "상태 머신",
+      "tags": [
+        "state machine",
+        "domain model"
+      ],
+      "summary": "The states a single order can be in, and the events that change them",
+      "order": 30,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/order-platform-en/diagrams/order-state-en/diagram.html",
+        "excalidraw": "projects/order-platform-en/diagrams/order-state-en/diagram.excalidraw"
+      },
+      "decisions": [
+        "0001-order-as-state-machine"
+      ]
+    },
+    {
+      "id": "order-dfd-en",
+      "project": "order-platform-en",
+      "title": "Order Data Flow (Level 1)",
+      "phase": "analysis",
+      "category": "data",
+      "kind": "데이터 흐름(DFD)",
+      "tags": [
+        "DFD",
+        "data flow"
+      ],
+      "summary": "Which processes order data passes through, and where it comes to rest",
+      "order": 40,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/order-platform-en/diagrams/order-dfd-en/diagram.html",
+        "excalidraw": "projects/order-platform-en/diagrams/order-dfd-en/diagram.excalidraw"
+      },
+      "decisions": []
+    },
+    {
+      "id": "c4-container-en",
+      "project": "order-platform-en",
+      "title": "C4 Context · Container",
+      "phase": "design",
+      "category": "structure",
+      "kind": "C4 컨텍스트·컨테이너",
+      "tags": [
+        "C4",
+        "architecture"
+      ],
+      "summary": "The containers inside the system boundary, and the people and systems outside it",
+      "order": 10,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/order-platform-en/diagrams/c4-container-en/diagram.html",
+        "excalidraw": "projects/order-platform-en/diagrams/c4-container-en/diagram.excalidraw"
+      },
+      "decisions": []
+    },
+    {
+      "id": "package-deps-en",
+      "project": "order-platform-en",
+      "title": "Package Dependencies",
+      "phase": "design",
+      "category": "structure",
+      "kind": "패키지",
+      "tags": [
+        "Package",
+        "Dependencies"
+      ],
+      "summary": "Which package is allowed to know about which",
+      "order": 20,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/order-platform-en/diagrams/package-deps-en/diagram.html",
+        "excalidraw": "projects/order-platform-en/diagrams/package-deps-en/diagram.excalidraw"
+      },
+      "decisions": [
+        "0003-domain-depends-on-nothing"
+      ]
+    },
+    {
+      "id": "mvc-structure-en",
+      "project": "order-platform-en",
+      "title": "MVC Structure",
+      "phase": "design",
+      "category": "structure",
+      "kind": "컴포넌트",
+      "tags": [
+        "Pattern",
+        "Component"
+      ],
+      "summary": "The three Model·View·Controller roles and which way they depend on each other",
+      "order": 30,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/order-platform-en/diagrams/mvc-structure-en/diagram.html",
+        "excalidraw": "projects/order-platform-en/diagrams/mvc-structure-en/diagram.excalidraw"
+      },
+      "decisions": []
+    },
+    {
+      "id": "mvc-sequence-en",
+      "project": "order-platform-en",
+      "title": "MVC Request Sequence",
+      "phase": "design",
+      "category": "behavior",
+      "kind": "시퀀스",
+      "tags": [
+        "Pattern",
+        "Sequence"
+      ],
+      "summary": "One create-order request through each role and back as a response",
+      "order": 40,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/order-platform-en/diagrams/mvc-sequence-en/diagram.html",
+        "excalidraw": "projects/order-platform-en/diagrams/mvc-sequence-en/diagram.excalidraw"
+      },
+      "decisions": []
+    },
+    {
+      "id": "checkout-activity-en",
+      "project": "order-platform-en",
+      "title": "Checkout Activity",
+      "phase": "design",
+      "category": "behavior",
+      "kind": "액티비티",
+      "tags": [
+        "Activity",
+        "Workflow"
+      ],
+      "summary": "From cart to confirmation email — a flow with a branch and a parallel split",
+      "order": 50,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/order-platform-en/diagrams/checkout-activity-en/diagram.html",
+        "excalidraw": "projects/order-platform-en/diagrams/checkout-activity-en/diagram.excalidraw"
+      },
+      "decisions": []
+    },
+    {
+      "id": "deployment-topology-en",
+      "project": "order-platform-en",
+      "title": "Web Service Deployment",
+      "phase": "operations",
+      "category": "deployment",
+      "kind": "배포",
+      "tags": [
+        "Deployment",
+        "Network"
+      ],
+      "summary": "How a request crosses the edge into the app tier, and where reads split from writes",
+      "order": 10,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/order-platform-en/diagrams/deployment-topology-en/diagram.html",
+        "excalidraw": "projects/order-platform-en/diagrams/deployment-topology-en/diagram.excalidraw"
+      },
+      "decisions": [
+        "0004-split-read-and-write",
+        "0005-session-in-redis"
+      ]
+    },
+    {
+      "id": "network-topology-en",
+      "project": "order-platform-en",
+      "title": "Network Topology",
+      "phase": "operations",
+      "category": "deployment",
+      "kind": "네트워크 토폴로지",
+      "tags": [
+        "Network",
+        "VPC"
+      ],
+      "summary": "Which subnet holds what, and over which ports they talk",
+      "order": 20,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/order-platform-en/diagrams/network-topology-en/diagram.html",
+        "excalidraw": "projects/order-platform-en/diagrams/network-topology-en/diagram.excalidraw"
+      },
+      "decisions": [
+        "0004-split-read-and-write"
+      ]
+    },
+    {
+      "id": "cicd-pipeline-en",
+      "project": "order-platform-en",
+      "title": "CI/CD Pipeline",
+      "phase": "operations",
+      "category": "process",
+      "kind": "CI/CD 파이프라인",
+      "tags": [
+        "Pipeline",
+        "CI/CD"
+      ],
+      "summary": "The gates one commit passes through on its way to production",
+      "order": 30,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/order-platform-en/diagrams/cicd-pipeline-en/diagram.html",
+        "excalidraw": "projects/order-platform-en/diagrams/cicd-pipeline-en/diagram.excalidraw"
+      },
+      "decisions": [
+        "0006-manual-approval-before-production"
+      ]
+    },
+    {
+      "id": "value-stream-en",
+      "project": "order-platform-en",
+      "title": "Order Feature Value Stream",
+      "phase": "operations",
+      "category": "process",
+      "kind": "값 흐름",
+      "tags": [
+        "Value stream",
+        "Lead time"
+      ],
+      "summary": "From one request to a deployment: time spent working, time spent waiting",
+      "order": 40,
+      "updated": "2026-09-10",
+      "formats": {
+        "html": "projects/order-platform-en/diagrams/value-stream-en/diagram.html",
+        "excalidraw": "projects/order-platform-en/diagrams/value-stream-en/diagram.excalidraw"
       },
       "decisions": [],
       "basisFor": [
@@ -957,6 +1307,106 @@
       "supersedes": null,
       "supersededBy": null,
       "path": "projects/order-platform/decisions/0006-manual-approval-before-production.md"
+    },
+    {
+      "id": "0001-order-as-state-machine",
+      "number": "0001",
+      "project": "order-platform-en",
+      "title": "Treat an order as a state machine",
+      "status": "채택됨",
+      "status_en": "Accepted",
+      "date": "2026-09-02",
+      "phase": "analysis",
+      "diagrams": [
+        "order-state-en",
+        "order-class-en"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "path": "projects/order-platform-en/decisions/0001-order-as-state-machine.md"
+    },
+    {
+      "id": "0002-session-in-app-memory",
+      "number": "0002",
+      "project": "order-platform-en",
+      "title": "Keep the session in app-server memory",
+      "status": "대체됨",
+      "status_en": "Superseded",
+      "date": "2026-09-03",
+      "phase": "operations",
+      "diagrams": [],
+      "supersedes": null,
+      "supersededBy": "0005-session-in-redis",
+      "path": "projects/order-platform-en/decisions/0002-session-in-app-memory.md"
+    },
+    {
+      "id": "0003-domain-depends-on-nothing",
+      "number": "0003",
+      "project": "order-platform-en",
+      "title": "The domain depends on nothing",
+      "status": "채택됨",
+      "status_en": "Accepted",
+      "date": "2026-09-04",
+      "phase": "design",
+      "diagrams": [
+        "package-deps-en",
+        "order-class-en"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "path": "projects/order-platform-en/decisions/0003-domain-depends-on-nothing.md"
+    },
+    {
+      "id": "0004-split-read-and-write",
+      "number": "0004",
+      "project": "order-platform-en",
+      "title": "Split reads from writes",
+      "status": "채택됨",
+      "status_en": "Accepted",
+      "date": "2026-09-05",
+      "phase": "operations",
+      "diagrams": [
+        "deployment-topology-en",
+        "network-topology-en"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "path": "projects/order-platform-en/decisions/0004-split-read-and-write.md"
+    },
+    {
+      "id": "0005-session-in-redis",
+      "number": "0005",
+      "project": "order-platform-en",
+      "title": "Move the session to Redis",
+      "status": "채택됨",
+      "status_en": "Accepted",
+      "date": "2026-09-06",
+      "phase": "operations",
+      "diagrams": [
+        "deployment-topology-en"
+      ],
+      "supersedes": "0002-session-in-app-memory",
+      "supersededBy": null,
+      "path": "projects/order-platform-en/decisions/0005-session-in-redis.md"
+    },
+    {
+      "id": "0006-manual-approval-before-production",
+      "number": "0006",
+      "project": "order-platform-en",
+      "title": "One human approval, right before production",
+      "status": "채택됨",
+      "status_en": "Accepted",
+      "date": "2026-09-08",
+      "phase": "operations",
+      "diagrams": [
+        "cicd-pipeline-en"
+      ],
+      "basis": [
+        "value-stream-en"
+      ],
+      "supersedes": null,
+      "supersededBy": null,
+      "path": "projects/order-platform-en/decisions/0006-manual-approval-before-production.md"
     },
     {
       "id": "0001-queue-between-receive-and-send",

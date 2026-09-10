@@ -1,0 +1,13 @@
+{
+  "title": "Order Data Flow (Level 1)",
+  "phase": "analysis",
+  "category": "data",
+  "kind": "Data flow (DFD)",
+  "tags": [
+    "DFD",
+    "data flow"
+  ],
+  "summary": "Which processes order data passes through, and where it comes to rest",
+  "updated": "2026-09-10",
+  "order": 40
+}

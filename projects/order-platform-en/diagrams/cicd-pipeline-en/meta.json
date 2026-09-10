@@ -1,0 +1,13 @@
+{
+  "title": "CI/CD Pipeline",
+  "phase": "operations",
+  "category": "process",
+  "kind": "CI/CD pipeline",
+  "tags": [
+    "Pipeline",
+    "CI/CD"
+  ],
+  "summary": "The gates one commit passes through on its way to production",
+  "updated": "2026-09-10",
+  "order": 30
+}

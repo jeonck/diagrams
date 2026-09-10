@@ -1,0 +1,13 @@
+{
+  "title": "Order Domain Classes",
+  "phase": "analysis",
+  "category": "structure",
+  "kind": "Class",
+  "tags": [
+    "Class",
+    "Domain Model"
+  ],
+  "summary": "The same domain seen through responsibilities and relationships, not data",
+  "updated": "2026-09-10",
+  "order": 10
+}

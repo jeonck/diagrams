@@ -1,0 +1,148 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Online Store Use Cases</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f8fafc;
+    --fg: #172033;
+    --muted: #5b6475;
+    --line: #64748b;
+    --neutral: #e2e8f0;
+    --input: #bfdbfe;
+    --process: #c7d2fe;
+    --storage: #99f6e4;
+    --external: #fde68a;
+    --risk: #fecaca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #a3adbd;
+      --line: #94a3b8;
+      --neutral: #334155;
+      --input: #1d4ed8;
+      --process: #4338ca;
+      --storage: #0f766e;
+      --external: #92400e;
+      --risk: #991b1b;
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font:
+      14px/1.4 ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+  }
+  main {
+    max-width: 980px;
+    margin: 32px auto;
+    padding: 0 20px;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 650;
+    fill: var(--fg);
+  }
+  .label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: var(--fg);
+  }
+  .small {
+    font-size: 12px;
+    fill: var(--muted);
+  }
+  .node {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .neutral {
+    fill: var(--neutral);
+  }
+  .input {
+    fill: var(--input);
+  }
+  .process {
+    fill: var(--process);
+  }
+  .storage {
+    fill: var(--storage);
+  }
+  .external {
+    fill: var(--external);
+  }
+  .risk {
+    fill: var(--risk);
+  }
+  .edge {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .edge-dashed {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 6 5;
+  }
+  .arrow-head {
+    fill: var(--line);
+  }
+  .zone {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+    stroke-dasharray: 6 5;
+    opacity: 0.8;
+  }
+</style>
+<main>
+  <svg viewBox="0 0 1120 780" role="img" aria-label="Online Store Use Cases">
+    <text class="title" x="24" y="34">Online Store Use Cases</text>
+    <text class="small" x="24" y="56">Who can do what with this system</text>
+
+    <!-- 연결선을 먼저 그려 화살표가 상자 뒤로 가게 한다 -->
+    <path class="edge" d="M 220 320 L 350 210" />
+    <path class="edge" d="M 220 330 L 350 330" />
+    <path class="edge" d="M 220 345 L 350 460" />
+    <path class="edge" d="M 220 360 L 350 590" />
+    <path class="edge" d="M 920 230 L 820 205" />
+    <path class="edge" d="M 590 595 L 890 585" />
+
+    <rect class="zone" x="300" y="120" width="540" height="560" rx="10" />
+    <rect class="node external" x="60" y="290" width="160" height="90" rx="8" />
+    <rect class="node external" x="920" y="180" width="160" height="90" rx="8" />
+    <rect class="node neutral" x="890" y="540" width="210" height="90" rx="8" />
+    <ellipse class="node input" cx="470.0" cy="205.0" rx="120.0" ry="45.0" />
+    <ellipse class="node input" cx="470.0" cy="335.0" rx="120.0" ry="45.0" />
+    <ellipse class="node process" cx="470.0" cy="465.0" rx="120.0" ry="45.0" />
+    <ellipse class="node process" cx="470.0" cy="595.0" rx="120.0" ry="45.0" />
+    <ellipse class="node storage" cx="715.0" cy="205.0" rx="105.0" ry="45.0" />
+
+    <text class="small" x="302" y="110">Online Store (system boundary)</text>
+    <text class="label" x="140" y="340" text-anchor="middle">Customer</text>
+    <text class="label" x="1000" y="230" text-anchor="middle">Admin</text>
+    <text class="label" x="995" y="590" text-anchor="middle">Payment Gateway</text>
+    <text class="label" x="470" y="210" text-anchor="middle">Search products</text>
+    <text class="label" x="470" y="340" text-anchor="middle">Add to cart</text>
+    <text class="label" x="470" y="470" text-anchor="middle">Place an order</text>
+    <text class="label" x="470" y="600" text-anchor="middle">Pay</text>
+    <text class="label" x="715" y="210" text-anchor="middle">Manage inventory</text>
+    <text class="small" x="24" y="724">Note: ellipses are use cases and the outer boxes are actors. Everything inside the dashed line is the system we are building.</text>
+    <text class="small" x="24" y="746">The payment gateway is a system rather than a person, but it takes part from outside the boundary, so it is drawn as an actor.</text>
+  </svg>
+</main>

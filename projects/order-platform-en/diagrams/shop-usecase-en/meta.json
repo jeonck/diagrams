@@ -1,0 +1,13 @@
+{
+  "title": "Online Store Use Cases",
+  "phase": "requirements",
+  "category": "behavior",
+  "kind": "Use case",
+  "tags": [
+    "Use case",
+    "Scope"
+  ],
+  "summary": "Who can do what with this system",
+  "updated": "2026-09-10",
+  "order": 10
+}

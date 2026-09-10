@@ -55,6 +55,20 @@ node --test tools/tests/*.test.mjs   # 도구들이 제대로 도는지 시험
 설계·구현 그림으로 그립니다 — **그림 → 결정 → 그림**. 그래서 ADR 은 걸린 그림을
 `basis`(판단의 근거로 본 그림)와 `diagrams`(이 결정이 만든 그림)로 나눠 적습니다.
 
+## 언어
+
+뷰어 오른쪽 위에서 **한국어 / English** 를 고를 수 있습니다. 고른 언어는 브라우저에
+남고, 처음 방문하면 브라우저 언어를 따릅니다.
+
+- **껍데기** — SDLC 단계 · 그림 종류 · 대표 종류 · ADR 상태 · 버튼과 안내 문구가 두
+  언어로 준비돼 있습니다. `phases.json` · `categories.json` 의 `name_en`, 뷰어 안의
+  사전이 그 자리입니다.
+- **알맹이** — 다이어그램과 ADR 은 프로젝트마다 한 언어로 쓰입니다.
+  `project.json` 의 `lang` 이 그것을 밝히고, 뷰어는 **화면 언어로 쓰인 프로젝트만**
+  목록에 보여줍니다. 그 언어로 쓰인 프로젝트가 하나도 없으면 전부 보여줍니다.
+- `meta.json` 의 `kind` 와 ADR 의 `status` 는 한국어·영문 어느 쪽으로 적어도 됩니다.
+  빌더가 한국어 표준값으로 바꿔 저장합니다 (`시퀀스` ↔ `Sequence`, `채택됨` ↔ `Accepted`).
+
 ## SDLC 단계
 
 전체 SDLC를 압축한 네 단계입니다. 테스트와 유지보수는 이 저장소에서 다이어그램이 아니라
@@ -104,7 +118,7 @@ build-index: 알림 허브 에 아직 없는 산출물 10개 — 구조/클래�
 
 <!-- diagrams:start -->
 
-프로젝트 2개 · 다이어그램 30개입니다.
+프로젝트 3개 · 다이어그램 45개입니다.
 이 표는 `node tools/build-index.mjs` 가 만들므로 직접 고치지 마세요.
 
 ### 온라인 상점
@@ -130,6 +144,30 @@ build-index: 알림 허브 에 아직 없는 산출물 10개 — 구조/클래�
 | 구현·운영 | 네트워크 토폴로지 | [네트워크 토폴로지](https://jeonck.github.io/diagrams/#network-topology/html) | 어떤 서브넷에 무엇이 있고, 어느 포트로 통하는가 |
 | 구현·운영 | CI/CD 파이프라인 | [CI/CD 파이프라인](https://jeonck.github.io/diagrams/#cicd-pipeline/html) | 커밋 한 번이 프로덕션에 닿기까지 거치는 관문 |
 | 구현·운영 | 값 흐름 | [주문 기능 값 흐름](https://jeonck.github.io/diagrams/#value-stream/html) | 요구 하나가 배포되기까지, 일한 시간과 기다린 시간 |
+
+### Online Store
+
+A commerce backend where a customer places an order, pays for it, and the system draws down inventory and ships it
+
+`projects/order-platform-en/` · Design complete · 다이어그램 15개 · 설계 결정 6개
+
+| 단계 | 종류 | 다이어그램 | 요약 |
+| --- | --- | --- | --- |
+| 요구 | 유스케이스 | [Online Store Use Cases](https://jeonck.github.io/diagrams/#shop-usecase-en/html) | Who can do what with this system |
+| 요구 | BPMN | [Order Fulfillment Process (BPMN)](https://jeonck.github.io/diagrams/#fulfillment-bpmn-en/html) | How a single order moves from team to team |
+| 분석 | 클래스 | [Order Domain Classes](https://jeonck.github.io/diagrams/#order-class-en/html) | The same domain seen through responsibilities and relationships, not data |
+| 분석 | ERD | [Order Domain ERD](https://jeonck.github.io/diagrams/#order-erd-en/html) | How a customer places an order, and the order branches into items and a payment |
+| 분석 | 상태 머신 | [Order State Transitions](https://jeonck.github.io/diagrams/#order-state-en/html) | The states a single order can be in, and the events that change them |
+| 분석 | 데이터 흐름(DFD) | [Order Data Flow (Level 1)](https://jeonck.github.io/diagrams/#order-dfd-en/html) | Which processes order data passes through, and where it comes to rest |
+| 설계 | C4 컨텍스트·컨테이너 | [C4 Context · Container](https://jeonck.github.io/diagrams/#c4-container-en/html) | The containers inside the system boundary, and the people and systems outside it |
+| 설계 | 패키지 | [Package Dependencies](https://jeonck.github.io/diagrams/#package-deps-en/html) | Which package is allowed to know about which |
+| 설계 | 컴포넌트 | [MVC Structure](https://jeonck.github.io/diagrams/#mvc-structure-en/html) | The three Model·View·Controller roles and which way they depend on each other |
+| 설계 | 시퀀스 | [MVC Request Sequence](https://jeonck.github.io/diagrams/#mvc-sequence-en/html) | One create-order request through each role and back as a response |
+| 설계 | 액티비티 | [Checkout Activity](https://jeonck.github.io/diagrams/#checkout-activity-en/html) | From cart to confirmation email — a flow with a branch and a parallel split |
+| 구현·운영 | 배포 | [Web Service Deployment](https://jeonck.github.io/diagrams/#deployment-topology-en/html) | How a request crosses the edge into the app tier, and where reads split from writes |
+| 구현·운영 | 네트워크 토폴로지 | [Network Topology](https://jeonck.github.io/diagrams/#network-topology-en/html) | Which subnet holds what, and over which ports they talk |
+| 구현·운영 | CI/CD 파이프라인 | [CI/CD Pipeline](https://jeonck.github.io/diagrams/#cicd-pipeline-en/html) | The gates one commit passes through on its way to production |
+| 구현·운영 | 값 흐름 | [Order Feature Value Stream](https://jeonck.github.io/diagrams/#value-stream-en/html) | From one request to a deployment: time spent working, time spent waiting |
 
 ### 알림 허브
 
@@ -453,6 +491,21 @@ cp -r .claude/skills/diagram-maker ~/.claude/skills/
 먼저 무너지는 것은 용량이 아니라 소유권(저장소 하나 = PR 큐 하나)이므로, **프로젝트가 5개를
 넘을 때** 각 저장소의 인덱스 조각을 합치는 연합 구조로 갑니다. 뷰어가 모든 경로를
 매니페스트에서 읽으므로 그때도 뷰어는 바뀌지 않습니다.
+
+### 두 언어로
+
+영어 사용자를 위한 프로젝트를 넣으려면 콘텐츠 번역만으로는 부족했습니다. 분류축과 ADR
+상태, 뷰어 문구 60여 개가 전역이라 **영문 콘텐츠가 한국어 껍데기 안에 들어앉기** 때문입니다.
+
+| 무엇을 | 왜 |
+|---|---|
+| 분류축·상태를 이중언어로 | `kind` 와 `status` 는 한국어를 표준값으로 두되 영문 입력도 받습니다. 영어로 쓰는 사람이 한국어를 옮겨 적을 이유는 없습니다 |
+| 뷰어 문구를 사전으로 | 한국어 문장을 열쇠로 씁니다. 사전에 없으면 한국어가 그대로 나오므로, 새 문구에 번역을 빠뜨려도 화면이 깨지지 않습니다 |
+| `project.json` 의 `lang` | 프로젝트마다 쓰인 언어를 밝히고, 뷰어가 화면 언어에 맞는 것만 보여줍니다 |
+| 영문 프로젝트 (`order-platform-en`) | 같은 제품을 영어로. 다이어그램 15장은 병렬로 옮기고, 각 장을 렌더링해 글자가 상자를 넘치지 않는지 확인했습니다 |
+
+번역에서 실제로 어려운 부분은 낱말이 아니라 **글자 길이**였습니다. 영어는 한국어보다
+가로로 길어 고정 좌표 상자를 넘치므로, 옮긴 뒤 상자 폭과 라벨 위치를 손봐야 합니다.
 
 ### 남이 쓸 수 있게
 

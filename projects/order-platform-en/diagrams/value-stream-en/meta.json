@@ -1,0 +1,13 @@
+{
+  "title": "Order Feature Value Stream",
+  "phase": "operations",
+  "category": "process",
+  "kind": "Value stream",
+  "tags": [
+    "Value stream",
+    "Lead time"
+  ],
+  "summary": "From one request to a deployment: time spent working, time spent waiting",
+  "updated": "2026-09-10",
+  "order": 40
+}

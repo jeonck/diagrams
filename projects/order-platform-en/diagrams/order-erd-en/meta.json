@@ -1,0 +1,13 @@
+{
+  "title": "Order Domain ERD",
+  "phase": "analysis",
+  "category": "data",
+  "kind": "ERD",
+  "tags": [
+    "ERD",
+    "Domain Model"
+  ],
+  "summary": "How a customer places an order, and the order branches into items and a payment",
+  "updated": "2026-09-10",
+  "order": 20
+}

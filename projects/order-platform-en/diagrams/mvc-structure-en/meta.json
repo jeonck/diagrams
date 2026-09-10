@@ -1,0 +1,13 @@
+{
+  "title": "MVC Structure",
+  "phase": "design",
+  "category": "structure",
+  "kind": "Component",
+  "tags": [
+    "Pattern",
+    "Component"
+  ],
+  "summary": "The three Model·View·Controller roles and which way they depend on each other",
+  "updated": "2026-09-10",
+  "order": 30
+}

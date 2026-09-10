@@ -1,0 +1,13 @@
+{
+  "title": "Package Dependencies",
+  "phase": "design",
+  "category": "structure",
+  "kind": "Package",
+  "tags": [
+    "Package",
+    "Dependencies"
+  ],
+  "summary": "Which package is allowed to know about which",
+  "updated": "2026-09-10",
+  "order": 20
+}

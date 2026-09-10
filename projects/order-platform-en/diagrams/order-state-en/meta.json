@@ -1,0 +1,13 @@
+{
+  "title": "Order State Transitions",
+  "phase": "analysis",
+  "category": "behavior",
+  "kind": "State machine",
+  "tags": [
+    "state machine",
+    "domain model"
+  ],
+  "summary": "The states a single order can be in, and the events that change them",
+  "updated": "2026-09-10",
+  "order": 30
+}

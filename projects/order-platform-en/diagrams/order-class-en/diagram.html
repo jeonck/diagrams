@@ -1,0 +1,189 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Order Domain Classes</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f8fafc;
+    --fg: #172033;
+    --muted: #5b6475;
+    --line: #64748b;
+    --neutral: #e2e8f0;
+    --input: #bfdbfe;
+    --process: #c7d2fe;
+    --storage: #99f6e4;
+    --external: #fde68a;
+    --risk: #fecaca;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #a3adbd;
+      --line: #94a3b8;
+      --neutral: #334155;
+      --input: #1d4ed8;
+      --process: #4338ca;
+      --storage: #0f766e;
+      --external: #92400e;
+      --risk: #991b1b;
+    }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font:
+      14px/1.4 ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+  }
+  main {
+    max-width: 980px;
+    margin: 32px auto;
+    padding: 0 20px;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 650;
+    fill: var(--fg);
+  }
+  .label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: var(--fg);
+  }
+  .small {
+    font-size: 12px;
+    fill: var(--muted);
+  }
+  .node {
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  .neutral {
+    fill: var(--neutral);
+  }
+  .input {
+    fill: var(--input);
+  }
+  .process {
+    fill: var(--process);
+  }
+  .storage {
+    fill: var(--storage);
+  }
+  .external {
+    fill: var(--external);
+  }
+  .risk {
+    fill: var(--risk);
+  }
+  .edge {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .edge-dashed {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 6 5;
+  }
+  .arrow-head {
+    fill: var(--line);
+  }
+  .zone {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+    stroke-dasharray: 6 5;
+    opacity: 0.8;
+  }
+</style>
+<main>
+  <svg viewBox="0 0 1080 700" role="img" aria-label="Order Domain Classes">
+    <defs>
+      <marker id="tri" viewBox="0 0 14 12" refX="14" refY="6" markerWidth="12" markerHeight="11" orient="auto">
+        <path d="M 0 0 L 14 6 L 0 12 Z" fill="var(--bg)" stroke="var(--line)" stroke-width="1.5" />
+      </marker>
+      <marker id="diamond" viewBox="0 0 16 12" refX="0" refY="6" markerWidth="14" markerHeight="11" orient="auto">
+        <path d="M 0 6 L 8 1 L 16 6 L 8 11 Z" fill="var(--line)" />
+      </marker>
+    </defs>
+
+    <text class="title" x="24" y="34">Order Domain Classes</text>
+    <text class="small" x="24" y="56">The same domain seen through responsibilities and relationships, not data</text>
+
+    <!-- 연결선을 먼저 그려 화살표가 상자 뒤로 가게 한다 -->
+    <path class="edge" d="M 300 187 L 400 187" />
+    <path class="edge" d="M 540 294 L 540 440" marker-start="url(#diamond)" />
+    <path class="edge" d="M 400 507 L 300 507" />
+    <path class="edge" d="M 680 187 L 780 187" />
+    <path class="edge" d="M 900 440 L 900 252" marker-end="url(#tri)" />
+
+    <rect class="node storage" x="60" y="120" width="240" height="134" rx="8" />
+    <path class="edge" d="M 60 154 L 300 154" stroke-width="1" />
+    <path class="edge" d="M 60 204 L 300 204" stroke-width="1" />
+    <rect class="node process" x="400" y="120" width="280" height="174" rx="8" />
+    <path class="edge" d="M 400 154 L 680 154" stroke-width="1" />
+    <path class="edge" d="M 400 224 L 680 224" stroke-width="1" />
+    <rect class="node process" x="780" y="120" width="240" height="132" rx="8" />
+    <path class="edge" d="M 780 172 L 1020 172" stroke-width="1" />
+    <path class="edge" d="M 780 202 L 1020 202" stroke-width="1" />
+    <rect class="node storage" x="60" y="440" width="240" height="134" rx="8" />
+    <path class="edge" d="M 60 474 L 300 474" stroke-width="1" />
+    <path class="edge" d="M 60 524 L 300 524" stroke-width="1" />
+    <rect class="node process" x="400" y="440" width="280" height="114" rx="8" />
+    <path class="edge" d="M 400 474 L 680 474" stroke-width="1" />
+    <path class="edge" d="M 400 504 L 680 504" stroke-width="1" />
+    <rect class="node process" x="780" y="440" width="240" height="114" rx="8" />
+    <path class="edge" d="M 780 474 L 1020 474" stroke-width="1" />
+    <path class="edge" d="M 780 504 L 1020 504" stroke-width="1" />
+
+    <text class="label" x="180" y="143" text-anchor="middle">Customer</text>
+    <text class="small" x="76" y="178">- id: Long</text>
+    <text class="small" x="76" y="198">- email: String</text>
+    <text class="small" x="76" y="228">+ placeOrder(): Order</text>
+    <text class="label" x="540" y="143" text-anchor="middle">Order</text>
+    <text class="small" x="416" y="178">- id: Long</text>
+    <text class="small" x="416" y="198">- placedAt: Instant</text>
+    <text class="small" x="416" y="218">- status: OrderStatus</text>
+    <text class="small" x="416" y="248">+ total(): Money</text>
+    <text class="small" x="416" y="268">+ cancel(): void</text>
+    <text class="small" x="900" y="140" text-anchor="middle">«abstract»</text>
+    <text class="label" x="900" y="161" text-anchor="middle">Payment</text>
+    <text class="small" x="796" y="196">- amount: Money</text>
+    <text class="small" x="796" y="226">+ approve(): boolean</text>
+    <text class="label" x="180" y="463" text-anchor="middle">Product</text>
+    <text class="small" x="76" y="498">- name: String</text>
+    <text class="small" x="76" y="518">- price: Money</text>
+    <text class="small" x="76" y="548">+ isAvailable(): boolean</text>
+    <text class="label" x="540" y="463" text-anchor="middle">OrderItem</text>
+    <text class="small" x="416" y="498">- quantity: int</text>
+    <text class="small" x="416" y="528">+ subtotal(): Money</text>
+    <text class="label" x="900" y="463" text-anchor="middle">CardPayment</text>
+    <text class="small" x="796" y="498">- maskedNo: String</text>
+    <text class="small" x="796" y="528">+ approve(): boolean</text>
+    <text class="small" x="310" y="180">1</text>
+    <text class="small" x="392" y="180" text-anchor="end">0..*</text>
+    <text class="small" x="552" y="318">1</text>
+    <text class="small" x="552" y="432">1..*</text>
+    <text class="small" x="392" y="500" text-anchor="end">0..*</text>
+    <text class="small" x="310" y="500">1</text>
+    <text class="small" x="690" y="180">1</text>
+    <text class="small" x="772" y="180" text-anchor="end">1</text>
+    <text class="small" x="912" y="350">inherits</text>
+    <text class="small" x="24" y="644">Note: The filled diamond is composition — when an Order goes away, its Order Items go with it.</text>
+    <text class="small" x="24" y="666">The hollow triangle is inheritance, and the numbers are multiplicity. Unlike an ERD, the operations (behaviour) show up too.</text>
+  </svg>
+</main>
